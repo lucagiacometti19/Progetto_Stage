@@ -185,11 +185,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Pavilion\\Desktop\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj",
+      "projectUniqueName": "C:\\Users\\Pavilion\\Desktop\\Progetto_Stage-GiacomoZampieri\\Progetto_Stage-GiacomoZampieri\\Progetto\\Gpx\\Gpx.csproj",
       "projectName": "Gpx",
-      "projectPath": "C:\\Users\\Pavilion\\Desktop\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj",
+      "projectPath": "C:\\Users\\Pavilion\\Desktop\\Progetto_Stage-GiacomoZampieri\\Progetto_Stage-GiacomoZampieri\\Progetto\\Gpx\\Gpx.csproj",
       "packagesPath": "C:\\Users\\Pavilion\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Pavilion\\Desktop\\Progetto_Stage\\Progetto\\Gpx\\obj\\",
+      "outputPath": "C:\\Users\\Pavilion\\Desktop\\Progetto_Stage-GiacomoZampieri\\Progetto_Stage-GiacomoZampieri\\Progetto\\Gpx\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
