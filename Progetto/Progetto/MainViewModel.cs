@@ -9,10 +9,12 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using System.Xml.Linq;
+using DevExpress.Mvvm;
+using DevExpress.Mvvm.POCO;
 
 namespace Progetto
 {
-    class MainViewModel : INotifyPropertyChanged
+    class MainViewModel : ViewModelBase
     {
         public MainViewModel()
         {
@@ -20,18 +22,14 @@ namespace Progetto
             GpxPointsCollection = new ObservableCollection<GpxPoint>();
         }
 
-        private ObservableCollection<GpxPoint> gpxPointsCollection;
         public ObservableCollection<GpxPoint> GpxPointsCollection
         {
-            get { return gpxPointsCollection; }
-            set { gpxPointsCollection = value; OnPropertyChange(nameof(GpxPointsCollection)); }
+            get { return GetProperty( () => GpxPointsCollection); }
+            set { SetProperty( () => GpxPointsCollection,value,UpdateGpxPointsCollection); }
         }
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChange(string obj)
+        void UpdateGpxPointsCollection()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(obj));
+            RaisePropertyChanged(() => GpxPointsCollection);
         }
 
         private XDocument GetGpxDoc(string sFile)
@@ -88,14 +86,6 @@ namespace Progetto
                     string time = splittedLine[2];
                     time = time.Replace('T', ' ');
                     time = time.Remove(time.IndexOf('Z'));
-
-                    //DateTime dateTime = DateTime.ParseExact(time, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
-
-                    //GpxPoint gpxPoint = new GpxPoint();
-                    //gpxPoint.Latitude = Convert.ToDouble(latitude);
-                    //gpxPoint.Longitude = Convert.ToDouble(longitude);
-                    //gpxPoint.Time = dateTime;
-                    //GpxPointsCollection.Add(gpxPoint);
 
                     GpxPointsCollection.Add(new GpxPoint
                     {
