@@ -1,7 +1,7 @@
 # Progetto_Stage
-## Sasa Bozič
-## Giacomo Zampieri
-## Daniel Pattaro
-## Mattia Brunello
-## Michele Ogniben
-## Luca Giacometti
+#### [Sasa Bozič] (https://github.com/bozicsasa)
+#### [Giacomo Zampieri] (https://github.com/4BIZampieriGiacomo)
+#### [Daniel Pattaro] (https://github.com/danielpattaro)
+#### [Mattia Brunello] (https://github.com/MrBrune01)
+#### [Michele Ogniben] (https://github.com/Micheleogniben)
+#### [Luca Giacometti] (https://github.com/lucagiacometti19)
