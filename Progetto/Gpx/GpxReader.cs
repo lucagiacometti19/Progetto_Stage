@@ -1,6 +1,4 @@
-﻿using Microsoft.Win32;
-using System;
-using Gpx;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
