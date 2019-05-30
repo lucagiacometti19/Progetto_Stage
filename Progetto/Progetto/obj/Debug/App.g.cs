@@ -9,6 +9,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using DevExpress.Xpf.DXBinding;
 using Progetto;
 using System;
 using System.Diagnostics;
