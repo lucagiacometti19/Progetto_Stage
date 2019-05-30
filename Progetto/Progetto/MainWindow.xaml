@@ -46,9 +46,5 @@
                 </dxm:VectorLayer.Data>
             </dxm:VectorLayer>
         </dxm:MapControl>
-        
-        <dxmvvm:Interaction.Behaviors>
-            <dxmvvm:EventToCommand EventName="Loaded" Command="{Binding EditCommand}"/>
-        </dxmvvm:Interaction.Behaviors>
     </Grid>
 </Window>
