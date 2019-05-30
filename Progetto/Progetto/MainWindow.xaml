@@ -15,13 +15,12 @@
         </Grid.RowDefinitions>
         <Button  Content="Importa" Command="{Binding ImportCommand}"/>
 
-
         <dxm:MapControl Grid.Row="1" ZoomLevel="4">
             <dxm:ImageLayer>
                 <dxm:OpenStreetMapDataProvider/>
             </dxm:ImageLayer>
 
-            <dxm:VectorLayer ShapeFill="Red" ShapeStroke="Red">
+            <!--<dxm:VectorLayer ShapeFill="Red" ShapeStroke="Red">
                 <dxm:VectorLayer.Data>
                     <dxm:ListSourceDataAdapter DataSource="{Binding GpxPointsCollection}">
                         <dxm:ListSourceDataAdapter.Mappings>
@@ -31,15 +30,11 @@
                             <dxm:MapDotSettings Size="5"/>
                         </dxm:ListSourceDataAdapter.ItemSettings>
                     </dxm:ListSourceDataAdapter>
-                </dxm:VectorLayer.Data>
+                </dxm:VectorLayer.Data>-->
 
-                
-
-
-
-
-                <!--<dxm:VectorLayer.Data>
-                    <dxm:ListSourceDataAdapter DataSource="{Binding GpxPointsCollection}">
+            <dxm:VectorLayer ShapeFill="Blue" ShapeStroke="Blue">
+                <dxm:VectorLayer.Data>
+                    <dxm:ListSourceDataAdapter DataSource="{Binding PolylineCollection}">
                         <dxm:ListSourceDataAdapter.Mappings>
                             <dxm:MapItemMappingInfo />
                         </dxm:ListSourceDataAdapter.Mappings>
@@ -47,15 +42,8 @@
                             <dxm:MapPolylineSettings />
                         </dxm:ListSourceDataAdapter.ItemSettings>
                     </dxm:ListSourceDataAdapter>
-                </dxm:VectorLayer.Data>-->
-
-
+                </dxm:VectorLayer.Data>
             </dxm:VectorLayer>
-            
-                
-
         </dxm:MapControl>
-
-
     </Grid>
 </Window>

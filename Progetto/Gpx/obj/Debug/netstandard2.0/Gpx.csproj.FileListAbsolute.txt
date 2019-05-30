@@ -25,3 +25,16 @@ C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\obj\Debug\netstan
 C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\obj\Debug\netstandard2.0\Gpx.AssemblyInfo.cs
 C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\obj\Debug\netstandard2.0\Gpx.dll
 C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\obj\Debug\netstandard2.0\Gpx.pdb
+C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\bin\Debug\netstandard2.0\DevExpress.Map.v19.1.Core.dll
+C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\bin\Debug\netstandard2.0\DevExpress.Data.v19.1.dll
+C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\bin\Debug\netstandard2.0\DevExpress.Map.v19.1.Core.xml
+C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\bin\Debug\netstandard2.0\DevExpress.Data.v19.1.xml
+C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\bin\Debug\netstandard2.0\de\DevExpress.Map.v19.1.Core.resources.dll
+C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\bin\Debug\netstandard2.0\es\DevExpress.Map.v19.1.Core.resources.dll
+C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\bin\Debug\netstandard2.0\ja\DevExpress.Map.v19.1.Core.resources.dll
+C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\bin\Debug\netstandard2.0\ru\DevExpress.Map.v19.1.Core.resources.dll
+C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\bin\Debug\netstandard2.0\de\DevExpress.Data.v19.1.resources.dll
+C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\bin\Debug\netstandard2.0\es\DevExpress.Data.v19.1.resources.dll
+C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\bin\Debug\netstandard2.0\ja\DevExpress.Data.v19.1.resources.dll
+C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\bin\Debug\netstandard2.0\ru\DevExpress.Data.v19.1.resources.dll
+C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Gpx\obj\Debug\netstandard2.0\Gpx.csproj.CopyComplete

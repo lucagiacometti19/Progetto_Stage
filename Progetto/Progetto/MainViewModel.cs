@@ -11,6 +11,8 @@ using System.Windows.Input;
 using System.Xml.Linq;
 using DevExpress.Mvvm;
 using DevExpress.Mvvm.POCO;
+using System.Xml;
+using DevExpress.Xpf.Map;
 
 namespace Progetto
 {
@@ -18,20 +20,32 @@ namespace Progetto
     {
         public MainViewModel()
         {
-            ImportCommand = new RelayCommand(Import);
+            //ImportCommand = new RelayCommand(Import);
             GpxPointsCollection = new ObservableCollection<GpxPoint>();
+            PolylineCollection = new ObservableCollection<MapPolyline>();
         }
 
+        private ObservableCollection<GpxPoint> gpxPointsCollection;
         public ObservableCollection<GpxPoint> GpxPointsCollection
         {
-            get { return GetProperty( () => GpxPointsCollection); }
-            set { SetProperty( () => GpxPointsCollection,value,UpdateGpxPointsCollection); }
-        }
-        void UpdateGpxPointsCollection()
-        {
-            RaisePropertyChanged(() => GpxPointsCollection);
+            get { return gpxPointsCollection; }
+            set { gpxPointsCollection = value; RaisePropertyChanged(); }
         }
 
+        private ObservableCollection<MapPolyline> polylineCollection;
+        public ObservableCollection<MapPolyline> PolylineCollection
+        {
+            get { return polylineCollection; }
+            set { polylineCollection = value; RaisePropertyChanged(); }
+        }
+
+
+        //private XmlDocument GetGpxDoc(string sFile)
+        //{
+        //    XmlDocument gpxDoc = new XmlDocument();
+        //    gpxDoc.Load(sFile);
+        //    return gpxDoc;
+        //}
         private XDocument GetGpxDoc(string sFile)
         {
             XDocument gpxDoc = XDocument.Load(sFile);
@@ -46,6 +60,17 @@ namespace Progetto
 
         private string LoadGPXWaypoints(string sFile)
         {
+
+            //XmlDocument gpxDoc = GetGpxDoc(sFile);
+
+            //var waypoints = from waypoint in sFile
+            //                select new
+            //                {
+            //                    Latitudine = gpxDoc.GetElementsByTagName("lat"),
+            //                    Longitude = gpxDoc.GetElementsByTagName("lon"),
+            //                    Dt = gpxDoc.GetElementsByTagName(gpx + "time") != null ?
+            //                    gpxDoc.GetElementsByTagName(gpx + "time").Value : null,
+            //                };
             XDocument gpxDoc = GetGpxDoc(sFile);
             XNamespace gpx = GetGpxNameSpace();
 
@@ -71,6 +96,9 @@ namespace Progetto
 
             return sb.ToString();
         }
+        
+
+
 
         private void FillList(string file)
         {
@@ -99,8 +127,37 @@ namespace Progetto
         }
 
 
-        public ICommand ImportCommand { get; set; }
-        private void Import(object obj)
+        private void CreatePolylines(ObservableCollection<GpxPoint> points)
+        {
+            MapPolyline pl = new MapPolyline();
+            foreach(GpxPoint px in points)
+            {
+                pl.Points.Add(new GeoPoint(px.Latitude, px.Longitude));
+            }
+            PolylineCollection.Add(pl);
+        }
+
+        //public ICommand ImportCommand { get; set; }
+        //private void Import(object obj)
+        //{
+        //    OpenFileDialog open = new OpenFileDialog
+        //    {
+        //        Filter = "Xml files (*.xml)|*.xml",
+        //        Title = "Importa file"
+        //    };
+        //    if ((bool)open.ShowDialog())
+        //    {
+        //        string gpxPoints = LoadGPXWaypoints(open.FileName);
+        //        FillList(gpxPoints);
+        //    }
+        //}
+
+        private DelegateCommand importCommand;
+        public DelegateCommand ImportCommand
+        {
+            get { return importCommand ?? (importCommand = new DelegateCommand(Import)); }
+        }
+        private void Import()
         {
             OpenFileDialog open = new OpenFileDialog
             {
@@ -111,6 +168,7 @@ namespace Progetto
             {
                 string gpxPoints = LoadGPXWaypoints(open.FileName);
                 FillList(gpxPoints);
+                CreatePolylines(GpxPointsCollection);
             }
         }
     }
