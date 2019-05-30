@@ -37,7 +37,7 @@
                 <dxm:VectorLayer.Data>
                     <dxm:ListSourceDataAdapter DataSource="{Binding PolylineCollection}">
                         <dxm:ListSourceDataAdapter.Mappings>
-                            <dxm:MapItemMappingInfo />
+                            <dxm:MapItemMappingInfo Latitude="Latitude" Longitude="Longitude"/>
                         </dxm:ListSourceDataAdapter.Mappings>
                         <dxm:ListSourceDataAdapter.ItemSettings>
                             <dxm:MapPolylineSettings />
