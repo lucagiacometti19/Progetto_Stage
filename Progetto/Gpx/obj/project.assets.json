@@ -179,23 +179,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Pavilion\\.nuget\\packages\\": {},
+    "C:\\Users\\utente\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Pavilion\\Desktop\\Progetto_Stage-GiacomoZampieri\\Progetto_Stage-GiacomoZampieri\\Progetto\\Gpx\\Gpx.csproj",
+      "projectUniqueName": "C:\\Users\\utente\\Desktop\\Progetto-Stage2019Mappa\\Progetto\\Gpx\\Gpx.csproj",
       "projectName": "Gpx",
-      "projectPath": "C:\\Users\\Pavilion\\Desktop\\Progetto_Stage-GiacomoZampieri\\Progetto_Stage-GiacomoZampieri\\Progetto\\Gpx\\Gpx.csproj",
-      "packagesPath": "C:\\Users\\Pavilion\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Pavilion\\Desktop\\Progetto_Stage-GiacomoZampieri\\Progetto_Stage-GiacomoZampieri\\Progetto\\Gpx\\obj\\",
+      "projectPath": "C:\\Users\\utente\\Desktop\\Progetto-Stage2019Mappa\\Progetto\\Gpx\\Gpx.csproj",
+      "packagesPath": "C:\\Users\\utente\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\utente\\Desktop\\Progetto-Stage2019Mappa\\Progetto\\Gpx\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Pavilion\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\utente\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 19.1.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],

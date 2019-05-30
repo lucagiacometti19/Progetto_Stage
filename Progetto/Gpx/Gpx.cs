@@ -6,6 +6,7 @@
 // in accordance with the terms of the license agreement accompanying it.
 // ==========================================================================
 
+using DevExpress.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
