@@ -102,7 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Gpx\Gpx.csproj">
-      <Project>{eda8c3e3-5d82-46e8-bb53-147c12038840}</Project>
+      <Project>{145a2f7b-1d39-4ab3-8010-367590dbc730}</Project>
       <Name>Gpx</Name>
     </ProjectReference>
   </ItemGroup>
