@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Progetto"
         xmlns:dxm="http://schemas.devexpress.com/winfx/2008/xaml/map"
+        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" 
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
 
