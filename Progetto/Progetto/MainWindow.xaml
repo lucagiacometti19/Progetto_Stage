@@ -33,7 +33,7 @@
                     </dxm:ListSourceDataAdapter>
                 </dxm:VectorLayer.Data>-->
 
-            <dxm:VectorLayer ShapeFill="Blue" ShapeStroke="Blue">
+            <dxm:VectorLayer>
                 <dxm:VectorLayer.Data>
                     <dxm:ListSourceDataAdapter DataSource="{Binding PolylineCollection}">
                         <dxm:ListSourceDataAdapter.Mappings>
