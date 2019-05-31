@@ -1,12 +1,14 @@
 ﻿using DevExpress.Mvvm;
 using DevExpress.Xpf.Map;
+using Gpx;
 using Microsoft.Win32;
 using System;
-using Gpx;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
 using System.Xml;
 
 namespace Progetto
@@ -37,6 +39,8 @@ namespace Progetto
         private void CreatePolylines(ObservableCollection<GpxPoint> points)
         {
             MapPolyline pl = new MapPolyline();
+            pl.Stroke = new SolidColorBrush(Color.FromRgb(0, 17, 255));    //))/*(Color.FromRgb(Convert.ToByte(new Random(DateTime.Now.Millisecond).Next() % 256), Convert.ToByte(new Random(DateTime.Now.Millisecond).Next() % 256), Convert.ToByte(new Random(DateTime.Now.Millisecond).Next() % 256)));*/
+            //pl.Fill = new SolidColorBrush(Color.FromRgb(Convert.ToByte(new Random(DateTime.Now.Millisecond).Next() % 256), Convert.ToByte(new Random(DateTime.Now.Millisecond).Next() % 256), Convert.ToByte(new Random(DateTime.Now.Millisecond).Next() % 256)));
             foreach (GpxPoint px in points)
             {
                 pl.Points.Add(new GeoPoint(px.Latitude, px.Longitude));
@@ -45,12 +49,12 @@ namespace Progetto
         }
 
 
-        private DelegateCommand importCommand;
-        public DelegateCommand ImportCommand
+        private AsyncCommand importCommand;
+        public AsyncCommand ImportCommand
         {
-            get { return importCommand ?? (importCommand = new DelegateCommand(Import)); }
+            get { return importCommand ?? (importCommand = new AsyncCommand(Import)); }
         }
-        private async void Import()
+        private async Task Import()
         {
             OpenFileDialog open = new OpenFileDialog
             {
