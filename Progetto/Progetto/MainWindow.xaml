@@ -10,15 +10,19 @@
         Title="MainWindow" Height="450" Width="800">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="611*"/>
+            <ColumnDefinition Width="181*"/>
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
-        <Button  Content="Importa" Command="{Binding ImportCommand}"/>
+        <Button  Content="Importa" Command="{Binding ImportCommand}" Grid.ColumnSpan="2"/>
 
-        <dxm:MapControl Grid.Row="1" ZoomLevel="4">
+        <dxm:MapControl Grid.Row="1" ZoomLevel="4" Grid.ColumnSpan="2">
             <dxm:ImageLayer>
-                <dxm:OpenStreetMapDataProvider/>
+                <dxm:BingMapDataProvider BingKey="mWuksRMdb006DVTVeRoy~VBby6uhRsgm_fGc4n7RuVA~AmHfaZlNw0sc5TxdXkuC6wuf13uenZlF184AN_kdfZZuyj_VCS4BKOqfXF0KUsqi"/>
             </dxm:ImageLayer>
 
             <!--<dxm:VectorLayer ShapeFill="Red" ShapeStroke="Red">
@@ -33,7 +37,7 @@
                     </dxm:ListSourceDataAdapter>
                 </dxm:VectorLayer.Data>-->
 
-            <dxm:VectorLayer>
+            <!--<dxm:VectorLayer>
                 <dxm:VectorLayer.Data>
                     <dxm:ListSourceDataAdapter DataSource="{Binding PolylineCollection}">
                         <dxm:ListSourceDataAdapter.Mappings>
@@ -44,7 +48,8 @@
                         </dxm:ListSourceDataAdapter.ItemSettings>
                     </dxm:ListSourceDataAdapter>
                 </dxm:VectorLayer.Data>
-            </dxm:VectorLayer>
+            </dxm:VectorLayer>-->
+            <dxm:InformationLayer DataProvider="{Binding BingRouteData}" EnableHighlighting="False"/>
         </dxm:MapControl>
     </Grid>
 </Window>

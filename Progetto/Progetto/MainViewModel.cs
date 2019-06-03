@@ -3,6 +3,7 @@ using DevExpress.Xpf.Map;
 using Gpx;
 using Microsoft.Win32;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
@@ -35,12 +36,19 @@ namespace Progetto
             set { polylineCollection = value; RaisePropertyChanged(); }
         }
 
+        private BingRouteDataProvider bingRouteData;
+        public BingRouteDataProvider BingRouteData
+        {
+            get { return bingRouteData; }
+            set { bingRouteData = value; RaisePropertyChanged(); }
+        }
+
+
 
         private void CreatePolylines(ObservableCollection<GpxPoint> points)
         {
             MapPolyline pl = new MapPolyline();
-            pl.Stroke = new SolidColorBrush(Color.FromRgb(0, 17, 255));    //))/*(Color.FromRgb(Convert.ToByte(new Random(DateTime.Now.Millisecond).Next() % 256), Convert.ToByte(new Random(DateTime.Now.Millisecond).Next() % 256), Convert.ToByte(new Random(DateTime.Now.Millisecond).Next() % 256)));*/
-            //pl.Fill = new SolidColorBrush(Color.FromRgb(Convert.ToByte(new Random(DateTime.Now.Millisecond).Next() % 256), Convert.ToByte(new Random(DateTime.Now.Millisecond).Next() % 256), Convert.ToByte(new Random(DateTime.Now.Millisecond).Next() % 256)));
+            pl.Stroke = new SolidColorBrush(Color.FromRgb(0, 17, 255));   
             foreach (GpxPoint px in points)
             {
                 pl.Points.Add(new GeoPoint(px.Latitude, px.Longitude));
@@ -48,6 +56,39 @@ namespace Progetto
             PolylineCollection.Add(pl);
         }
 
+        private void CreateRoute(ObservableCollection<GpxPoint> points)
+        {
+            List<RouteWaypoint> waypoints = new List<RouteWaypoint>();
+            for (int i = 0; i < 24; i++)
+            {
+                waypoints.Add(new RouteWaypoint($"Route point {i}", new GeoPoint(points[i].Latitude, points[i].Longitude)));
+            }
+            BingRouteData = new BingRouteDataProvider
+            {
+                //MaxVisibleResultCount = 25,
+                //RouteStroke = new SolidColorBrush(Color.FromRgb(7, 59, 142)),
+                BingKey = "mWuksRMdb006DVTVeRoy~VBby6uhRsgm_fGc4n7RuVA~AmHfaZlNw0sc5TxdXkuC6wuf13uenZlF184AN_kdfZZuyj_VCS4BKOqfXF0KUsqi"
+            };
+            BingRouteData.LayerItemsGenerating += routeLayerItemsGenerating;
+            BingRouteData.CalculateRoute(waypoints);
+        }
+
+        private void routeLayerItemsGenerating(object sender, LayerItemsGeneratingEventArgs e)
+        {
+            if (e.Cancelled || (e.Error != null)) return;
+            int counter = 0;
+            foreach (MapItem item in e.Items)
+            {
+                if(item is MapPushpin)
+                {
+                    if (counter == 0 || counter == e.Items.Length - 2)
+                        item.Visible = true;
+                    else
+                        item.Visible = false;
+                    counter++;
+                }
+            }
+        }
 
         private AsyncCommand importCommand;
         public AsyncCommand ImportCommand
@@ -64,7 +105,8 @@ namespace Progetto
             if ((bool)open.ShowDialog())
             {
                 GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
-                CreatePolylines(GpxPointsCollection);
+                //CreatePolylines(GpxPointsCollection);
+                CreateRoute(GpxPointsCollection);
             }
         }
     }

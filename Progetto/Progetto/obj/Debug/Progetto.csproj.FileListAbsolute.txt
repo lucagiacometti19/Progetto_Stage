@@ -355,6 +355,8 @@ C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Progetto\obj\Debug\Pr
 C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Progetto\obj\Debug\Progetto.exe.licenses
 C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Progetto\obj\Debug\Progetto.csproj.CoreCompileInputs.cache
 C:\Users\utente\Desktop\scuola\4°\Progetto_Stage\Progetto\Progetto\obj\Debug\Progetto.csproj.CopyComplete
+C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\DevExpress.Data.v19.1.xml
+C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\ru\DevExpress.Xpf.Ribbon.v19.1.resources.dll
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\Progetto.exe.config
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\Progetto.exe
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\Progetto.pdb
@@ -394,7 +396,6 @@ C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\DevExpress.
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\DevExpress.Mvvm.v19.1.xml
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\DevExpress.Xpf.Core.v19.1.xml
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\DevExpress.Xpf.Map.v19.1.xml
-C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\DevExpress.Data.v19.1.xml
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\DevExpress.Printing.v19.1.Core.xml
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\DevExpress.Pdf.v19.1.Core.xml
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\DevExpress.Xpf.Printing.v19.1.xml
@@ -438,7 +439,6 @@ C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\ru\DevExpre
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\de\DevExpress.Xpf.Ribbon.v19.1.resources.dll
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\es\DevExpress.Xpf.Ribbon.v19.1.resources.dll
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\ja\DevExpress.Xpf.Ribbon.v19.1.resources.dll
-C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\ru\DevExpress.Xpf.Ribbon.v19.1.resources.dll
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\de\DevExpress.Xpf.Docking.v19.1.resources.dll
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\es\DevExpress.Xpf.Docking.v19.1.resources.dll
 C:\Users\Pavilion\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\ja\DevExpress.Xpf.Docking.v19.1.resources.dll
