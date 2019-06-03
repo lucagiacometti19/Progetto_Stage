@@ -9,6 +9,9 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Windows.Media;
+using System.Collections.Generic;
+using System.Windows.Input;
+using System.Windows;
 
 namespace Progetto
 {
@@ -18,6 +21,7 @@ namespace Progetto
         {
             GpxPointsCollection = new ObservableCollection<GpxPoint>();
             PolylineCollection = new ObservableCollection<MapPolyline>();
+            
         }
 
         private ObservableCollection<GpxPoint> gpxPointsCollection;
@@ -34,6 +38,46 @@ namespace Progetto
             set { polylineCollection = value; RaisePropertyChanged(); }
         }
 
+        private BingRouteDataProvider routeDataProvider;
+        public BingRouteDataProvider RouteDataProvider
+        {
+            get { return routeDataProvider; }
+            set { routeDataProvider = value; RaisePropertyChanged(); }
+        }
+
+
+
+        public void CreateRoute(ObservableCollection<GpxPoint> points)
+        {
+            List<RouteWaypoint> waypoints = new List<RouteWaypoint>();
+            for (int i = 0; i < 24; i++)
+            {
+                waypoints.Add(new RouteWaypoint($"Route point {i}", new GeoPoint(points[i].Latitude, points[i].Longitude)));
+            }
+            RouteDataProvider = new BingRouteDataProvider
+            {
+                BingKey = "mWuksRMdb006DVTVeRoy~VBby6uhRsgm_fGc4n7RuVA~AmHfaZlNw0sc5TxdXkuC6wuf13uenZlF184AN_kdfZZuyj_VCS4BKOqfXF0KUsqi"
+            };
+            RouteDataProvider.CalculateRoute(waypoints);
+            routeDataProvider.LayerItemsGenerating += routeLayerItemsGenerating;
+        }
+
+        private void routeLayerItemsGenerating(object sender, LayerItemsGeneratingEventArgs e)
+        {
+            if (e.Cancelled || (e.Error != null)) return;
+            int counter = 0;
+            foreach (MapItem item in e.Items)
+            {
+                if (item is MapPushpin)
+                {
+                    if (counter == 0 || counter == e.Items.Length - 2)
+                        item.Visible = true;
+                    else
+                        item.Visible = false;
+                    counter++;
+                }
+            }
+        }
 
         private void CreatePolylines(ObservableCollection<GpxPoint> points)
         {
@@ -44,7 +88,6 @@ namespace Progetto
             }
             PolylineCollection.Add(pl);
         }
-
 
         private DelegateCommand importCommand;
         public DelegateCommand ImportCommand
@@ -61,7 +104,7 @@ namespace Progetto
             if ((bool)open.ShowDialog())
             {
                 GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
-                CreatePolylines(GpxPointsCollection);
+                CreateRoute(GpxPointsCollection);
             }
         }
     }

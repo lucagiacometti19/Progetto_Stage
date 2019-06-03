@@ -18,33 +18,10 @@
 
         <dxm:MapControl Grid.Row="1" ZoomLevel="4">
             <dxm:ImageLayer>
-                <dxm:OpenStreetMapDataProvider/>
+                <dxm:BingMapDataProvider BingKey="mWuksRMdb006DVTVeRoy~VBby6uhRsgm_fGc4n7RuVA~AmHfaZlNw0sc5TxdXkuC6wuf13uenZlF184AN_kdfZZuyj_VCS4BKOqfXF0KUsqi"/>
             </dxm:ImageLayer>
 
-            <!--<dxm:VectorLayer ShapeFill="Red" ShapeStroke="Red">
-                <dxm:VectorLayer.Data>
-                    <dxm:ListSourceDataAdapter DataSource="{Binding GpxPointsCollection}">
-                        <dxm:ListSourceDataAdapter.Mappings>
-                            <dxm:MapItemMappingInfo Latitude="Latitude" Longitude="Longitude"/>
-                        </dxm:ListSourceDataAdapter.Mappings>
-                        <dxm:ListSourceDataAdapter.ItemSettings>
-                            <dxm:MapDotSettings Size="5"/>
-                        </dxm:ListSourceDataAdapter.ItemSettings>
-                    </dxm:ListSourceDataAdapter>
-                </dxm:VectorLayer.Data>-->
-
-            <dxm:VectorLayer ShapeFill="Blue" ShapeStroke="Blue">
-                <dxm:VectorLayer.Data>
-                    <dxm:ListSourceDataAdapter DataSource="{Binding PolylineCollection}">
-                        <dxm:ListSourceDataAdapter.Mappings>
-                            <dxm:MapItemMappingInfo />
-                        </dxm:ListSourceDataAdapter.Mappings>
-                        <dxm:ListSourceDataAdapter.ItemSettings>
-                            <dxm:MapPolylineSettings />
-                        </dxm:ListSourceDataAdapter.ItemSettings>
-                    </dxm:ListSourceDataAdapter>
-                </dxm:VectorLayer.Data>
-            </dxm:VectorLayer>
+            <dxm:InformationLayer DataProvider="{Binding RouteDataProvider}" EnableHighlighting="False"/>
         </dxm:MapControl>
     </Grid>
 </Window>
