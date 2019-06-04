@@ -20,9 +20,7 @@ namespace Progetto
 {
     public class HttpMessage
     {
-
-        public static HttpClient client = new HttpClient();
-
+        public static HttpClient client;
         public static object EntityUtils { get; private set; }
 
         private static ObservableCollection<GeoPoint> point = new ObservableCollection<GeoPoint>();
@@ -35,41 +33,48 @@ namespace Progetto
         public static async Task RunAsync(string p)
         {
             // Update port # in the following line.
-            client.BaseAddress = new Uri("http://routing.pointsecurity.it:8085/italy");
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add( new MediaTypeWithQualityHeaderValue("application/json"));
-            try
+            using (client = new HttpClient())
             {
-                await GetProductAsync(p);
+                client.BaseAddress = new Uri("http://routing.pointsecurity.it:8085/italy");
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                try
+                {
+                    await GetProductAsync(p);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
-
             Console.ReadLine();
         }
 
         public static async Task GetProductAsync(string path)
         {
-            HttpResponseMessage response = await client.GetAsync(path);
-            if (response.IsSuccessStatusCode)
+            using (HttpResponseMessage response = await client.GetAsync(path))
             {
-                string jsonResult = await response.Content.ReadAsStringAsync();
-                jsonResult = jsonResult.Replace("itinero.JSONP.callbacks.route2(", "");
-                jsonResult = jsonResult.Substring(0, (jsonResult.Length - 2));
-                ConvertFromJson(jsonResult);
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonResult = await response.Content.ReadAsStringAsync();
+                    jsonResult = jsonResult.Replace("itinero.JSONP.callbacks.route2(", "");
+                    jsonResult = jsonResult.Substring(0, (jsonResult.Length - 2));
+                    ConvertFromJson(jsonResult);
+                }
             }
-            response.Dispose();
         }
 
         public static string RequestAssembler(GeoPoint p1, GeoPoint p2)
         {
             return "http://routing.pointsecurity.it:8085/italy/routing?callback=itinero.JSONP.callbacks.route2&profile=car&loc=" + 
-                    p1.Latitude.ToString().Replace(',', '.') + "," + 
+                    p1.Latitude.ToString().Replace(',', '.') + 
+                    "," + 
                     p1.Longitude.ToString().Replace(',', '.') + 
-                    "&loc=" + p2.Latitude.ToString().Replace(',', '.') + "," + 
-                    p2.Longitude.ToString().Replace(',', '.') + "&sort=true";
+                    "&loc=" + 
+                    p2.Latitude.ToString().Replace(',', '.') +
+                    "," + 
+                    p2.Longitude.ToString().Replace(',', '.') + 
+                    "&sort=true";
         }
 
         public static void ConvertFromJson(string input)
@@ -105,7 +110,6 @@ namespace Progetto
                     });
                 }
             }
-            Console.WriteLine("");
         }
     }
 }
