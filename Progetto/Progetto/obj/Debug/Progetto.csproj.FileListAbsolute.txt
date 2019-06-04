@@ -593,3 +593,9 @@ C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\obj\Debug\Progetto.cspr
 C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\obj\Debug\Progetto.csproj.CopyComplete
 C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\obj\Debug\Progetto.exe
 C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\obj\Debug\Progetto.pdb
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\Newtonsoft.Json.dll
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\System.Net.Http.Formatting.dll
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\Newtonsoft.Json.xml
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\System.Net.Http.Formatting.xml
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\StreamJsonRpc.dll
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\it\StreamJsonRpc.resources.dll

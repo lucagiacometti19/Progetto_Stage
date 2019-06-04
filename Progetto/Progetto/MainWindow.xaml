@@ -20,8 +20,7 @@
             <dxm:ImageLayer>
                 <dxm:BingMapDataProvider BingKey="mWuksRMdb006DVTVeRoy~VBby6uhRsgm_fGc4n7RuVA~AmHfaZlNw0sc5TxdXkuC6wuf13uenZlF184AN_kdfZZuyj_VCS4BKOqfXF0KUsqi"/>
             </dxm:ImageLayer>
-
-            <dxm:InformationLayer DataProvider="{Binding RouteDataProvider}" EnableHighlighting="False"/>
+            <!--<dxm:InformationLayer DataProvider="{Binding RouteDataProvider}" EnableHighlighting="False"/>-->
         </dxm:MapControl>
     </Grid>
 </Window>
