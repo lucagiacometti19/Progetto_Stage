@@ -22,7 +22,9 @@ namespace Progetto
         //campi
         private MapPolyline polyline = new MapPolyline()
         {
-            Stroke = new SolidColorBrush(Color.FromRgb(0, 17, 255))
+            Stroke = new SolidColorBrush(Color.FromRgb(0, 17, 255)),
+            IsGeodesic = true,
+            EnableHighlighting = false
         };
 
 
@@ -37,52 +39,34 @@ namespace Progetto
                 client.BaseAddress = new Uri("http://routing.pointsecurity.it:8085/italy");
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
                 using (HttpResponseMessage responseMessage = await client.GetAsync(url))
                 {
                     responseMessage.EnsureSuccessStatusCode();
                     string json = await responseMessage.Content.ReadAsStringAsync();
                     json = json.Substring(json.IndexOf('{'));
                     json = json.Substring(0, json.Length - 2);
-                    //var obj = JObject.Parse(json);
                     return JsonConvert.DeserializeObject<dynamic>(json);
-
                 }
             }
         }
 
-        //private async Task Loop(GeoPoint p1, GeoPoint p2, dynamic obj)
-        //{
-        //    int pointIndex = 0;
-        //    int coordIndex = 0;
-        //    foreach (var feature in obj.features)
-        //    {
-        //        if (coordIndex == 1)
-        //        {
-        //            pointIndex++;
-        //            coordIndex--;
-        //        }
-        //        polyline.Points.Add(new GeoPoint(feature.geometry.coordinates[pointIndex][coordIndex], feature.geometry.coordinates[pointIndex][coordIndex + 1]));
-        //    }
-        //}
-
-        public async Task<MapPolyline> ConvertJson(GeoPoint p1, GeoPoint p2)
+        public async Task<MapPolyline> GetPolylineFromRouteProvider(GeoPoint p1, GeoPoint p2)
         {
             dynamic jObject = await GetAsyncJsonObject(p1, p2);
-            int pointIndex = 0;
-            int coordIndex = 0;
+            double latitude = 0;
+            double longitude = 0;
             foreach (var feature in jObject.features)
             {
-                if (coordIndex == 1)
-                {
-                    pointIndex++;
-                    coordIndex--;
-                }
-                var latitude = Convert.ToDouble(feature.geometry.coordinates[pointIndex][coordIndex].Value);
-                var longitude = Convert.ToDouble(feature.geometry.coordinates[pointIndex][coordIndex + 1].Value);
-                polyline.Points.Add(new GeoPoint(latitude, longitude));
-                Console.WriteLine(pointIndex);
-                coordIndex++;
+                if (feature.geometry.type.Value == "Point") continue;
+                else foreach (var coord in feature.geometry.coordinates)
+                    {
+                        if (longitude != Convert.ToDouble(coord[0].Value) && latitude != Convert.ToDouble(coord[1].Value))
+                        {
+                            longitude = Convert.ToDouble(coord[0].Value);
+                            latitude = Convert.ToDouble(coord[1].Value);
+                            polyline.Points.Add(new GeoPoint(Convert.ToDouble(coord[1].Value), Convert.ToDouble(coord[0].Value)));
+                        }
+                    }
             }
             return polyline;
         }

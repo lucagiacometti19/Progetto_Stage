@@ -33,7 +33,7 @@
                     </dxm:ListSourceDataAdapter>
                 </dxm:VectorLayer.Data>-->
 
-            <!--<dxm:VectorLayer>
+            <dxm:VectorLayer>
                 <dxm:VectorLayer.Data>
                     <dxm:ListSourceDataAdapter DataSource="{Binding PolylineCollection}">
                         <dxm:ListSourceDataAdapter.Mappings>
@@ -44,7 +44,7 @@
                         </dxm:ListSourceDataAdapter.ItemSettings>
                     </dxm:ListSourceDataAdapter>
                 </dxm:VectorLayer.Data>
-            </dxm:VectorLayer>-->
+            </dxm:VectorLayer>
             <!--<dxm:InformationLayer DataProvider="{Binding BingRouteData}" EnableHighlighting="False"/>-->
         </dxm:MapControl>
     </Grid>

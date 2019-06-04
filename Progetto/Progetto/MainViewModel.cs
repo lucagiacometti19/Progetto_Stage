@@ -104,11 +104,9 @@ namespace Progetto
             };
             if ((bool)open.ShowDialog())
             {
-                GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
+                //GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
                 RouteProvider rp = new RouteProvider();
-                MapPolyline poly = await rp.ConvertJson(new GeoPoint(46.126467,12.094046), new GeoPoint(43.7345,11.826281));
-                //CreatePolylines(GpxPointsCollection);
-                //CreateRoute(GpxPointsCollection);
+                PolylineCollection.Add(await rp.GetPolylineFromRouteProvider(new GeoPoint(46.126467,12.094046), new GeoPoint(43.7345,11.826281)));
             }
         }
     }
