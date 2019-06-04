@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
+using Gpx;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
@@ -41,32 +43,35 @@ namespace Gpx
                     }
                     if ((latitude != null) && (longitude != null) && time != null)
                     {
-                        GpxPoint point = new GpxPoint()
+                        GpxPoint point = new GpxPoint
                         {
                             Latitude = Convert.ToDouble(latitude),
                             Longitude = Convert.ToDouble(longitude),
                             Time = Convert.ToDateTime(time)
                         };
+
                         if (points.Count == 0)
                         {
                             points.Add(point);
                             time = null;
                             latitude = null;
                         }
-                        else if (Tolleranza(point, points[points.Count - 1], 0.05))
+                        else if (Tolleranza(point, points[points.Count - 1], 0.04))
                         {
                             points.Add(point);
                             time = null;
                             latitude = null;
                         }
+
+                        time = null;
+                        latitude = null;
                     }
                 }
             }
             return points;
         }
 
-
-        private static double CalcolaDistanza(GpxPoint p1, GpxPoint p2)
+        private static double CalcoloDistanza(GpxPoint p1, GpxPoint p2)
         {
             /* Definisce le costanti e le variabili */
             const double R = 6371;
@@ -87,12 +92,12 @@ namespace Gpx
             /* Calcola la distanza sulla superficie 
             terrestre R = ~6371 km */
             d = p * R;
-            return d;
+            return (d);
         }
 
         private static bool Tolleranza(GpxPoint p1, GpxPoint p2, double tolleranza)
         {
-            if (CalcolaDistanza(p1, p2) > tolleranza)
+            if(CalcoloDistanza(p1,p2) > tolleranza)
             {
                 return true;
             }

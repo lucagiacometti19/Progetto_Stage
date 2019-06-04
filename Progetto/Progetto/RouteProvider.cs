@@ -1,74 +1,92 @@
 ﻿using DevExpress.Xpf.Map;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace Progetto
 {
-    class RouteProvider
+    public class RouteProvider : InformationDataProviderBase
     {
-        //campi
-        private MapPolyline polyline = new MapPolyline()
+        protected new RouteData Data { get { return (RouteData)base.Data; } }
+        public IEnumerable<GeoPoint> Route { get { return Data.Route; } }
+        public override bool IsBusy
         {
-            Stroke = new SolidColorBrush(Color.FromRgb(0, 17, 255)),
-            IsGeodesic = true,
-            EnableHighlighting = false
-        };
-
-
-        //metodi
-        public async Task<dynamic> GetAsyncJsonObject(GeoPoint p1, GeoPoint p2)
-        {
-            string url = "http://routing.pointsecurity.it:8085/italy/routing?callback=itinero.JSONP.callbacks.route2&profile=car&loc=" +
-                p1.Latitude.ToString(new CultureInfo("en-US")) + "," + p1.Longitude.ToString(new CultureInfo("en-US")) + "&loc=" +
-                p2.Latitude.ToString(new CultureInfo("en-US")) + "," + p2.Longitude.ToString(new CultureInfo("en-US")) + "&sort=true";
-            using (HttpClient client = new HttpClient())
+            get
             {
-                client.BaseAddress = new Uri("http://routing.pointsecurity.it:8085/italy");
-                client.DefaultRequestHeaders.Accept.Clear();
-                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-                using (HttpResponseMessage responseMessage = await client.GetAsync(url))
-                {
-                    responseMessage.EnsureSuccessStatusCode();
-                    string json = await responseMessage.Content.ReadAsStringAsync();
-                    json = json.Substring(json.IndexOf('{'));
-                    json = json.Substring(0, json.Length - 2);
-                    return JsonConvert.DeserializeObject<dynamic>(json);
-                }
+                return false;
             }
         }
-
-        public async Task<MapPolyline> GetPolylineFromRouteProvider(GeoPoint p1, GeoPoint p2)
+        protected override IInformationData CreateData()
         {
-            dynamic jObject = await GetAsyncJsonObject(p1, p2);
-            double latitude = 0;
-            double longitude = 0;
-            foreach (var feature in jObject.features)
+            return new RouteData();
+        }
+        public void CalculateRoute(GeoPoint point1, GeoPoint point2)
+        {
+            Data.CalculateRoute(point1, point2);
+        }
+
+        public override void Cancel()
+        {
+            throw new NotImplementedException("This method has not been implemented");
+        }
+
+        protected override MapDependencyObject CreateObject()
+        {
+            return new RouteProvider();
+        }
+    }
+
+    public class RouteData : IInformationData
+    {
+        readonly List<GeoPoint> route = new List<GeoPoint>();
+        public List<GeoPoint> Route { get { return route; } }
+
+
+        void CalculateRouteCore(GeoPoint point1, GeoPoint point2)
+        {
+            this.route.Clear();
+            route.Add(point1);
+            route.Add(point2);
+        }
+
+        public void CalculateRoute(GeoPoint point1, GeoPoint point2)
+        {
+            CalculateRouteCore(point1, point2);
+            RaiseChanged();
+        }
+
+        protected void RaiseChanged()
+        {
+            OnDataResponse?.Invoke(this, CreateEventArgs());
+        }
+
+        public event EventHandler<RequestCompletedEventArgs> OnDataResponse;
+        RequestCompletedEventArgs CreateEventArgs()
+        {
+            MapItem[] items = new MapItem[3];
+            items[1] = new MapPushpin() { Location = route[0], Text = "A", Information = route[0].ToString() };
+            items[2] = new MapPushpin() { Location = route[route.Count - 1], Text = "B", Information = route[route.Count - 1].ToString() };
+            MapPolyline polyline = new MapPolyline()
             {
-                if (feature.geometry.type.Value == "Point") continue;
-                else foreach (var coord in feature.geometry.coordinates)
-                    {
-                        if (longitude != Convert.ToDouble(coord[0].Value) && latitude != Convert.ToDouble(coord[1].Value))
-                        {
-                            longitude = Convert.ToDouble(coord[0].Value);
-                            latitude = Convert.ToDouble(coord[1].Value);
-                            polyline.Points.Add(new GeoPoint(Convert.ToDouble(coord[1].Value), Convert.ToDouble(coord[0].Value)));
-                        }
-                    }
-            }
-            return polyline;
+                IsGeodesic = true,
+                Stroke = new SolidColorBrush() { Color = Colors.Red },
+                StrokeStyle = new StrokeStyle() { Thickness = 4 }
+            };
+            for (int i = 0; i < route.Count; i++)
+                polyline.Points.Add(route[i]);
+            items[0] = polyline;
+            return new RequestCompletedEventArgs(items, null, false, null);
         }
     }
 }
