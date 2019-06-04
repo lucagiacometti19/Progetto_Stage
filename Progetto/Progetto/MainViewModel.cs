@@ -75,23 +75,34 @@ namespace Progetto
             {
                 GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
 
-                for (int i = 0; i < GpxPointsCollection.Count - 1; i++)
-                {
-                    GeoPoint p1 = new GeoPoint() { Latitude = GpxPointsCollection[i].Latitude, Longitude = GpxPointsCollection[i].Longitude };
-                    GeoPoint p2 = new GeoPoint() { Latitude = GpxPointsCollection[i + 1].Latitude, Longitude = GpxPointsCollection[i + 1].Longitude };
-                    string request = HttpMessage.RequestAssembler(p1, p2);
-                    Console.WriteLine($"Request {i} ok");
-                    await HttpMessage.RunAsync(request);
-                    Console.WriteLine($"RnAsync {i} ok");
-                    Console.WriteLine(GpxPointsCollection.Count - 1);
-                    Console.WriteLine(i);
-                }
+                //for (int i = 0; i < GpxPointsCollection.Count - 1; i++)
+                //{
+                //    GeoPoint p1 = new GeoPoint() { Latitude = GpxPointsCollection[i].Latitude, Longitude = GpxPointsCollection[i].Longitude };
+                //    GeoPoint p2 = new GeoPoint() { Latitude = GpxPointsCollection[i + 1].Latitude, Longitude = GpxPointsCollection[i + 1].Longitude };
+                //    string request = HttpMessage.RequestAssembler(p1, p2);
+                //    Console.WriteLine($"Request {i} ok");
+                //    await HttpMessage.RunAsync(request);
+                //    Console.WriteLine($"RunAsync {i} ok");
+                //    Console.WriteLine(GpxPointsCollection.Count - 1);
+                //    Console.WriteLine(i);
+                //}
 
-                //GeoPoint p1 = new GeoPoint() { Latitude = 45.61472, Longitude = 12.1017983, };
-                //GeoPoint p2 = new GeoPoint() { Latitude = 43.70567,  Longitude = 10.9027883, };
-                //string request = HttpMessage.RequestAssembler(p1, p2);
-                //await HttpMessage.RunAsync(request);
+                //List<GeoPoint> 
+                //for (int i = 0; i < 24; i++)
+                //{
+
+                //}
+                GeoPoint p1 = new GeoPoint() { Latitude = 45.61472, Longitude = 12.1017983, };
+                GeoPoint p2 = new GeoPoint() { Latitude = 43.70567, Longitude = 10.9027883, };
+                GeoPoint p3 = new GeoPoint() { Latitude = 43.70561, Longitude = 10.9027881, };
+                GeoPoint p4 = new GeoPoint() { Latitude = 43.70562, Longitude = 10.9027882, };
+                GeoPoint p5 = new GeoPoint() { Latitude = 43.70563, Longitude = 10.902788, };
+                string request = HttpMessage.RequestAssembler(p1, p2, p3, p4, p5);
+                await HttpMessage.RunAsync(request);
+
+
                 GeoPointsCollection = HttpMessage.Point;
+                Console.WriteLine(GeoPointsCollection.Count);
                 CreatePolylines(GeoPointsCollection);
             }
         }

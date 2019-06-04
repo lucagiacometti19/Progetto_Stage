@@ -16,6 +16,7 @@ using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
 using System.Globalization;
 
+
 namespace Progetto
 {
     public class HttpMessage
@@ -64,7 +65,7 @@ namespace Progetto
             }
         }
 
-        public static string RequestAssembler(GeoPoint p1, GeoPoint p2)
+        public static string RequestAssembler(GeoPoint p1, GeoPoint p2, GeoPoint p3, GeoPoint p4, GeoPoint p5)
         {
             return "http://routing.pointsecurity.it:8085/italy/routing?callback=itinero.JSONP.callbacks.route2&profile=car&loc=" + 
                     p1.Latitude.ToString().Replace(',', '.') + 
@@ -73,7 +74,19 @@ namespace Progetto
                     "&loc=" + 
                     p2.Latitude.ToString().Replace(',', '.') +
                     "," + 
-                    p2.Longitude.ToString().Replace(',', '.') + 
+                    p2.Longitude.ToString().Replace(',', '.') +
+                    "&loc=" +
+                    p3.Latitude.ToString().Replace(',', '.') +
+                    "," +
+                    p3.Longitude.ToString().Replace(',', '.') +
+                    "&loc=" +
+                    p4.Latitude.ToString().Replace(',', '.') +
+                    "," +
+                    p4.Longitude.ToString().Replace(',', '.') +
+                    "&loc=" +
+                    p5.Latitude.ToString().Replace(',', '.') +
+                    "," +
+                    p5.Longitude.ToString().Replace(',', '.') +
                     "&sort=true";
         }
 
@@ -97,7 +110,6 @@ namespace Progetto
                         points.Remove(points[s]);
                     }
                 }
-
                 for (int x = 0; x < points.Count - 1; x = x + 2)
                 {
                     double lat = Convert.ToDouble(points[x + 1], CultureInfo.InvariantCulture);
