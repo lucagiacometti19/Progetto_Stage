@@ -48,11 +48,15 @@ namespace Progetto
                     Console.WriteLine(e.Message);
                 }
             }
+<<<<<<< HEAD
             Console.ReadLine();
+=======
+>>>>>>> master
         }
 
         public static async Task GetProductAsync(string path)
         {
+<<<<<<< HEAD
             Console.WriteLine("Tentativo di ricezione della richiesta");
             using (HttpResponseMessage response = await client.GetAsync(path))
             {
@@ -62,6 +66,13 @@ namespace Progetto
                     Console.WriteLine("Richiesta ricevuta correttamente");
                     string jsonResult = await response.Content.ReadAsStringAsync();
                     Console.WriteLine(jsonResult);
+=======
+            using (HttpResponseMessage response = await client.GetAsync(path))
+            {
+                if (response.IsSuccessStatusCode)
+                {
+                    string jsonResult = await response.Content.ReadAsStringAsync();
+>>>>>>> master
                     jsonResult = jsonResult.Replace("itinero.JSONP.callbacks.route2(", "");
                     jsonResult = jsonResult.Substring(0, (jsonResult.Length - 2));
                     ConvertFromJson(jsonResult);
@@ -69,6 +80,7 @@ namespace Progetto
             }
         }
 
+<<<<<<< HEAD
         public static string RequestAssembler(List<GeoPoint> g)
         {
             Console.WriteLine("Invio richiesta");
@@ -104,16 +116,46 @@ namespace Progetto
             //       "&sort=true";
 
             return request;
+=======
+        public static string RequestAssembler(GeoPoint p1, GeoPoint p2, GeoPoint p3, GeoPoint p4, GeoPoint p5)
+        {
+            return "http://routing.pointsecurity.it:8085/italy/routing?callback=itinero.JSONP.callbacks.route2&profile=car&loc=" + 
+                    p1.Latitude.ToString().Replace(',', '.') + 
+                    "," + 
+                    p1.Longitude.ToString().Replace(',', '.') + 
+                    "&loc=" + 
+                    p2.Latitude.ToString().Replace(',', '.') +
+                    "," + 
+                    p2.Longitude.ToString().Replace(',', '.') +
+                    "&loc=" +
+                    p3.Latitude.ToString().Replace(',', '.') +
+                    "," +
+                    p3.Longitude.ToString().Replace(',', '.') +
+                    "&loc=" +
+                    p4.Latitude.ToString().Replace(',', '.') +
+                    "," +
+                    p4.Longitude.ToString().Replace(',', '.') +
+                    "&loc=" +
+                    p5.Latitude.ToString().Replace(',', '.') +
+                    "," +
+                    p5.Longitude.ToString().Replace(',', '.') +
+                    "&sort=true";
+>>>>>>> master
         }
 
         public static void ConvertFromJson(string input)
         {
+<<<<<<< HEAD
             Console.WriteLine("Lettura Json");
 
             JToken contourManifest = JObject.Parse(input);
             JToken features = contourManifest.SelectToken("features");
             double lat = 0;
             double lon = 0;
+=======
+            JToken contourManifest = JObject.Parse(input);
+            JToken features = contourManifest.SelectToken("features");
+>>>>>>> master
 
             for (int i = 0; i < features.Count(); i++)
             {
@@ -130,6 +172,7 @@ namespace Progetto
                         points.Remove(points[s]);
                     }
                 }
+<<<<<<< HEAD
 
 
                 for (int x = 0; x < points.Count - 1; x = x + 2)
@@ -149,6 +192,20 @@ namespace Progetto
             }
             Console.WriteLine("Fine lettura");
 
+=======
+                for (int x = 0; x < points.Count - 1; x = x + 2)
+                {
+                    double lat = Convert.ToDouble(points[x + 1], CultureInfo.InvariantCulture);
+                    double lon = Convert.ToDouble(points[x], CultureInfo.InvariantCulture);
+
+                    Point.Add(new GeoPoint()
+                    {
+                        Longitude = lon,
+                        Latitude = lat
+                    });
+                }
+            }
+>>>>>>> master
         }
     }
 }
