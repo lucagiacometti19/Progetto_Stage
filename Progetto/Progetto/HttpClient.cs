@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using DevExpress.Xpf.Map;
+﻿using DevExpress.Xpf.Map;
 using Gpx;
-using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Web.Script.Serialization;
 
 
 namespace Progetto
@@ -48,15 +48,11 @@ namespace Progetto
                     Console.WriteLine(e.Message);
                 }
             }
-<<<<<<< HEAD
             Console.ReadLine();
-=======
->>>>>>> master
         }
 
         public static async Task GetProductAsync(string path)
         {
-<<<<<<< HEAD
             Console.WriteLine("Tentativo di ricezione della richiesta");
             using (HttpResponseMessage response = await client.GetAsync(path))
             {
@@ -66,13 +62,6 @@ namespace Progetto
                     Console.WriteLine("Richiesta ricevuta correttamente");
                     string jsonResult = await response.Content.ReadAsStringAsync();
                     Console.WriteLine(jsonResult);
-=======
-            using (HttpResponseMessage response = await client.GetAsync(path))
-            {
-                if (response.IsSuccessStatusCode)
-                {
-                    string jsonResult = await response.Content.ReadAsStringAsync();
->>>>>>> master
                     jsonResult = jsonResult.Replace("itinero.JSONP.callbacks.route2(", "");
                     jsonResult = jsonResult.Substring(0, (jsonResult.Length - 2));
                     ConvertFromJson(jsonResult);
@@ -80,13 +69,12 @@ namespace Progetto
             }
         }
 
-<<<<<<< HEAD
         public static string RequestAssembler(List<GeoPoint> g)
         {
             Console.WriteLine("Invio richiesta");
             string request = "http://routing.pointsecurity.it:8085/italy/routing?callback=itinero.JSONP.callbacks.route2&profile=car";
 
-            foreach ( GeoPoint p in g)
+            foreach (GeoPoint p in g)
             {
                 request += "&loc=" + p.Latitude.ToString().Replace(',', '.') + "," + p.Longitude.ToString().Replace(',', '.');
             }
@@ -116,46 +104,16 @@ namespace Progetto
             //       "&sort=true";
 
             return request;
-=======
-        public static string RequestAssembler(GeoPoint p1, GeoPoint p2, GeoPoint p3, GeoPoint p4, GeoPoint p5)
-        {
-            return "http://routing.pointsecurity.it:8085/italy/routing?callback=itinero.JSONP.callbacks.route2&profile=car&loc=" + 
-                    p1.Latitude.ToString().Replace(',', '.') + 
-                    "," + 
-                    p1.Longitude.ToString().Replace(',', '.') + 
-                    "&loc=" + 
-                    p2.Latitude.ToString().Replace(',', '.') +
-                    "," + 
-                    p2.Longitude.ToString().Replace(',', '.') +
-                    "&loc=" +
-                    p3.Latitude.ToString().Replace(',', '.') +
-                    "," +
-                    p3.Longitude.ToString().Replace(',', '.') +
-                    "&loc=" +
-                    p4.Latitude.ToString().Replace(',', '.') +
-                    "," +
-                    p4.Longitude.ToString().Replace(',', '.') +
-                    "&loc=" +
-                    p5.Latitude.ToString().Replace(',', '.') +
-                    "," +
-                    p5.Longitude.ToString().Replace(',', '.') +
-                    "&sort=true";
->>>>>>> master
         }
 
         public static void ConvertFromJson(string input)
         {
-<<<<<<< HEAD
             Console.WriteLine("Lettura Json");
 
             JToken contourManifest = JObject.Parse(input);
             JToken features = contourManifest.SelectToken("features");
             double lat = 0;
             double lon = 0;
-=======
-            JToken contourManifest = JObject.Parse(input);
-            JToken features = contourManifest.SelectToken("features");
->>>>>>> master
 
             for (int i = 0; i < features.Count(); i++)
             {
@@ -172,40 +130,25 @@ namespace Progetto
                         points.Remove(points[s]);
                     }
                 }
-<<<<<<< HEAD
 
 
                 for (int x = 0; x < points.Count - 1; x = x + 2)
                 {
                     //if(lat != Convert.ToDouble(points[x + 1]) && lon != Convert.ToDouble(points[x]))
                     //{
-                        lat = Convert.ToDouble(points[x + 1], CultureInfo.InvariantCulture);
-                        lon = Convert.ToDouble(points[x], CultureInfo.InvariantCulture);
-
-                        Point.Add(new GeoPoint()
-                        {
-                            Longitude = lon,
-                            Latitude = lat
-                        });
-                    //}
-                }
-            }
-            Console.WriteLine("Fine lettura");
-
-=======
-                for (int x = 0; x < points.Count - 1; x = x + 2)
-                {
-                    double lat = Convert.ToDouble(points[x + 1], CultureInfo.InvariantCulture);
-                    double lon = Convert.ToDouble(points[x], CultureInfo.InvariantCulture);
+                    lat = Convert.ToDouble(points[x + 1], CultureInfo.InvariantCulture);
+                    lon = Convert.ToDouble(points[x], CultureInfo.InvariantCulture);
 
                     Point.Add(new GeoPoint()
                     {
                         Longitude = lon,
                         Latitude = lat
                     });
+                    //}
                 }
             }
->>>>>>> master
+            Console.WriteLine("Fine lettura");
+
         }
     }
 }
