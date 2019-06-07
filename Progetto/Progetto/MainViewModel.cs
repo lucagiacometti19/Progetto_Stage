@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -78,51 +79,41 @@ namespace Progetto
             if ((bool)open.ShowDialog())
             {
                 GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
-                //for (int i = 0; i < GpxPointsCollection.Count - 1; i++)
-                //{
-                //    GeoPoint p1 = new GeoPoint() { Latitude = GpxPointsCollection[i].Latitude, Longitude = GpxPointsCollection[i].Longitude };
-                //    GeoPoint p2 = new GeoPoint() { Latitude = GpxPointsCollection[i + 1].Latitude, Longitude = GpxPointsCollection[i + 1].Longitude };
-                //    string request = HttpMessage.RequestAssembler(p1, p2);
-                //    Console.WriteLine($"Request {i} ok");
-                //    await HttpMessage.RunAsync(request);
-                //    Console.WriteLine($"RunAsync {i} ok");
-                //    Console.WriteLine(GpxPointsCollection.Count - 1);
-                //    Console.WriteLine(i);
-                //}
-                for (int c = 0; c < GpxPointsCollection.Count; c = c + 25)
+                for (int c = 0; c < GpxPointsCollection.Count; c = c + 35)
                 {
                     List<GeoPoint> g = new List<GeoPoint>();
-                    for (int i = 0; (i < 25) && (i + c) < GpxPointsCollection.Count; i++)
+                    for (int i = 0; (i < 35) && (i + c) < GpxPointsCollection.Count; i++)
                     {
                         GeoPoint p = null;
-                        if (c < 25)
+                        if (c < 35)
                         {
                             p = new GeoPoint() { Latitude = GpxPointsCollection[i].Latitude, Longitude = GpxPointsCollection[i].Longitude };
                         }
-                        else if (c >= 25)
+                        else if (c >= 35)
                         {
                             p = new GeoPoint() { Latitude = GpxPointsCollection[i + c].Latitude, Longitude = GpxPointsCollection[i + c].Longitude };
                         }
                         g.Add(p);
                     }
-                    string request = HttpMessage.RequestAssembler(g);
+                    HttpMessage.RequestAssembler(g);
                     Console.WriteLine($"Request {c} ok");
-                    await HttpMessage.RunAsync(request);
-                    Console.WriteLine($"RunAsync {c} ok");
-                    Console.WriteLine(GpxPointsCollection.Count - 1);
-                    Console.WriteLine(c);
                 }
 
-                //for (double i = 0; i < 24; i++)
-                //{
-                //    double x = i * 0.001;
-                //    double la = (45.61472 + x);
-                //    double lo = (10.1017983 + x);
+                int c2 = 0;
+                foreach (string s in HttpMessage.Requests)
+                {
+                    await HttpMessage.RunAsync(s);
+                    Console.WriteLine($"RunAsync {c2} ok");
+                    c2++;
+                }
 
-                //    g.Add(new GeoPoint() { Latitude = la, Longitude = lo, });
-                //}
-                //string request = HttpMessage.RequestAssembler(g);
-                //await HttpMessage.RunAsync(request);
+                int c3 = 0;
+                foreach (string s in HttpMessage.Results)
+                {
+                    HttpMessage.ConvertFromJson(s);
+                    Console.WriteLine($"RunAsync {c3} ok");
+                    c3++;
+                }
 
                 GeoPointsCollection = HttpMessage.Point;
                 Console.WriteLine(GeoPointsCollection.Count);
