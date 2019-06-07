@@ -14,14 +14,19 @@ namespace Gpx
         public static async Task<ObservableCollection<GpxPoint>> ReadFromXml(string filePath)
         {
             ObservableCollection<GpxPoint> points = new ObservableCollection<GpxPoint>();
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.Async = true;
+            XmlReaderSettings settings = new XmlReaderSettings
+            {
+                Async = true
+            };
 
             using (XmlReader reader = XmlReader.Create(new FileStream(filePath, FileMode.Open), settings))
             {
                 DateTime? time = null;
-                double? latitude = null;
-                double? longitude = null;
+                double? latitude = null, longitude = null;
+                double latTot = 0, lonTot = 0;
+                GpxPoint p0 = new GpxPoint();
+                bool Esegui = true;
+                int cont = 1;
                 while (await reader.ReadAsync())
                 {
                     switch (reader.NodeType)
@@ -41,28 +46,65 @@ namespace Gpx
                         default:
                             break;
                     }
+
                     if ((latitude != null) && (longitude != null) && time != null)
                     {
-                        GpxPoint point = new GpxPoint
+                        GpxPoint p1 = new GpxPoint()
                         {
                             Latitude = Convert.ToDouble(latitude),
                             Longitude = Convert.ToDouble(longitude),
-                            Time = Convert.ToDateTime(time)
+                            Start = Convert.ToDateTime(time),
+                            Finish = Convert.ToDateTime(time)
                         };
 
                         if (points.Count == 0)
                         {
-                            points.Add(point);
-                            time = null;
-                            latitude = null;
+                            points.Add(p1);
+                            p0 = points[points.Count - 1];
+                            latTot = p1.Latitude;
+                            lonTot = p1.Longitude;
                         }
-                        else if (Tolleranza(point, points[points.Count - 1], 0.04))
+                        else
                         {
-                            points.Add(point);
-                            time = null;
-                            latitude = null;
-                        }
+                            TimeSpan t = p0.Start - p1.Start;
 
+                            /* Converte i gradi in radianti e calcola l'angolo compreso fi */
+                            double lat_alfa = Math.PI * p0.Latitude / 180;
+                            double lat_beta = Math.PI * p1.Latitude / 180;
+                            double lon_alfa = Math.PI * p0.Longitude / 180;
+                            double lon_beta = Math.PI * p1.Longitude / 180;
+                            double fi = Math.Abs(lon_alfa - lon_beta);
+                            /* Calcola il terzo lato del triangolo sferico */
+                            double p = Math.Acos(Math.Sin(lat_beta) * Math.Sin(lat_alfa) +
+                              Math.Cos(lat_beta) * Math.Cos(lat_alfa) * Math.Cos(fi));
+
+                            p1.Speed = p * 6371 / t.TotalHours;
+
+                            latTot += p1.Latitude;
+                            lonTot += p1.Longitude;
+                            cont++;
+
+                            if (p1.Speed > 3)
+                            {
+                                p1.Latitude = Esegui ? p1.Latitude : (latTot + p1.Latitude) / (cont + 1);
+                                p1.Longitude = Esegui ? p1.Longitude : (lonTot + p1.Longitude) / (cont + 1);
+                                p1.Finish = points[points.Count - 1].Start;
+                                points.Add(p1);
+                                cont = 1;
+                                latTot = p1.Latitude;
+                                lonTot = p1.Longitude;
+                                p0 = points[points.Count - 1];
+                                Esegui = true;
+                            }
+                            else
+                            {
+                                latTot += p1.Latitude;
+                                lonTot += p1.Longitude;
+                                cont++;
+                                p0 = p1;
+                                Esegui = false;
+                            }
+                        }
                         time = null;
                         latitude = null;
                     }
