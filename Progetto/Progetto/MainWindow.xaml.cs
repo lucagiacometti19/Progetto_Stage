@@ -1,4 +1,7 @@
-﻿using DevExpress.Xpf.Map;
+﻿using DevExpress.Map;
+using DevExpress.Map.Native;
+using DevExpress.Xpf.Map;
+using DevExpress.XtraMap;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +28,18 @@ namespace Progetto
         {
             InitializeComponent();
             DataContext = new MainViewModel();
+        }
+
+
+
+        public void Mouse_Click(object sender, MouseButtonEventArgs e)
+        {
+            CoordPoint point = Map_Control.ScreenPointToCoordPoint(e.GetPosition(this));
+            
+
+
+
+
         }
     }
 }

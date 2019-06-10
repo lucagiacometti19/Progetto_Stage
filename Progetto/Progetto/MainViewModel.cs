@@ -1,4 +1,5 @@
-﻿using DevExpress.Mvvm;
+﻿using DevExpress.Map;
+using DevExpress.Mvvm;
 using DevExpress.Xpf.Map;
 using Gpx;
 using Microsoft.Win32;
@@ -7,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Net.Http;
@@ -23,7 +25,7 @@ namespace Progetto
         public MainViewModel()
         {
             GpxPointsCollection = new ObservableCollection<GpxPoint>();
-            PolylineCollection = new ObservableCollection<MapPolyline>();
+            //PolylineCollection = new ObservableCollection<MapPolyline>();
         }
 
         private ObservableCollection<GpxPoint> gpxPointsCollection;
@@ -40,27 +42,56 @@ namespace Progetto
             set { geoPointsCollection = value; RaisePropertyChanged(); }
         }
 
-        private ObservableCollection<MapPolyline> polylineCollection;
-        public ObservableCollection<MapPolyline> PolylineCollection
+        //private ObservableCollection<MapPolyline> polylineCollection;
+        //public ObservableCollection<MapPolyline> PolylineCollection
+        //{
+        //    get { return polylineCollection; }
+        //    set { polylineCollection = value; RaisePropertyChanged(); }
+        //}
+
+
+        private ObservableCollection<MapItem> mapItems = new ObservableCollection<MapItem>();
+
+        public ObservableCollection<MapItem> MapItems 
         {
-            get { return polylineCollection; }
-            set { polylineCollection = value; RaisePropertyChanged(); }
+            get { return mapItems; }
+            set { mapItems = value; }
         }
 
-        private void CreatePolylines(ObservableCollection<GeoPoint> points)
-        {
-            Console.WriteLine("Creando la polilinea..");
 
-            MapPolyline pl = new MapPolyline();
-            pl.Stroke = new SolidColorBrush(Color.FromRgb(0, 17, 255));
-            foreach (GeoPoint px in points)
+
+
+        public void CreateRoute(ObservableCollection<GpxPoint> gpxPoints)
+        {
+            CustomRouteProvider RouteProvider = new CustomRouteProvider();
+            //infoLayer.DataProvider = provider;
+            RouteProvider.CalculateRoute(gpxPoints);
+            foreach (MapItem m in CustomRouteData.Items)
             {
-                pl.Points.Add(px);
+                MapItems.Add(m);
             }
-            PolylineCollection.Add(pl);
-            Console.WriteLine("Polilinea creata con successo");
-
         }
+
+
+
+
+        Stopwatch timerRequest = new Stopwatch();
+        Stopwatch timerTot = new Stopwatch();
+
+        //private void CreatePolylines(ObservableCollection<GeoPoint> points)
+        //{
+        //    Console.WriteLine("Creando la polilinea..");
+
+        //    MapPolyline pl = new MapPolyline();
+        //    pl.Stroke = new SolidColorBrush(Color.FromRgb(0, 17, 255));
+        //    foreach (GeoPoint px in points)
+        //    {
+        //        pl.Points.Add(px);
+        //    }
+        //    PolylineCollection.Add(pl);
+        //    Console.WriteLine("Polilinea creata con successo");
+
+        //}
 
 
         private DelegateCommand importCommand;
@@ -68,7 +99,7 @@ namespace Progetto
         {
             get { return importCommand ?? (importCommand = new DelegateCommand(Import)); }
         }
-
+        
         private async void Import()
         {
             OpenFileDialog open = new OpenFileDialog
@@ -78,46 +109,59 @@ namespace Progetto
             };
             if ((bool)open.ShowDialog())
             {
+                //timerTot.Start();
+                //int n = 0;
                 GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
-                for (int c = 0; c < GpxPointsCollection.Count; c = c + 35)
-                {
-                    List<GeoPoint> g = new List<GeoPoint>();
-                    for (int i = 0; (i < 35) && (i + c) < GpxPointsCollection.Count; i++)
-                    {
-                        GeoPoint p = null;
-                        if (c < 35)
-                        {
-                            p = new GeoPoint() { Latitude = GpxPointsCollection[i].Latitude, Longitude = GpxPointsCollection[i].Longitude };
-                        }
-                        else if (c >= 35)
-                        {
-                            p = new GeoPoint() { Latitude = GpxPointsCollection[i + c].Latitude, Longitude = GpxPointsCollection[i + c].Longitude };
-                        }
-                        g.Add(p);
-                    }
-                    HttpMessage.RequestAssembler(g);
-                    Console.WriteLine($"Request {c} ok");
-                }
+                
+                //int pointForRequest = 75;
+                //for (int c = 0; c < GpxPointsCollection.Count; c += pointForRequest)
+                //{
+                //    List<GeoPoint> g = new List<GeoPoint>();
+                //    for (int i = 0; (i < pointForRequest) && (i + c) < GpxPointsCollection.Count; i += 4)
+                //    {
+                //        GeoPoint p = null;
+                //        if (c < pointForRequest)
+                //        {
+                //            p = new GeoPoint() { Latitude = GpxPointsCollection[i].Latitude, Longitude = GpxPointsCollection[i].Longitude };
+                //        }
+                //        else if (c >= pointForRequest)
+                //        {
+                //            p = new GeoPoint() { Latitude = GpxPointsCollection[i + c].Latitude, Longitude = GpxPointsCollection[i + c].Longitude };
+                //        }
+                //        g.Add(p);
+                //    }
+                //    HttpMessage.RequestAssembler(g);
+                //    Console.WriteLine($"Request {c} ok");
+                //    Console.WriteLine($"Request {n} ok");
+                //    n++;
+                //}
 
-                int c2 = 0;
-                foreach (string s in HttpMessage.Requests)
-                {
-                    await HttpMessage.RunAsync(s);
-                    Console.WriteLine($"RunAsync {c2} ok");
-                    c2++;
-                }
+                //timerRequest.Start();
+                //int c2 = 0;
+                //foreach (string s in HttpMessage.Requests)
+                //{
+                //    await HttpMessage.RunAsync(s);
+                //    Console.WriteLine($"RunAsync {c2} ok");
+                //    c2++;
+                //}
+                //timerRequest.Stop();
+                //Console.WriteLine($"tempo totale ricezione: {timerRequest.ElapsedMilliseconds}");
 
-                int c3 = 0;
-                foreach (string s in HttpMessage.Results)
-                {
-                    HttpMessage.ConvertFromJson(s);
-                    Console.WriteLine($"RunAsync {c3} ok");
-                    c3++;
-                }
+                //int c3 = 0;
+                //foreach (string s in HttpMessage.Results)
+                //{
+                //    HttpMessage.ConvertFromJson(s);
+                //    Console.WriteLine($"Json {c3} ok");
+                //    c3++;
+                //}
 
-                GeoPointsCollection = HttpMessage.Point;
-                Console.WriteLine(GeoPointsCollection.Count);
-                CreatePolylines(GeoPointsCollection);
+                //GeoPointsCollection = HttpMessage.Point;
+                //Console.WriteLine(GeoPointsCollection.Count);
+                //CreatePolylines(GeoPointsCollection);
+
+                CreateRoute(gpxPointsCollection);
+                //timerTot.Stop();
+                Console.WriteLine($"Tempo tot: { timerTot.ElapsedMilliseconds }");
             }
         }
     }

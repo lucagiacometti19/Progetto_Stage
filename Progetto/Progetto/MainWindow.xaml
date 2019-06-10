@@ -23,19 +23,16 @@
             <!--<dxm:InformationLayer DataProvider="{Binding RouteDataProvider}" EnableHighlighting="False"/>-->
         <!--</dxm:MapControl>-->
 
-        <dxm:MapControl Grid.Row="1" ZoomLevel="4">
-        <dxm:ImageLayer>
-            <dxm:OpenStreetMapDataProvider/>
-        </dxm:ImageLayer>
+        <dxm:MapControl x:Name ="Map_Control" Grid.Row="1" ZoomLevel="4" MouseDoubleClick="Mouse_Click">
+            <dxm:ImageLayer>
+                <dxm:OpenStreetMapDataProvider/>
+            </dxm:ImageLayer>
             <dxm:VectorLayer ShapeFill="Blue" ShapeStroke="Blue">
                 <dxm:VectorLayer.Data>
-                    <dxm:ListSourceDataAdapter DataSource="{Binding PolylineCollection}">
-                        <dxm:ListSourceDataAdapter.Mappings>
+                    <dxm:ListSourceDataAdapter DataSource="{Binding MapItems}">
+                        <!--<dxm:ListSourceDataAdapter.Mappings>
                             <dxm:MapItemMappingInfo Latitude="Latitude" Longitude="Longitude"/>
-                        </dxm:ListSourceDataAdapter.Mappings>
-                        <dxm:ListSourceDataAdapter.ItemSettings>
-                            <dxm:MapPolylineSettings />
-                        </dxm:ListSourceDataAdapter.ItemSettings>
+                        </dxm:ListSourceDataAdapter.Mappings>-->
                     </dxm:ListSourceDataAdapter>
                 </dxm:VectorLayer.Data>
             </dxm:VectorLayer>

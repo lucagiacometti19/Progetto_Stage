@@ -59,23 +59,14 @@ namespace Progetto
 
         public static async Task RunAsync(string p)
         {
-            HttpClientHandler httpClientHandler = new HttpClientHandler()
-            {
-                Proxy = null,
-                PreAuthenticate = true,
-                UseDefaultCredentials = false,
-            };
-            using (client = new HttpClient(httpClientHandler))
+            using(client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://routing.pointsecurity.it:8085/italy");
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 try
                 {
-                    HttpRequestMessage rm = new HttpRequestMessage(new HttpMethod("GET"), p);
-                    var response = await client.SendAsync(rm);
-                    await GetProductAsync(Convert.ToString(p));
-
+                    await GetProductAsync(p);
                 }
                 catch (Exception e)
                 {
