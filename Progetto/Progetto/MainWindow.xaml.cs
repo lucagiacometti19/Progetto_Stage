@@ -1,4 +1,6 @@
-﻿using DevExpress.Xpf.Map;
+﻿using DevExpress.Map;
+using DevExpress.Map.Native;
+using DevExpress.Xpf.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +23,20 @@ namespace Progetto
     /// </summary>
     public partial class MainWindow : Window
     {
+        private MainViewModel main;
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new MainViewModel();
+            main = new MainViewModel();
+            DataContext = main;
+        }
+
+        private void MapControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            MapControl controlMap = sender as MapControl;
+            Point position = e.GetPosition(controlMap);
+            GeoPoint point = vector.ScreenToGeoPoint(position);
+            main.CreateMapPushpin(point);
         }
     }
 }

@@ -22,7 +22,6 @@ namespace Progetto
     public class HttpMessage
     {
         public static HttpClient client;
-        public static object EntityUtils { get; private set; }
 
         private static ObservableCollection<GeoPoint> point = new ObservableCollection<GeoPoint>();
         public static ObservableCollection<GeoPoint> Point
@@ -31,10 +30,36 @@ namespace Progetto
             set { point = value; }
         }
 
+        private static ObservableCollection<string> requests = new ObservableCollection<string>();
+        public static ObservableCollection<string> Requests
+        {
+            get { return requests; }
+            set { requests = value; }
+        }
+
+        private static ObservableCollection<string> results = new ObservableCollection<string>();
+        public static ObservableCollection<string> Results
+        {
+            get { return results; }
+            set { results = value; }
+        }
+
+        public static void RequestAssembler(List<GeoPoint> g)
+        {
+            string request = "http://routing.pointsecurity.it:8085/italy/routing?callback=itinero.JSONP.callbacks.route2&profile=car";
+
+            foreach (GeoPoint p in g)
+            {
+                request += "&loc=" + p.Latitude.ToString().Replace(',', '.') + "," + p.Longitude.ToString().Replace(',', '.');
+            }
+            request += "&sort=true";
+            Requests.Add(request);
+        }
+
+
         public static async Task RunAsync(string p)
         {
-            // Update port # in the following line.
-            using (client = new HttpClient())
+            using(client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://routing.pointsecurity.it:8085/italy");
                 client.DefaultRequestHeaders.Accept.Clear();
@@ -57,60 +82,23 @@ namespace Progetto
             using (HttpResponseMessage response = await client.GetAsync(path))
             {
                 Console.WriteLine("Ricezione richiesta");
-                if (response.IsSuccessStatusCode)
+                response.EnsureSuccessStatusCode();
+                using (HttpContent content = response.Content)
                 {
                     Console.WriteLine("Richiesta ricevuta correttamente");
-                    string jsonResult = await response.Content.ReadAsStringAsync();
+                    string jsonResult = await content.ReadAsStringAsync();
                     Console.WriteLine(jsonResult);
-                    jsonResult = jsonResult.Replace("itinero.JSONP.callbacks.route2(", "");
-                    jsonResult = jsonResult.Substring(0, (jsonResult.Length - 2));
-                    ConvertFromJson(jsonResult);
+                    Results.Add(jsonResult);
                 }
             }
-        }
-
-        public static string RequestAssembler(List<GeoPoint> g)
-        {
-            Console.WriteLine("Invio richiesta");
-            string request = "http://routing.pointsecurity.it:8085/italy/routing?callback=itinero.JSONP.callbacks.route2&profile=car";
-
-            foreach (GeoPoint p in g)
-            {
-                request += "&loc=" + p.Latitude.ToString().Replace(',', '.') + "," + p.Longitude.ToString().Replace(',', '.');
-            }
-            request += "&sort=true";
-
-            //"http://routing.pointsecurity.it:8085/italy/routing?callback=itinero.JSONP.callbacks.route2&profile=car" + 
-            //       "&loc=" +
-            //       p1.Latitude.ToString().Replace(',', '.') + "," + p1.Longitude.ToString().Replace(',', '.') + 
-            //       "&loc=" + 
-            //       p2.Latitude.ToString().Replace(',', '.') + "," + p2.Longitude.ToString().Replace(',', '.') +
-            //       "&loc=" +
-            //       p3.Latitude.ToString().Replace(',', '.') + "," + p3.Longitude.ToString().Replace(',', '.') +
-            //       "&loc=" +
-            //       p4.Latitude.ToString().Replace(',', '.') + "," + p4.Longitude.ToString().Replace(',', '.') +
-            //       "&loc=" +
-            //       p5.Latitude.ToString().Replace(',', '.') +  "," + p5.Longitude.ToString().Replace(',', '.') +
-            //       "&loc=" +
-            //       p6.Latitude.ToString().Replace(',', '.') + "," + p6.Longitude.ToString().Replace(',', '.') +
-            //       "&loc=" +
-            //       p7.Latitude.ToString().Replace(',', '.') + "," + p7.Longitude.ToString().Replace(',', '.') +
-            //       "&loc=" +
-            //       p8.Latitude.ToString().Replace(',', '.') + "," + p8.Longitude.ToString().Replace(',', '.') +
-            //       "&loc=" +
-            //       p9.Latitude.ToString().Replace(',', '.') + "," + p9.Longitude.ToString().Replace(',', '.') +
-            //       "&loc=" +
-            //       p10.Latitude.ToString().Replace(',', '.') + "," + p10.Longitude.ToString().Replace(',', '.') +
-            //       "&sort=true";
-
-            return request;
         }
 
         public static void ConvertFromJson(string input)
         {
             Console.WriteLine("Lettura Json");
-
-            JToken contourManifest = JObject.Parse(input);
+            string jsResult1 = input.Replace("itinero.JSONP.callbacks.route2(", "");
+            string jsResult2 = jsResult1.Substring(0, (jsResult1.Length - 2));
+            JToken contourManifest = JObject.Parse(jsResult2);
             JToken features = contourManifest.SelectToken("features");
             double lat = 0;
             double lon = 0;
@@ -148,7 +136,61 @@ namespace Progetto
                 }
             }
             Console.WriteLine("Fine lettura");
+        }
 
+
+
+        public static async Task HttpRouteRequest(ObservableCollection<GpxPoint> points)
+        {
+            int n = 0;
+            int pointForRequest = 75;
+            for (int c = 0; c < points.Count; c += pointForRequest)
+            {
+                List<GeoPoint> g = new List<GeoPoint>();
+                for (int i = 0; (i < pointForRequest) && (i + c) < points.Count; i++)
+                {
+                    GeoPoint p = null;
+                    if (c < pointForRequest)
+                    {
+                        p = new GeoPoint() { Latitude = points[i].Latitude, Longitude = points[i].Longitude };
+                    }
+                    else if (c >= pointForRequest)
+                    {
+                        p = new GeoPoint() { Latitude = points[i + c].Latitude, Longitude = points[i + c].Longitude };
+                    }
+                    g.Add(p);
+                }
+                RequestAssembler(g);
+                Console.WriteLine($"Request {c} ok");
+                Console.WriteLine($"Request {n} ok");
+                n++;
+            }
+
+
+            int c2 = 0;
+            foreach (string s in Requests)
+            {
+                await RunAsync(s);
+                Console.WriteLine($"RunAsync {c2} ok");
+                c2++;
+            }
+
+
+            int c3 = 0;
+            foreach (string s in Results)
+            {
+                ConvertFromJson(s);
+                Console.WriteLine($"Json {c3} ok");
+                c3++;
+            }
+        }
+
+
+        public static void Reset()
+        {
+            Point = new ObservableCollection<GeoPoint>();
+            Requests = new ObservableCollection<string>();
+            Results = new ObservableCollection<string>();
         }
     }
 }
