@@ -28,9 +28,9 @@ namespace Progetto
             return new CustomRouteData();
         }
 
-        public void CalculateRoute(ObservableCollection<GpxPoint> list)
+        public async Task CalculateRoute(ObservableCollection<GpxPoint> list)
         {
-            Data.CalculateRoute(list);
+            await Data.CalculateRoute(list);
         }
 
         public override void Cancel()
@@ -54,9 +54,10 @@ namespace Progetto
         public event EventHandler<RequestCompletedEventArgs> OnDataResponse;
         RequestCompletedEventArgs CreateEventArgs()
         {
-            Items = new MapItem[3];
-            Items[1] = new MapPushpin() { Location = route[0], Text = "A", Information = route[0].ToString() };
-            Items[2] = new MapPushpin() { Location = route[route.Count - 1], Text = "B", Information = route[route.Count - 1].ToString() };
+            Items = new MapItem[1];
+            //Items[1] = new MapPushpin() { Location = route[0], Text = "A", Information = route[0].ToString() };
+            //Items[2] = new MapPushpin() { Location = route[route.Count - 1], Text = "B", Information = route[route.Count - 1].ToString() };
+
             MapPolyline polyline = new MapPolyline()
             {
                 IsGeodesic = true,
@@ -77,18 +78,23 @@ namespace Progetto
                 OnDataResponse(this, CreateEventArgs());
         }
 
-        public void CalculateRoute(ObservableCollection<GpxPoint> list)
+        public async Task CalculateRoute(ObservableCollection<GpxPoint> list)
         {
-            CalculateRouteCore(list);
+            await CalculateRouteCore(list);
             RaiseChanged();
         }
 
-        void CalculateRouteCore(ObservableCollection<GpxPoint> list)
+        async Task CalculateRouteCore(ObservableCollection<GpxPoint> list)
         {
             this.route.Clear();
-            foreach(GpxPoint p in list)
+            //foreach (GpxPoint p in list)
+            //{
+            //    route.Add(new GeoPoint() { Latitude = p.Latitude, Longitude = p.Longitude });
+            //}
+            await HttpMessage.HttpRouteRequest(list);
+            foreach (GeoPoint p in HttpMessage.Point)
             {
-                route.Add(new GeoPoint() { Latitude = p.Latitude, Longitude = p.Longitude });
+                route.Add(p);
             }
         }
     }

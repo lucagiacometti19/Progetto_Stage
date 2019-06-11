@@ -179,28 +179,32 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\brune\\.nuget\\packages\\": {},
+    "C:\\Users\\utente\\.nuget\\packages\\": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Stage\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj",
+      "projectUniqueName": "C:\\Users\\utente\\Desktop\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj",
       "projectName": "Gpx",
-      "projectPath": "D:\\Stage\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj",
-      "packagesPath": "C:\\Users\\brune\\.nuget\\packages\\",
-      "outputPath": "D:\\Stage\\Progetto_Stage\\Progetto\\Gpx\\obj\\",
+      "projectPath": "C:\\Users\\utente\\Desktop\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj",
+      "packagesPath": "C:\\Users\\utente\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\utente\\Desktop\\Progetto_Stage\\Progetto\\Gpx\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\brune\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\utente\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 19.1.config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
         "netstandard2.0"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\DevExpress 19.1\\Components\\System\\Components\\Packages": {},
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {

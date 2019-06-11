@@ -23,11 +23,11 @@
             <!--<dxm:InformationLayer DataProvider="{Binding RouteDataProvider}" EnableHighlighting="False"/>-->
         <!--</dxm:MapControl>-->
 
-        <dxm:MapControl x:Name ="Map_Control" Grid.Row="1" ZoomLevel="4" MouseDoubleClick="Mouse_Click">
+        <dxm:MapControl Grid.Row="1" ZoomLevel="4" MouseDoubleClick="MapControl_MouseDoubleClick">
             <dxm:ImageLayer>
                 <dxm:OpenStreetMapDataProvider/>
             </dxm:ImageLayer>
-            <dxm:VectorLayer ShapeFill="Blue" ShapeStroke="Blue">
+            <dxm:VectorLayer ShapeFill="Blue" ShapeStroke="Blue" x:Name="vector">
                 <dxm:VectorLayer.Data>
                     <dxm:ListSourceDataAdapter DataSource="{Binding MapItems}">
                         <!--<dxm:ListSourceDataAdapter.Mappings>
@@ -37,5 +37,9 @@
                 </dxm:VectorLayer.Data>
             </dxm:VectorLayer>
         </dxm:MapControl>
+
+        <dxmvvm:Interaction.Behaviors>
+            <dxmvvm:EventToCommand EventName="MouseDown" Command="{Binding Mouse_DoubleClick}" PassEventArgsToCommand="True" ModifierKeys="Ctrl"/>
+        </dxmvvm:Interaction.Behaviors>
     </Grid>
 </Window>

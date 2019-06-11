@@ -11,6 +11,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,6 +27,7 @@ namespace Progetto
         {
             GpxPointsCollection = new ObservableCollection<GpxPoint>();
             //PolylineCollection = new ObservableCollection<MapPolyline>();
+            MapItems = new ObservableCollection<MapItem>();
         }
 
         private ObservableCollection<GpxPoint> gpxPointsCollection;
@@ -50,33 +52,45 @@ namespace Progetto
         //}
 
 
-        private ObservableCollection<MapItem> mapItems = new ObservableCollection<MapItem>();
-
-        public ObservableCollection<MapItem> MapItems 
+        private ObservableCollection<MapItem> mapItems;
+        public ObservableCollection<MapItem> MapItems
         {
             get { return mapItems; }
-            set { mapItems = value; }
+            set { mapItems = value; RaisePropertyChanged(); }
+
+        }
+        Stopwatch timerRequest = new Stopwatch();
+        Stopwatch timerTot = new Stopwatch();
+
+
+
+       public void CreateMapPushpin(GeoPoint point)
+        {
+            if(MapItems.Count() == 3)
+            {
+                MapItems = new ObservableCollection<MapItem>();
+                GpxPointsCollection = new ObservableCollection<GpxPoint>();
+                HttpMessage.Reset();
+            }
+            GpxPointsCollection.Add(new GpxPoint() { Latitude = point.Latitude, Longitude = point.Longitude });
+            MapItem mapPushpin = new MapPushpin() { Location = point };
+            MapItems.Add(mapPushpin);
+            if (GpxPointsCollection.Count % 2 == 0)
+            {
+                CreateRoute(GpxPointsCollection);
+            }
         }
 
-
-
-
-        public void CreateRoute(ObservableCollection<GpxPoint> gpxPoints)
+        public async void CreateRoute(ObservableCollection<GpxPoint> gpxPoints)
         {
             CustomRouteProvider RouteProvider = new CustomRouteProvider();
             //infoLayer.DataProvider = provider;
-            RouteProvider.CalculateRoute(gpxPoints);
+            await RouteProvider.CalculateRoute(gpxPoints);
             foreach (MapItem m in CustomRouteData.Items)
             {
                 MapItems.Add(m);
             }
         }
-
-
-
-
-        Stopwatch timerRequest = new Stopwatch();
-        Stopwatch timerTot = new Stopwatch();
 
         //private void CreatePolylines(ObservableCollection<GeoPoint> points)
         //{
@@ -99,7 +113,7 @@ namespace Progetto
         {
             get { return importCommand ?? (importCommand = new DelegateCommand(Import)); }
         }
-        
+
         private async void Import()
         {
             OpenFileDialog open = new OpenFileDialog
@@ -112,7 +126,7 @@ namespace Progetto
                 //timerTot.Start();
                 //int n = 0;
                 GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
-                
+
                 //int pointForRequest = 75;
                 //for (int c = 0; c < GpxPointsCollection.Count; c += pointForRequest)
                 //{
@@ -159,7 +173,7 @@ namespace Progetto
                 //Console.WriteLine(GeoPointsCollection.Count);
                 //CreatePolylines(GeoPointsCollection);
 
-                CreateRoute(gpxPointsCollection);
+                //CreateRoute(gpxPointsCollection);
                 //timerTot.Stop();
                 Console.WriteLine($"Tempo tot: { timerTot.ElapsedMilliseconds }");
             }

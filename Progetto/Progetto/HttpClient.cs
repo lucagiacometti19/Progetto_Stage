@@ -136,7 +136,61 @@ namespace Progetto
                 }
             }
             Console.WriteLine("Fine lettura");
+        }
 
+
+
+        public static async Task HttpRouteRequest(ObservableCollection<GpxPoint> points)
+        {
+            int n = 0;
+            int pointForRequest = 75;
+            for (int c = 0; c < points.Count; c += pointForRequest)
+            {
+                List<GeoPoint> g = new List<GeoPoint>();
+                for (int i = 0; (i < pointForRequest) && (i + c) < points.Count; i++)
+                {
+                    GeoPoint p = null;
+                    if (c < pointForRequest)
+                    {
+                        p = new GeoPoint() { Latitude = points[i].Latitude, Longitude = points[i].Longitude };
+                    }
+                    else if (c >= pointForRequest)
+                    {
+                        p = new GeoPoint() { Latitude = points[i + c].Latitude, Longitude = points[i + c].Longitude };
+                    }
+                    g.Add(p);
+                }
+                RequestAssembler(g);
+                Console.WriteLine($"Request {c} ok");
+                Console.WriteLine($"Request {n} ok");
+                n++;
+            }
+
+
+            int c2 = 0;
+            foreach (string s in Requests)
+            {
+                await RunAsync(s);
+                Console.WriteLine($"RunAsync {c2} ok");
+                c2++;
+            }
+
+
+            int c3 = 0;
+            foreach (string s in Results)
+            {
+                ConvertFromJson(s);
+                Console.WriteLine($"Json {c3} ok");
+                c3++;
+            }
+        }
+
+
+        public static void Reset()
+        {
+            Point = new ObservableCollection<GeoPoint>();
+            Requests = new ObservableCollection<string>();
+            Results = new ObservableCollection<string>();
         }
     }
 }
