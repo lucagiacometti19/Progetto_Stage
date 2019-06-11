@@ -66,7 +66,7 @@ namespace Gpx
                             lonTot = p1.Longitude;
                         }
                         else
-                        { 
+                        {
                             TimeSpan t = p0.Start - p1.Start;
 
                             /* Converte i gradi in radianti e calcola l'angolo compreso fi */
