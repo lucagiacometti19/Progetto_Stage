@@ -31,12 +31,12 @@ namespace Progetto
             DataContext = main;
         }
 
-        private void MapControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private async void MapControl_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             MapControl controlMap = sender as MapControl;
             Point position = e.GetPosition(controlMap);
             GeoPoint point = vector.ScreenToGeoPoint(position);
-            main.CreateMapPushpin(point);
+            await main.CreateMapPushpinAsync(point);
         }
     }
 }

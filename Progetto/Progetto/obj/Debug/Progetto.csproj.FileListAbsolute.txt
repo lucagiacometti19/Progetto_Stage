@@ -643,3 +643,17 @@ C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\de\DevExpress
 C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\es\DevExpress.XtraTreeList.v19.1.resources.dll
 C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\ja\DevExpress.XtraTreeList.v19.1.resources.dll
 C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\ru\DevExpress.XtraTreeList.v19.1.resources.dll
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\GeoJSON.Net.dll
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\Microsoft.AspNetCore.WebUtilities.dll
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\Microsoft.Extensions.Primitives.dll
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\Microsoft.Net.Http.Headers.dll
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\Nominatim.API.dll
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\System.Buffers.dll
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\System.Text.Encodings.Web.dll
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\Microsoft.AspNetCore.WebUtilities.xml
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\Microsoft.Extensions.Primitives.xml
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\Microsoft.Net.Http.Headers.xml
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\System.Buffers.xml
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Progetto\bin\Debug\System.Text.Encodings.Web.xml

@@ -38,8 +38,8 @@
             </dxm:VectorLayer>
         </dxm:MapControl>
 
-        <dxmvvm:Interaction.Behaviors>
+        <!--<dxmvvm:Interaction.Behaviors>
             <dxmvvm:EventToCommand EventName="MouseDown" Command="{Binding Mouse_DoubleClick}" PassEventArgsToCommand="True" ModifierKeys="Ctrl"/>
-        </dxmvvm:Interaction.Behaviors>
+        </dxmvvm:Interaction.Behaviors>-->
     </Grid>
 </Window>

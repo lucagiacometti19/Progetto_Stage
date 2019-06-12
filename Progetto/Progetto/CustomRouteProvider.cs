@@ -8,6 +8,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using Nominatim.API.Geocoders;
+using Nominatim.API.Models;
+
 
 namespace Progetto
 {
@@ -97,6 +100,16 @@ namespace Progetto
                 route.Add(p);
             }
         }
-    }
 
+        public static async Task<GeocodeResponse> GetAddressFromPoint(GeoPoint point)
+        {
+            return await new ReverseGeocoder().ReverseGeocode(new ReverseGeocodeRequest
+            {
+                Longitude = point.Longitude,
+                Latitude = point.Latitude,
+                ZoomLevel = 18
+            });
+        }
+
+    }
 }

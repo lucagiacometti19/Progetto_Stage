@@ -29,7 +29,7 @@ namespace Progetto
             //PolylineCollection = new ObservableCollection<MapPolyline>();
             MapItems = new ObservableCollection<MapItem>();
         }
-
+        
         private ObservableCollection<GpxPoint> gpxPointsCollection;
         public ObservableCollection<GpxPoint> GpxPointsCollection
         {
@@ -64,21 +64,32 @@ namespace Progetto
 
 
 
-       public void CreateMapPushpin(GeoPoint point)
+       public async Task CreateMapPushpinAsync(GeoPoint point)
         {
-            if(MapItems.Count() == 3)
+            if(MapItems.Count() >= 3)
             {
                 MapItems = new ObservableCollection<MapItem>();
                 GpxPointsCollection = new ObservableCollection<GpxPoint>();
                 HttpMessage.Reset();
             }
             GpxPointsCollection.Add(new GpxPoint() { Latitude = point.Latitude, Longitude = point.Longitude });
-            MapItem mapPushpin = new MapPushpin() { Location = point };
-            MapItems.Add(mapPushpin);
+            MapItem mapPushpin = new MapPushpin();
+
+            Console.WriteLine("Richiesta address");
+            if(GpxPointsCollection.Count % 2 == 1)
+            {
+                var address = await CustomRouteData.GetAddressFromPoint(point);
+                Console.WriteLine(address);
+                mapPushpin = new MapPushpin() { Location = point, Text = "A", Information = address.DisplayName };
+            }
             if (GpxPointsCollection.Count % 2 == 0)
             {
+                var address = await CustomRouteData.GetAddressFromPoint(point);
+                Console.WriteLine(address);
+                mapPushpin = new MapPushpin() { Location = point, Text = "B", Information = address.DisplayName };
                 CreateRoute(GpxPointsCollection);
             }
+            MapItems.Add(mapPushpin);
         }
 
         public async void CreateRoute(ObservableCollection<GpxPoint> gpxPoints)
@@ -123,10 +134,10 @@ namespace Progetto
             };
             if ((bool)open.ShowDialog())
             {
-                //timerTot.Start();
-                //int n = 0;
                 GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
 
+                //timerTot.Start();
+                //int n = 0;
                 //int pointForRequest = 75;
                 //for (int c = 0; c < GpxPointsCollection.Count; c += pointForRequest)
                 //{
@@ -179,4 +190,4 @@ namespace Progetto
             }
         }
     }
-}
+}  
