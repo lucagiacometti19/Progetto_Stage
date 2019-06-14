@@ -13,24 +13,38 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <dxc:ChartControl Name="chartControl1">
+
+        <!--<dxc:ChartControl Name="chartControl1">
+            <dxc:ChartControl.Diagram>
+                <dxc:XYDiagram2D SeriesDataMember ="{Binding Pa}">
+                    <dxc:XYDiagram2D.Series>
+                        <dxc:LineSeries2D DisplayName="Velocità" MarkerVisible="False" DataSource="{Binding Path=Points}" ArgumentDataMember="Start" ValueDataMember="Speed">
+                            <dxc:LineSeries2D.LineStyle>
+                                <dxc:LineStyle Thickness="1" />
+                            </dxc:LineSeries2D.LineStyle>
+                        </dxc:LineSeries2D>
+                    </dxc:XYDiagram2D.Series>
+                </dxc:XYDiagram2D>
+            </dxc:ChartControl.Diagram>
+            <dxc:ChartControl.Legend>
+                <dxc:Legend />
+            </dxc:ChartControl.Legend>
+        </dxc:ChartControl>-->
+
+        <dxc:ChartControl Name="chartControl1" DataSource="{Binding Path=Points}">
             <dxc:ChartControl.Diagram>
                 <dxc:XYDiagram2D>
                     <dxc:XYDiagram2D.Series>
-                        <dxc:AreaSeries2D DisplayName="Velocita" Transparency="0.5" DataSource="{Binding Points}" ArgumentDataMember="X" ValueDataMember="Y">
-                            <dxc:AreaSeries2D.Points>
-                                <dxc:SeriesPoint Argument="A" Value="1" />
-                                <dxc:SeriesPoint Argument="B" Value="3" />
-                                <dxc:SeriesPoint Argument="C" Value="7" />
-                                <dxc:SeriesPoint Argument="D" Value="4" />
-                            </dxc:AreaSeries2D.Points>
+                        <dxc:AreaSeries2D DisplayName="Velocita" Transparency="0.5"  ArgumentDataMember="Start" ValueDataMember="Speed">
                         </dxc:AreaSeries2D>
                     </dxc:XYDiagram2D.Series>
-                    <!--region #SideMarginsEnabled-->
                     <dxc:XYDiagram2D.AxisX>
-                        <dxc:AxisX2D Range="SideMarginsEnabled=False" />
+                        <dxc:AxisX2D  Range="SideMarginsEnabled=False">
+                            <dxc:AxisX2D.DateTimeScaleOptions>
+                                <dxc:ManualDateTimeScaleOptions AggregateFunction="None"/>
+                            </dxc:AxisX2D.DateTimeScaleOptions>
+                        </dxc:AxisX2D>
                     </dxc:XYDiagram2D.AxisX>
-                    <!--endregion #SideMarginsEnabled-->
                 </dxc:XYDiagram2D>
             </dxc:ChartControl.Diagram>
         </dxc:ChartControl>

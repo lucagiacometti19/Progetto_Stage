@@ -23,8 +23,8 @@ namespace Progetto
     {
         public static HttpClient client;
 
-        private static ObservableCollection<GeoPoint> point = new ObservableCollection<GeoPoint>();
-        public static ObservableCollection<GeoPoint> Point
+        private static ObservableCollection<GpxPoint> point = new ObservableCollection<GpxPoint>();
+        public static ObservableCollection<GpxPoint> Point
         {
             get { return point; }
             set { point = value; }
@@ -127,7 +127,7 @@ namespace Progetto
                     lat = Convert.ToDouble(points[x + 1], CultureInfo.InvariantCulture);
                     lon = Convert.ToDouble(points[x], CultureInfo.InvariantCulture);
 
-                    Point.Add(new GeoPoint()
+                    Point.Add(new GpxPoint()
                     {
                         Longitude = lon,
                         Latitude = lat
@@ -188,7 +188,7 @@ namespace Progetto
 
         public static void Reset()
         {
-            Point = new ObservableCollection<GeoPoint>();
+            Point = new ObservableCollection<GpxPoint>();
             Requests = new ObservableCollection<string>();
             Results = new ObservableCollection<string>();
         }

@@ -6,21 +6,23 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using DevExpress.Mvvm;
+using Gpx;
 
 namespace Progetto
 {
     class ReportViewModel : ViewModelBase
     {
-        public ReportViewModel()
-        {
-           
-        }
-
-        private ObservableCollection<Point> points;
-        public ObservableCollection<Point> Points
+        private ObservableCollection<GpxPoint> points;
+        public ObservableCollection<GpxPoint> Points
         {
             get { return points; }
             set { points = value; RaisePropertyChanged(); }
         }
+
+        //public struct ChartPoint
+        //{
+        //    public TimeSpan Start;
+        //    public double Speed;
+        //}
     }
 }
