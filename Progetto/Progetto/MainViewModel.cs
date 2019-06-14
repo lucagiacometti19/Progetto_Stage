@@ -136,7 +136,7 @@ namespace Progetto
             {
                 GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
 
-                //timerTot.Start();
+                timerTot.Start();
                 //int n = 0;
                 //int pointForRequest = 75;
                 //for (int c = 0; c < GpxPointsCollection.Count; c += pointForRequest)
@@ -185,9 +185,42 @@ namespace Progetto
                 //CreatePolylines(GeoPointsCollection);
 
                 //CreateRoute(gpxPointsCollection);
-                //timerTot.Stop();
+                await HttpMessage.HttpRouteRequest(GpxPointsCollection);
+                timerTot.Stop();
                 Console.WriteLine($"Tempo tot: { timerTot.ElapsedMilliseconds }");
             }
+        }
+
+        private DelegateCommand resetAll;
+        public DelegateCommand ResetAll
+        {
+            get { return resetAll ?? (resetAll = new DelegateCommand(Reset)); }
+        }
+
+        public void Reset()
+        {
+            GpxPointsCollection = new ObservableCollection<GpxPoint>();
+            MapItems = new ObservableCollection<MapItem>();
+            GeoPointsCollection = new ObservableCollection<GeoPoint>();
+            HttpMessage.Reset();
+        }
+
+        private DelegateCommand report;
+        public DelegateCommand Report
+        {
+            get { return report ?? (report = new DelegateCommand(ShowReport)); }
+        }
+
+        public void ShowReport()
+        {
+            Report r = new Report();
+            r.DataContext = new ReportViewModel();
+            ((ReportViewModel)r.DataContext).Points = new ObservableCollection<Point>();
+            foreach (var point in GpxPointsCollection)
+            {
+                ((ReportViewModel)r.DataContext).Points.Add(new Point(point.Latitude, point.Longitude));
+            }
+            r.Show();       
         }
     }
 }  

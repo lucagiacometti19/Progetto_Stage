@@ -6,22 +6,46 @@
         xmlns:local="clr-namespace:Progetto"
         xmlns:dxm="http://schemas.devexpress.com/winfx/2008/xaml/map"
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" 
+        xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"  
+        xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow"  Height="{Binding SystemParameters.PrimaryScreenHeight}" Width="{Binding SystemParameters.PrimaryScreenWidth}">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
-        <Button  Content="Importa" Command="{Binding ImportCommand}"/>
+        <!--<Button  Content="Importa" Command="{Binding ImportCommand}"/>-->
 
         <!--<dxm:MapControl Grid.Row="1" ZoomLevel="4">
             <dxm:ImageLayer>
                 <dxm:BingMapDataProvider BingKey="mWuksRMdb006DVTVeRoy~VBby6uhRsgm_fGc4n7RuVA~AmHfaZlNw0sc5TxdXkuC6wuf13uenZlF184AN_kdfZZuyj_VCS4BKOqfXF0KUsqi"/>
             </dxm:ImageLayer>-->
-            <!--<dxm:InformationLayer DataProvider="{Binding RouteDataProvider}" EnableHighlighting="False"/>-->
+        <!--<dxm:InformationLayer DataProvider="{Binding RouteDataProvider}" EnableHighlighting="False"/>-->
         <!--</dxm:MapControl>-->
+
+        <dxr:RibbonControl RibbonStyle="OfficeSlim" ToolbarHideSeparators="True" ShowApplicationButton="False" ToolbarShowMode="Hide">
+            <dxr:RibbonDefaultPageCategory>
+                <dxr:RibbonPage Caption="Home">
+                    <dxr:RibbonPageGroup>
+                        <dxb:BarButtonItem Content="Apri" Command="{Binding ImportCommand}" Glyph="{dxc:DXImage Images/Actions/Open2_32x32.png}" RibbonStyle="Large" LargeGlyph="{dxc:DXImage Images/Actions/Open2_32x32.png}"/>
+                    </dxr:RibbonPageGroup>
+                    <dxr:RibbonPageGroup>
+                        <dxb:BarButtonItem Content="Avanti" Glyph="{dxc:DXImage Images/Actions/Refresh2_16x16.png}"/>
+                        <dxb:BarButtonItem Content="Indietro" Glyph="{dxc:DXImage Images/Actions/Reset2_16x16.png}"/>
+                        <dxb:BarButtonItem Content="Reset" Glyph="{dxc:DXImage Images/XAF/Action_Delete_32x32.png}" Command="{Binding ResetAll}"/>
+                        <dxb:BarButtonItem Content="Report" Glyph="{dxc:DXImage Images/Analysis/DropLines_32x32.png}" LargeGlyph="{dxc:DXImage Images/Analysis/DropLines_32x32.png}" Command="{Binding Report}"/>
+                    </dxr:RibbonPageGroup>
+                </dxr:RibbonPage>
+            </dxr:RibbonDefaultPageCategory>
+
+            <dxr:RibbonControl.ToolbarItems>
+                <dxb:BarButtonItem Content="BarButtonItem" Glyph="{dxc:DXImage Images/Actions/Trash_16x16.png}"/>
+            </dxr:RibbonControl.ToolbarItems>
+        </dxr:RibbonControl>
 
         <dxm:MapControl Grid.Row="1" ZoomLevel="4" MouseDoubleClick="MapControl_MouseDoubleClick">
             <dxm:ImageLayer>

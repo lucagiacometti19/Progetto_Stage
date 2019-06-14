@@ -1,0 +1,38 @@
+﻿<Window x:Class="Progetto.Report"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Progetto"
+        xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts" 
+        mc:Ignorable="d"
+        Title="Report" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <dxc:ChartControl Name="chartControl1">
+            <dxc:ChartControl.Diagram>
+                <dxc:XYDiagram2D>
+                    <dxc:XYDiagram2D.Series>
+                        <dxc:AreaSeries2D DisplayName="Velocita" Transparency="0.5" DataSource="{Binding Points}" ArgumentDataMember="X" ValueDataMember="Y">
+                            <dxc:AreaSeries2D.Points>
+                                <dxc:SeriesPoint Argument="A" Value="1" />
+                                <dxc:SeriesPoint Argument="B" Value="3" />
+                                <dxc:SeriesPoint Argument="C" Value="7" />
+                                <dxc:SeriesPoint Argument="D" Value="4" />
+                            </dxc:AreaSeries2D.Points>
+                        </dxc:AreaSeries2D>
+                    </dxc:XYDiagram2D.Series>
+                    <!--region #SideMarginsEnabled-->
+                    <dxc:XYDiagram2D.AxisX>
+                        <dxc:AxisX2D Range="SideMarginsEnabled=False" />
+                    </dxc:XYDiagram2D.AxisX>
+                    <!--endregion #SideMarginsEnabled-->
+                </dxc:XYDiagram2D>
+            </dxc:ChartControl.Diagram>
+        </dxc:ChartControl>
+    </Grid>
+</Window>
