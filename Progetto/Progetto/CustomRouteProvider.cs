@@ -31,9 +31,9 @@ namespace Progetto
             return new CustomRouteData();
         }
 
-        public async Task CalculateRoute(ObservableCollection<GpxPoint> list)
+        public async Task CalculateRoute(ObservableCollection<GpxPoint> list, bool value)
         {
-            await Data.CalculateRoute(list);
+            await Data.CalculateRoute(list, value);
         }
 
         public override void Cancel()
@@ -55,7 +55,7 @@ namespace Progetto
         readonly List<GeoPoint> route = new List<GeoPoint>();
         public List<GeoPoint> Route { get { return route; } }
         public event EventHandler<RequestCompletedEventArgs> OnDataResponse;
-        RequestCompletedEventArgs CreateEventArgs()
+        RequestCompletedEventArgs CreateEventArgs(bool value)
         {
             Items = new MapItem[1];
             //Items[1] = new MapPushpin() { Location = route[0], Text = "A", Information = route[0].ToString() };
@@ -64,8 +64,8 @@ namespace Progetto
             MapPolyline polyline = new MapPolyline()
             {
                 IsGeodesic = true,
-                Stroke = new SolidColorBrush() { Color = Colors.Red },
-                StrokeStyle = new StrokeStyle() { Thickness = 4 }
+                Stroke = value ? new SolidColorBrush() { Color = Colors.Red } : new SolidColorBrush() { Color = Colors.Blue },
+                StrokeStyle = new StrokeStyle() { Thickness = 2 }
             };
             for (int i = 0; i < route.Count; i++)
                 polyline.Points.Add(route[i]);
@@ -75,40 +75,53 @@ namespace Progetto
             return new RequestCompletedEventArgs(Items, null, false, null);
         }
 
-        protected void RaiseChanged()
+        protected void RaiseChanged(bool value)
         {
-            if (OnDataResponse != null)
-                OnDataResponse(this, CreateEventArgs());
+            OnDataResponse?.Invoke(this, CreateEventArgs(value));
         }
 
-        public async Task CalculateRoute(ObservableCollection<GpxPoint> list)
+        public async Task CalculateRoute(ObservableCollection<GpxPoint> list, bool value)
         {
-            await CalculateRouteCore(list);
-            RaiseChanged();
+            await CalculateRouteCore(list, value);
+            RaiseChanged(value);
         }
 
-        async Task CalculateRouteCore(ObservableCollection<GpxPoint> list)
+        async Task CalculateRouteCore(ObservableCollection<GpxPoint> list, bool value)
         {
             this.route.Clear();
             //foreach (GpxPoint p in list)
             //{
             //    route.Add(new GeoPoint() { Latitude = p.Latitude, Longitude = p.Longitude });
             //}
-            await HttpMessage.HttpRouteRequest(list);
-            foreach (GeoPoint p in HttpMessage.Point)
+
+            if (value)
             {
-                route.Add(p);
+                await HttpMessage.HttpRouteRequest(list);
+                foreach (GpxPoint p in HttpMessage.Point)
+                {
+                    route.Add(new GeoPoint() { Latitude = p.Latitude, Longitude = p.Longitude });
+                }
             }
+            else
+            {
+                foreach (GpxPoint p in list)
+                {
+                    route.Add(new GeoPoint() { Latitude = p.Latitude, Longitude = p.Longitude });
+                }
+            }
+
         }
 
         public static async Task<GeocodeResponse> GetAddressFromPoint(GeoPoint point)
         {
-            return await new ReverseGeocoder().ReverseGeocode(new ReverseGeocodeRequest
+            ReverseGeocoder rev = new ReverseGeocoder();
+            ReverseGeocodeRequest request = new ReverseGeocodeRequest()
             {
                 Longitude = point.Longitude,
                 Latitude = point.Latitude,
                 ZoomLevel = 18
-            });
+            };
+            return await rev.ReverseGeocode(request);
         }
 
     }

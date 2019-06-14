@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using DevExpress.Mvvm;
+using Gpx;
 
 namespace Progetto
 {
@@ -16,8 +17,8 @@ namespace Progetto
            
         }
 
-        private ObservableCollection<Point> points;
-        public ObservableCollection<Point> Points
+        private ObservableCollection<GpxPoint> points;
+        public ObservableCollection<GpxPoint> Points
         {
             get { return points; }
             set { points = value; RaisePropertyChanged(); }

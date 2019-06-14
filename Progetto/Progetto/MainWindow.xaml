@@ -51,12 +51,16 @@
             <dxm:ImageLayer>
                 <dxm:OpenStreetMapDataProvider/>
             </dxm:ImageLayer>
-            <dxm:VectorLayer ShapeFill="Blue" ShapeStroke="Blue" x:Name="vector">
+            <dxm:VectorLayer x:Name="vector">
                 <dxm:VectorLayer.Data>
                     <dxm:ListSourceDataAdapter DataSource="{Binding MapItems}">
-                        <!--<dxm:ListSourceDataAdapter.Mappings>
-                            <dxm:MapItemMappingInfo Latitude="Latitude" Longitude="Longitude"/>
-                        </dxm:ListSourceDataAdapter.Mappings>-->
+                    </dxm:ListSourceDataAdapter>
+                </dxm:VectorLayer.Data>
+            </dxm:VectorLayer>
+
+            <dxm:VectorLayer x:Name="vector2">
+                <dxm:VectorLayer.Data>
+                    <dxm:ListSourceDataAdapter DataSource="{Binding Routes}">
                     </dxm:ListSourceDataAdapter>
                 </dxm:VectorLayer.Data>
             </dxm:VectorLayer>

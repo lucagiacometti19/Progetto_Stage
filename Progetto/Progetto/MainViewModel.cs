@@ -28,6 +28,7 @@ namespace Progetto
             GpxPointsCollection = new ObservableCollection<GpxPoint>();
             //PolylineCollection = new ObservableCollection<MapPolyline>();
             MapItems = new ObservableCollection<MapItem>();
+            Routes = new ObservableCollection<MapItem>();
         }
         
         private ObservableCollection<GpxPoint> gpxPointsCollection;
@@ -37,12 +38,12 @@ namespace Progetto
             set { gpxPointsCollection = value; RaisePropertyChanged(); }
         }
 
-        private ObservableCollection<GeoPoint> geoPointsCollection;
-        public ObservableCollection<GeoPoint> GeoPointsCollection
-        {
-            get { return geoPointsCollection; }
-            set { geoPointsCollection = value; RaisePropertyChanged(); }
-        }
+        //private ObservableCollection<GeoPoint> geoPointsCollection;
+        //public ObservableCollection<GeoPoint> GeoPointsCollection
+        //{
+        //    get { return geoPointsCollection; }
+        //    set { geoPointsCollection = value; RaisePropertyChanged(); }
+        //}
 
         //private ObservableCollection<MapPolyline> polylineCollection;
         //public ObservableCollection<MapPolyline> PolylineCollection
@@ -62,9 +63,15 @@ namespace Progetto
         Stopwatch timerRequest = new Stopwatch();
         Stopwatch timerTot = new Stopwatch();
 
+        private ObservableCollection<MapItem> routes;
+        public ObservableCollection<MapItem> Routes
+        {
+            get { return routes; }
+            set { routes = value; }
+        }
 
 
-       public async Task CreateMapPushpinAsync(GeoPoint point)
+        public async Task CreateMapPushpinAsync(GeoPoint point)
         {
             if(MapItems.Count() >= 3)
             {
@@ -87,19 +94,29 @@ namespace Progetto
                 var address = await CustomRouteData.GetAddressFromPoint(point);
                 Console.WriteLine(address);
                 mapPushpin = new MapPushpin() { Location = point, Text = "B", Information = address.DisplayName };
-                CreateRoute(GpxPointsCollection);
+                CreateRoute(GpxPointsCollection, true);
             }
             MapItems.Add(mapPushpin);
         }
 
-        public async void CreateRoute(ObservableCollection<GpxPoint> gpxPoints)
+        public async void CreateRoute(ObservableCollection<GpxPoint> gpxPoints, bool value)
         {
             CustomRouteProvider RouteProvider = new CustomRouteProvider();
             //infoLayer.DataProvider = provider;
-            await RouteProvider.CalculateRoute(gpxPoints);
-            foreach (MapItem m in CustomRouteData.Items)
+            await RouteProvider.CalculateRoute(gpxPoints, value);
+            if (value)
             {
-                MapItems.Add(m);
+                foreach (MapItem m in CustomRouteData.Items)
+                {
+                    MapItems.Add(m);
+                }
+            }
+            else
+            {
+                foreach (MapItem m in CustomRouteData.Items)
+                {
+                    Routes.Add(m);
+                }
             }
         }
 
@@ -185,7 +202,7 @@ namespace Progetto
                 //CreatePolylines(GeoPointsCollection);
 
                 //CreateRoute(gpxPointsCollection);
-                await HttpMessage.HttpRouteRequest(GpxPointsCollection);
+                CreateRoute(GpxPointsCollection, false);
                 timerTot.Stop();
                 Console.WriteLine($"Tempo tot: { timerTot.ElapsedMilliseconds }");
             }
@@ -201,7 +218,6 @@ namespace Progetto
         {
             GpxPointsCollection = new ObservableCollection<GpxPoint>();
             MapItems = new ObservableCollection<MapItem>();
-            GeoPointsCollection = new ObservableCollection<GeoPoint>();
             HttpMessage.Reset();
         }
 
@@ -215,12 +231,13 @@ namespace Progetto
         {
             Report r = new Report();
             r.DataContext = new ReportViewModel();
-            ((ReportViewModel)r.DataContext).Points = new ObservableCollection<Point>();
-            foreach (var point in GpxPointsCollection)
+            ((ReportViewModel)r.DataContext).Points = new ObservableCollection<GpxPoint>();
+            for(int i = 0; i< GpxPointsCollection.Count; i++)
             {
-                ((ReportViewModel)r.DataContext).Points.Add(new Point(point.Latitude, point.Longitude));
+                ((ReportViewModel)r.DataContext).Points.Add(new GpxPoint() { Speed = GpxPointsCollection[i].Speed, Start = GpxPointsCollection[i].Start });
             }
-            r.Show();       
+            r.Owner = Application.Current.MainWindow;
+            r.ShowDialog();       
         }
     }
 }  

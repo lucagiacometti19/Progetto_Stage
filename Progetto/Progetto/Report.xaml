@@ -17,13 +17,7 @@
             <dxc:ChartControl.Diagram>
                 <dxc:XYDiagram2D>
                     <dxc:XYDiagram2D.Series>
-                        <dxc:AreaSeries2D DisplayName="Velocita" Transparency="0.5" DataSource="{Binding Points}" ArgumentDataMember="X" ValueDataMember="Y">
-                            <dxc:AreaSeries2D.Points>
-                                <dxc:SeriesPoint Argument="A" Value="1" />
-                                <dxc:SeriesPoint Argument="B" Value="3" />
-                                <dxc:SeriesPoint Argument="C" Value="7" />
-                                <dxc:SeriesPoint Argument="D" Value="4" />
-                            </dxc:AreaSeries2D.Points>
+                        <dxc:AreaSeries2D DisplayName="Velocita" Transparency="0.5" DataSource="{Binding Path=Points}" ArgumentDataMember="Start" ValueDataMember="Speed">
                         </dxc:AreaSeries2D>
                     </dxc:XYDiagram2D.Series>
                     <!--region #SideMarginsEnabled-->
