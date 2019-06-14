@@ -12,16 +12,17 @@ namespace Progetto
 {
     class ReportViewModel : ViewModelBase
     {
-        public ReportViewModel()
-        {
-           
-        }
-
         private ObservableCollection<GpxPoint> points;
         public ObservableCollection<GpxPoint> Points
         {
             get { return points; }
             set { points = value; RaisePropertyChanged(); }
         }
+
+        //public struct ChartPoint
+        //{
+        //    public TimeSpan Start;
+        //    public double Speed;
+        //}
     }
 }

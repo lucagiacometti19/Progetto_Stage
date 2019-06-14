@@ -230,12 +230,15 @@ namespace Progetto
         public void ShowReport()
         {
             Report r = new Report();
-            r.DataContext = new ReportViewModel();
-            ((ReportViewModel)r.DataContext).Points = new ObservableCollection<GpxPoint>();
-            for(int i = 0; i< GpxPointsCollection.Count; i++)
+            var reportViewModel = new ReportViewModel();
+            reportViewModel.Points = new ObservableCollection<GpxPoint>();
+            for (int i = 0; i < GpxPointsCollection.Count; i++)
             {
-                ((ReportViewModel)r.DataContext).Points.Add(new GpxPoint() { Speed = GpxPointsCollection[i].Speed, Start = GpxPointsCollection[i].Start });
+                reportViewModel.Points.Add(new GpxPoint() { Speed = GpxPointsCollection[i].Speed, Start = GpxPointsCollection[i].Start });
             }
+
+
+            r.DataContext = reportViewModel;
             r.Owner = Application.Current.MainWindow;
             r.ShowDialog();       
         }
