@@ -114,39 +114,33 @@ namespace Progetto
         public static void ConvertFromJson(string input)
         {
             Console.WriteLine("Lettura Json");
-            string jsResult1 = input.Replace("itinero.JSONP.callbacks.route2(", "");
-            string jsResult2 = jsResult1.Substring(0, (jsResult1.Length - 2));
-            JToken contourManifest = JObject.Parse(jsResult2);
+            /**OLD**/
+            //string jsResult1 = input.Replace("itinero.JSONP.callbacks.route2(", "");
+            //string jsResult2 = jsResult1.Substring(0, (jsResult1.Length - 2));
+            //JToken contourManifest = JObject.Parse(jsResult2);
             //JToken features = contourManifest.SelectToken("features");
+
+            /**NEW**/
+            JToken contourManifest = JObject.Parse(input);
             JToken waypoints = contourManifest.SelectToken("waypoints");
             double lat = 0;
             double lon = 0;
 
             for (int i = 0; i < waypoints.Count(); i++)
             {
-                JToken coordinates = waypoints.SelectToken("coordinates");
-                string c = coordinates.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
-                //JToken geometry = features[i].SelectToken("geometry");
-                //JToken coordinates = geometry.SelectToken("coordinates");
-                //string c = coordinates.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
-                //c = c.Substring(3, c.Length - 4);
-                //string[] parameters = { "[    ", ",    ", "  ],  ", "  ]" };
-                List<string> points = c.Split(parameters, StringSplitOptions.None).ToList();
-                for (int s = 0; s < points.Count; s++)
-                {
-                    if (points[s] == "")
-                    {
-                        points.Remove(points[s]);
-                    }
-                }
+                JToken location = waypoints[i].SelectToken("location");
+                string c = location.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
+                Console.WriteLine(c);
+                c = c.Substring(3, c.Length - 4);
+                Console.WriteLine(c);
+                List<string> coord = c.Split(',').ToList();
 
-
-                for (int x = 0; x < points.Count - 1; x = x + 2)
+                for (int x = 0; x < coord.Count - 1; x = x + 2)
                 {
                     //if(lat != Convert.ToDouble(points[x + 1]) && lon != Convert.ToDouble(points[x]))
                     //{
-                    lat = Convert.ToDouble(points[x + 1], CultureInfo.InvariantCulture);
-                    lon = Convert.ToDouble(points[x], CultureInfo.InvariantCulture);
+                    lat = Convert.ToDouble(coord[x + 1], CultureInfo.InvariantCulture);
+                    lon = Convert.ToDouble(coord[x], CultureInfo.InvariantCulture);
 
                     Point.Add(new GpxPoint()
                     {
@@ -155,6 +149,37 @@ namespace Progetto
                     });
                     //}
                 }
+
+                /**OLD**/
+                //JToken geometry = features[i].SelectToken("geometry");
+                //JToken coordinates = geometry.SelectToken("coordinates");
+                //string c = coordinates.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
+                //c = c.Substring(3, c.Length - 4);
+                //string[] parameters = { "[    ", ",    ", "  ],  ", "  ]" };
+                //List<string> points = c.Split(parameters, StringSplitOptions.None).ToList();
+                //for (int s = 0; s < points.Count; s++)
+                //{
+                //    if (points[s] == "")
+                //    {
+                //        points.Remove(points[s]);
+                //    }
+                //}
+
+
+                //for (int x = 0; x < points.Count - 1; x = x + 2)
+                //{
+                //    //if(lat != Convert.ToDouble(points[x + 1]) && lon != Convert.ToDouble(points[x]))
+                //    //{
+                //    lat = Convert.ToDouble(points[x + 1], CultureInfo.InvariantCulture);
+                //    lon = Convert.ToDouble(points[x], CultureInfo.InvariantCulture);
+
+                //    Point.Add(new GpxPoint()
+                //    {
+                //        Longitude = lon,
+                //        Latitude = lat
+                //    });
+                //    //}
+                //}
             }
             Console.WriteLine("Fine lettura");
         }
