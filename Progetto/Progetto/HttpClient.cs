@@ -46,13 +46,31 @@ namespace Progetto
 
         public static void RequestAssembler(List<GeoPoint> g)
         {
-            string request = "http://routing.pointsecurity.it:8085/italy/routing?callback=itinero.JSONP.callbacks.route2&profile=car";
+            /**OLD**/
+            //string request = "http://routing.pointsecurity.it:8085/italy/routing?callback=itinero.JSONP.callbacks.route2&profile=car";
+
+            //foreach (GeoPoint p in g)
+            //{
+            //    request += "&loc=" + p.Latitude.ToString().Replace(',', '.') + "," + p.Longitude.ToString().Replace(',', '.');
+            //}
+            //request += "&sort=true";
+            //Requests.Add(request);
+
+            /**NEW**/
+            string request = "http://routing.pointsecurity.it:8085/route/v1/driving/";
 
             foreach (GeoPoint p in g)
             {
-                request += "&loc=" + p.Latitude.ToString().Replace(',', '.') + "," + p.Longitude.ToString().Replace(',', '.');
+                if(request.EndsWith("/"))
+                {
+                    request += p.Longitude.ToString().Replace(',', '.') + "," + p.Latitude.ToString().Replace(',', '.');
+                }
+                else
+                {
+                    request += ";" + p.Longitude.ToString().Replace(',', '.') + "," + p.Latitude.ToString().Replace(',', '.');
+                }
             }
-            request += "&sort=true";
+            request += "?overview=false";
             Requests.Add(request);
         }
 
@@ -61,7 +79,7 @@ namespace Progetto
         {
             using(client = new HttpClient())
             {
-                client.BaseAddress = new Uri("http://routing.pointsecurity.it:8085/italy");
+                client.BaseAddress = new Uri("http://routing.pointsecurity.it:8085");
                 client.DefaultRequestHeaders.Accept.Clear();
                 client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 try
@@ -99,17 +117,20 @@ namespace Progetto
             string jsResult1 = input.Replace("itinero.JSONP.callbacks.route2(", "");
             string jsResult2 = jsResult1.Substring(0, (jsResult1.Length - 2));
             JToken contourManifest = JObject.Parse(jsResult2);
-            JToken features = contourManifest.SelectToken("features");
+            //JToken features = contourManifest.SelectToken("features");
+            JToken waypoints = contourManifest.SelectToken("waypoints");
             double lat = 0;
             double lon = 0;
 
-            for (int i = 0; i < features.Count(); i++)
+            for (int i = 0; i < waypoints.Count(); i++)
             {
-                JToken geometry = features[i].SelectToken("geometry");
-                JToken coordinates = geometry.SelectToken("coordinates");
+                JToken coordinates = waypoints.SelectToken("coordinates");
                 string c = coordinates.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
-                c = c.Substring(3, c.Length - 4);
-                string[] parameters = { "[    ", ",    ", "  ],  ", "  ]" };
+                //JToken geometry = features[i].SelectToken("geometry");
+                //JToken coordinates = geometry.SelectToken("coordinates");
+                //string c = coordinates.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
+                //c = c.Substring(3, c.Length - 4);
+                //string[] parameters = { "[    ", ",    ", "  ],  ", "  ]" };
                 List<string> points = c.Split(parameters, StringSplitOptions.None).ToList();
                 for (int s = 0; s < points.Count; s++)
                 {

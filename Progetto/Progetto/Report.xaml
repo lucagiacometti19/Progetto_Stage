@@ -39,9 +39,9 @@
                         </dxc:AreaSeries2D>
                     </dxc:XYDiagram2D.Series>
                     <dxc:XYDiagram2D.AxisX>
-                        <dxc:AxisX2D  Range="SideMarginsEnabled=False">
+                        <dxc:AxisX2D Range="SideMarginsEnabled=False">
                             <dxc:AxisX2D.DateTimeScaleOptions>
-                                <dxc:ManualDateTimeScaleOptions AggregateFunction="None"/>
+                                <dxc:ManualDateTimeScaleOptions AggregateFunction="Minimum" MeasureUnit="Minute" />
                             </dxc:AxisX2D.DateTimeScaleOptions>
                         </dxc:AxisX2D>
                     </dxc:XYDiagram2D.AxisX>
