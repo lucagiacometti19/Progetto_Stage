@@ -14,3 +14,4 @@ C:\Users\utente\Desktop\Progetto_Stage\Progetto\Gpx\obj\Debug\netstandard2.0\Gpx
 C:\Users\utente\Desktop\Progetto_Stage\Progetto\Gpx\obj\Debug\netstandard2.0\Gpx.AssemblyInfo.cs
 C:\Users\utente\Desktop\Progetto_Stage\Progetto\Gpx\obj\Debug\netstandard2.0\Gpx.dll
 C:\Users\utente\Desktop\Progetto_Stage\Progetto\Gpx\obj\Debug\netstandard2.0\Gpx.pdb
+C:\Users\utente\Desktop\Progetto_Stage\Progetto\Gpx\obj\Debug\netstandard2.0\Gpx.csprojAssemblyReference.cache

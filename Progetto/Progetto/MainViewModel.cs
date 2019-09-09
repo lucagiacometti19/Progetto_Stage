@@ -30,7 +30,7 @@ namespace Progetto
             MapItems = new ObservableCollection<MapItem>();
             Routes = new ObservableCollection<MapItem>();
         }
-        
+
         private ObservableCollection<GpxPoint> gpxPointsCollection;
         public ObservableCollection<GpxPoint> GpxPointsCollection
         {
@@ -38,6 +38,13 @@ namespace Progetto
             set { gpxPointsCollection = value; RaisePropertyChanged(); }
         }
 
+
+        private ObservableCollection<GpxPoint> gpxTracePoints;
+        public ObservableCollection<GpxPoint> GpxTracePoints
+        {
+            get { return gpxTracePoints; }
+            set { gpxTracePoints = value; RaisePropertyChanged(); }
+        }
         //private ObservableCollection<GeoPoint> geoPointsCollection;
         //public ObservableCollection<GeoPoint> GeoPointsCollection
         //{
@@ -73,7 +80,7 @@ namespace Progetto
 
         public async Task CreateMapPushpinAsync(GeoPoint point)
         {
-            if(MapItems.Count() >= 3)
+            if (MapItems.Count() >= 3)
             {
                 MapItems = new ObservableCollection<MapItem>();
                 GpxPointsCollection = new ObservableCollection<GpxPoint>();
@@ -83,7 +90,7 @@ namespace Progetto
             MapItem mapPushpin = new MapPushpin();
 
             Console.WriteLine("Richiesta address");
-            if(GpxPointsCollection.Count % 2 == 1)
+            if (GpxPointsCollection.Count % 2 == 1)
             {
                 var address = await CustomRouteData.GetAddressFromPoint(point);
                 Console.WriteLine(address);
@@ -152,6 +159,7 @@ namespace Progetto
             if ((bool)open.ShowDialog())
             {
                 GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
+                GpxTracePoints = GpxPointsCollection;
 
                 timerTot.Start();
                 //int n = 0;
@@ -217,9 +225,36 @@ namespace Progetto
         public void Reset()
         {
             GpxPointsCollection = new ObservableCollection<GpxPoint>();
+            GpxTracePoints = new ObservableCollection<GpxPoint>();
             MapItems = new ObservableCollection<MapItem>();
             HttpMessage.Reset();
         }
+
+
+        private static double CalcoloDistanza(GpxPoint p1, GpxPoint p2)
+        {
+            /* Definisce le costanti e le variabili */
+            const double R = 6371;
+            double lat_alfa, lat_beta;
+            double lon_alfa, lon_beta;
+            double fi;
+            double p, d;
+            /* Converte i gradi in radianti */
+            lat_alfa = Math.PI * p1.Latitude / 180;
+            lat_beta = Math.PI * p2.Latitude / 180;
+            lon_alfa = Math.PI * p1.Longitude / 180;
+            lon_beta = Math.PI * p2.Longitude / 180;
+            /* Calcola l'angolo compreso fi */
+            fi = Math.Abs(lon_alfa - lon_beta);
+            /* Calcola il terzo lato del triangolo sferico */
+            p = Math.Acos(Math.Sin(lat_beta) * Math.Sin(lat_alfa) +
+              Math.Cos(lat_beta) * Math.Cos(lat_alfa) * Math.Cos(fi));
+            /* Calcola la distanza sulla superficie 
+            terrestre R = ~6371 km */
+            d = p * R;
+            return (d);
+        }
+
 
         private DelegateCommand report;
         public DelegateCommand Report
@@ -232,15 +267,29 @@ namespace Progetto
             Report r = new Report();
             var reportViewModel = new ReportViewModel();
             reportViewModel.Points = new ObservableCollection<GpxPoint>();
-            for (int i = 0; i < GpxPointsCollection.Count; i++)
+            for (int i = 0; i < GpxTracePoints.Count - 1; i++)
             {
-                reportViewModel.Points.Add(new GpxPoint() { Speed = GpxPointsCollection[i].Speed, Start = GpxPointsCollection[i].Start });
+                if (GpxTracePoints[i].Speed < 150)
+                {
+                    var timeSpan = (GpxTracePoints[i].Start - GpxTracePoints[i + 1].Start);
+                    if (timeSpan > new TimeSpan(1,0,0))
+                    {
+                        if (CalcoloDistanza(GpxTracePoints[i], GpxTracePoints[i + 1]) < 5)
+                        {
+                            reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start });
+                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i].Start.AddSeconds(1) });
+                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i + 1].Start.AddSeconds(-1) });
+                        }
+                    }
+                    else
+                    {
+                        reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start });
+                    }
+                }
             }
-
-
             r.DataContext = reportViewModel;
             r.Owner = Application.Current.MainWindow;
-            r.ShowDialog();       
+            r.ShowDialog();
         }
     }
-}  
+}
