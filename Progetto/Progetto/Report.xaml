@@ -37,6 +37,8 @@
             </dxc:ChartControl.Legend>
         </dxc:ChartControl>-->
 
+        
+        
         <dxr:RibbonControl RibbonStyle="OfficeSlim" ToolbarHideSeparators="True" ShowApplicationButton="False" ToolbarShowMode="Hide">
             <dxr:RibbonDefaultPageCategory>
                 <dxr:RibbonPage Caption="Strumenti">
@@ -65,5 +67,6 @@
                 </dxc:XYDiagram2D>
             </dxc:ChartControl.Diagram>
         </dxc:ChartControl>
+
     </Grid>
 </Window>
