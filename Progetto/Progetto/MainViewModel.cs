@@ -109,7 +109,6 @@ namespace Progetto
         public async void CreateRoute(ObservableCollection<GpxPoint> gpxPoints, bool value)
         {
             CustomRouteProvider RouteProvider = new CustomRouteProvider();
-            //infoLayer.DataProvider = provider;
             await RouteProvider.CalculateRoute(gpxPoints, value);
             if (value)
             {
@@ -162,54 +161,6 @@ namespace Progetto
                 GpxTracePoints = GpxPointsCollection;
 
                 timerTot.Start();
-                //int n = 0;
-                //int pointForRequest = 75;
-                //for (int c = 0; c < GpxPointsCollection.Count; c += pointForRequest)
-                //{
-                //    List<GeoPoint> g = new List<GeoPoint>();
-                //    for (int i = 0; (i < pointForRequest) && (i + c) < GpxPointsCollection.Count; i += 4)
-                //    {
-                //        GeoPoint p = null;
-                //        if (c < pointForRequest)
-                //        {
-                //            p = new GeoPoint() { Latitude = GpxPointsCollection[i].Latitude, Longitude = GpxPointsCollection[i].Longitude };
-                //        }
-                //        else if (c >= pointForRequest)
-                //        {
-                //            p = new GeoPoint() { Latitude = GpxPointsCollection[i + c].Latitude, Longitude = GpxPointsCollection[i + c].Longitude };
-                //        }
-                //        g.Add(p);
-                //    }
-                //    HttpMessage.RequestAssembler(g);
-                //    Console.WriteLine($"Request {c} ok");
-                //    Console.WriteLine($"Request {n} ok");
-                //    n++;
-                //}
-
-                //timerRequest.Start();
-                //int c2 = 0;
-                //foreach (string s in HttpMessage.Requests)
-                //{
-                //    await HttpMessage.RunAsync(s);
-                //    Console.WriteLine($"RunAsync {c2} ok");
-                //    c2++;
-                //}
-                //timerRequest.Stop();
-                //Console.WriteLine($"tempo totale ricezione: {timerRequest.ElapsedMilliseconds}");
-
-                //int c3 = 0;
-                //foreach (string s in HttpMessage.Results)
-                //{
-                //    HttpMessage.ConvertFromJson(s);
-                //    Console.WriteLine($"Json {c3} ok");
-                //    c3++;
-                //}
-
-                //GeoPointsCollection = HttpMessage.Point;
-                //Console.WriteLine(GeoPointsCollection.Count);
-                //CreatePolylines(GeoPointsCollection);
-
-                //CreateRoute(gpxPointsCollection);
                 CreateRoute(GpxPointsCollection, false);
                 timerTot.Stop();
                 Console.WriteLine($"Tempo tot: { timerTot.ElapsedMilliseconds }");
@@ -226,6 +177,7 @@ namespace Progetto
         {
             GpxPointsCollection = new ObservableCollection<GpxPoint>();
             GpxTracePoints = new ObservableCollection<GpxPoint>();
+            Routes = new ObservableCollection<MapItem>();
             MapItems = new ObservableCollection<MapItem>();
             HttpMessage.Reset();
         }
@@ -267,23 +219,26 @@ namespace Progetto
             Report r = new Report();
             var reportViewModel = new ReportViewModel();
             reportViewModel.Points = new ObservableCollection<GpxPoint>();
-            for (int i = 0; i < GpxTracePoints.Count - 1; i++)
+            if (GpxPointsCollection.Count() != 0)
             {
-                if (GpxTracePoints[i].Speed < 150)
+                for (int i = 0; i < GpxTracePoints.Count - 1; i++)
                 {
-                    var timeSpan = (GpxTracePoints[i].Start - GpxTracePoints[i + 1].Start);
-                    if (timeSpan > new TimeSpan(1,0,0))
+                    if (GpxTracePoints[i].Speed < 150)
                     {
-                        if (CalcoloDistanza(GpxTracePoints[i], GpxTracePoints[i + 1]) < 5)
+                        var timeSpan = (GpxTracePoints[i].Start - GpxTracePoints[i + 1].Start);
+                        if (timeSpan > new TimeSpan(1, 0, 0))
+                        {
+                            if (CalcoloDistanza(GpxTracePoints[i], GpxTracePoints[i + 1]) < 5)
+                            {
+                                reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start });
+                                reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i].Start.AddSeconds(1) });
+                                reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i + 1].Start.AddSeconds(-1) });
+                            }
+                        }
+                        else
                         {
                             reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start });
-                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i].Start.AddSeconds(1) });
-                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i + 1].Start.AddSeconds(-1) });
                         }
-                    }
-                    else
-                    {
-                        reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start });
                     }
                 }
             }

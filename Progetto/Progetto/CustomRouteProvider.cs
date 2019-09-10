@@ -58,9 +58,6 @@ namespace Progetto
         RequestCompletedEventArgs CreateEventArgs(bool value)
         {
             Items = new MapItem[1];
-            //Items[1] = new MapPushpin() { Location = route[0], Text = "A", Information = route[0].ToString() };
-            //Items[2] = new MapPushpin() { Location = route[route.Count - 1], Text = "B", Information = route[route.Count - 1].ToString() };
-
             MapPolyline polyline = new MapPolyline()
             {
                 IsGeodesic = true,
@@ -89,11 +86,6 @@ namespace Progetto
         async Task CalculateRouteCore(ObservableCollection<GpxPoint> list, bool value)
         {
             this.route.Clear();
-            //foreach (GpxPoint p in list)
-            //{
-            //    route.Add(new GeoPoint() { Latitude = p.Latitude, Longitude = p.Longitude });
-            //}
-
             if (value)
             {
                 await HttpMessage.HttpRouteRequest(list);

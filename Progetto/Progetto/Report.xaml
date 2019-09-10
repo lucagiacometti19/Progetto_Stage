@@ -6,6 +6,12 @@
         xmlns:local="clr-namespace:Progetto"
         xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts" 
         mc:Ignorable="d"
+        xmlns:dxm="http://schemas.devexpress.com/winfx/2008/xaml/map"
+        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" 
+        xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"  
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+        xmlns:dxc1="http://schemas.devexpress.com/winfx/2008/xaml/core"
         Title="Report" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
@@ -31,7 +37,18 @@
             </dxc:ChartControl.Legend>
         </dxc:ChartControl>-->
 
-        <dxc:ChartControl Name="chartControl1" DataSource="{Binding Path=Points}">
+        <dxr:RibbonControl RibbonStyle="OfficeSlim" ToolbarHideSeparators="True" ShowApplicationButton="False" ToolbarShowMode="Hide">
+            <dxr:RibbonDefaultPageCategory>
+                <dxr:RibbonPage Caption="Strumenti">
+                    <dxr:RibbonPageGroup>
+                        <dxb:BarButtonItem Content="Export PDF" Command="{Binding PdfReport}" Glyph="{dxc1:DXImage Images/Export/ExportToPDF_32x32.png}" RibbonStyle="Large" LargeGlyph="{dxc1:DXImage Images/Export/ExportToPDF_32x32.png}"/>
+                    </dxr:RibbonPageGroup>
+                </dxr:RibbonPage>
+            </dxr:RibbonDefaultPageCategory>
+        </dxr:RibbonControl>
+
+
+        <dxc:ChartControl Grid.Row="1" Name="chartControl1" DataSource="{Binding Path=Points}">
             <dxc:ChartControl.Diagram>
                 <dxc:XYDiagram2D>
                     <dxc:XYDiagram2D.Series>

@@ -110,8 +110,10 @@ namespace Gpx
                         latitude = null;
                     }
                 }
+            reader.Close();
             }
             return points;
+
         }
     }
 
