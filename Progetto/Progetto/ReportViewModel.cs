@@ -9,9 +9,10 @@ using DevExpress.Mvvm;
 using Gpx;
 
 namespace Progetto
-{
+{ 
     class ReportViewModel : ViewModelBase
     {
+        public PDFCreator pdf = new PDFCreator();
         private ObservableCollection<GpxPoint> points;
         public ObservableCollection<GpxPoint> Points
         {
@@ -19,10 +20,17 @@ namespace Progetto
             set { points = value; RaisePropertyChanged(); }
         }
 
-        //public struct ChartPoint
-        //{
-        //    public TimeSpan Start;
-        //    public double Speed;
-        //}
+        private DelegateCommand pdfReport;
+        public DelegateCommand PdfReport
+        {
+            get { return pdfReport ?? (pdfReport = new DelegateCommand(Pdf)); }
+        }
+
+        public void Pdf()
+        {
+            
+            pdf.DoSomething();
+
+        }
     }
 }

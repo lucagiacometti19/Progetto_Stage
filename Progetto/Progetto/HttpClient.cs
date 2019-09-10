@@ -46,22 +46,11 @@ namespace Progetto
 
         public static void RequestAssembler(List<GeoPoint> g)
         {
-            /**OLD**/
-            //string request = "http://routing.pointsecurity.it:8085/italy/routing?callback=itinero.JSONP.callbacks.route2&profile=car";
-
-            //foreach (GeoPoint p in g)
-            //{
-            //    request += "&loc=" + p.Latitude.ToString().Replace(',', '.') + "," + p.Longitude.ToString().Replace(',', '.');
-            //}
-            //request += "&sort=true";
-            //Requests.Add(request);
-
-            /**NEW**/
             string request = "http://routing.pointsecurity.it:8085/route/v1/driving/";
 
             foreach (GeoPoint p in g)
             {
-                if(request.EndsWith("/"))
+                if (request.EndsWith("/"))
                 {
                     request += p.Longitude.ToString().Replace(',', '.') + "," + p.Latitude.ToString().Replace(',', '.');
                 }
@@ -77,7 +66,7 @@ namespace Progetto
 
         public static async Task RunAsync(string p)
         {
-            using(client = new HttpClient())
+            using (client = new HttpClient())
             {
                 client.BaseAddress = new Uri("http://routing.pointsecurity.it:8085");
                 client.DefaultRequestHeaders.Accept.Clear();
@@ -114,80 +103,35 @@ namespace Progetto
         public static void ConvertFromJson(string input)
         {
             Console.WriteLine("Lettura Json");
-            /**OLD**/
-            //string jsResult1 = input.Replace("itinero.JSONP.callbacks.route2(", "");
-            //string jsResult2 = jsResult1.Substring(0, (jsResult1.Length - 2));
-            //JToken contourManifest = JObject.Parse(jsResult2);
-            //JToken features = contourManifest.SelectToken("features");
-
-            /**NEW**/
             JToken contourManifest = JObject.Parse(input);
             JToken routes = contourManifest.SelectToken("routes");
             var routesChildren = routes.Children();
             JToken legs = routesChildren.ToArray()[0].SelectToken("legs");
-            JToken steps = legs.SelectToken("steps");
+            var legsChildren = legs.Children();
+            Console.WriteLine(legsChildren.ToArray()[0]);
+            var steps = legsChildren.ToArray()[0].SelectTokens("steps");
+            var stepsChildren = steps.Children();
             double lat = 0;
             double lon = 0;
 
-            for (int i = 0; i < steps.Count(); i++)
+            for (int i = 0; i < stepsChildren.Count(); i++)
             {
-                JToken intersections = steps[i].SelectToken("intersections");
+                var intersections = stepsChildren.ToArray()[i].SelectTokens("intersections");
+
                 for (int x = 0; x < intersections.Count(); x++)
                 {
-                    JToken location = intersections[x].SelectToken("location");
-                    string c = location.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
-                    Console.WriteLine(c);
-                    c = c.Substring(3, c.Length - 4);
-                    Console.WriteLine(c);
-                    List<string> coord = c.Split(',').ToList();
+                    var intersectionsChildren = intersections.ToArray()[x].Children();
+                    JToken location = intersectionsChildren.ToArray()[0].SelectToken("location");
+                    var coordinates = location.Children();
+                    lat = Convert.ToDouble(coordinates.ToArray()[1]);
+                    lon = Convert.ToDouble(coordinates.ToArray()[0]);
 
-                    for (int y  = 0; y < coord.Count - 1; y = y + 2)
+                    Point.Add(new GpxPoint()
                     {
-                        //if(lat != Convert.ToDouble(points[x + 1]) && lon != Convert.ToDouble(points[x]))
-                        //{
-                        lat = Convert.ToDouble(coord[x + 1], CultureInfo.InvariantCulture);
-                        lon = Convert.ToDouble(coord[x], CultureInfo.InvariantCulture);
-
-                        Point.Add(new GpxPoint()
-                        {
-                            Longitude = lon,
-                            Latitude = lat
-                        });
-                        //}
-                    }
+                        Longitude = lon,
+                        Latitude = lat
+                    });
                 }
-                
-
-                /**OLD**/
-                //JToken geometry = features[i].SelectToken("geometry");
-                //JToken coordinates = geometry.SelectToken("coordinates");
-                //string c = coordinates.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
-                //c = c.Substring(3, c.Length - 4);
-                //string[] parameters = { "[    ", ",    ", "  ],  ", "  ]" };
-                //List<string> points = c.Split(parameters, StringSplitOptions.None).ToList();
-                //for (int s = 0; s < points.Count; s++)
-                //{
-                //    if (points[s] == "")
-                //    {
-                //        points.Remove(points[s]);
-                //    }
-                //}
-
-
-                //for (int x = 0; x < points.Count - 1; x = x + 2)
-                //{
-                //    //if(lat != Convert.ToDouble(points[x + 1]) && lon != Convert.ToDouble(points[x]))
-                //    //{
-                //    lat = Convert.ToDouble(points[x + 1], CultureInfo.InvariantCulture);
-                //    lon = Convert.ToDouble(points[x], CultureInfo.InvariantCulture);
-
-                //    Point.Add(new GpxPoint()
-                //    {
-                //        Longitude = lon,
-                //        Latitude = lat
-                //    });
-                //    //}
-                //}
             }
             Console.WriteLine("Fine lettura");
         }
