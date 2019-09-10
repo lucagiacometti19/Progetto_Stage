@@ -70,7 +70,7 @@ namespace Progetto
                     request += ";" + p.Longitude.ToString().Replace(',', '.') + "," + p.Latitude.ToString().Replace(',', '.');
                 }
             }
-            request += "?overview=false";
+            request += "?overview=false&steps=true";
             Requests.Add(request);
         }
 
@@ -122,33 +122,41 @@ namespace Progetto
 
             /**NEW**/
             JToken contourManifest = JObject.Parse(input);
-            JToken waypoints = contourManifest.SelectToken("waypoints");
+            JToken routes = contourManifest.SelectToken("routes");
+            var routesChildren = routes.Children();
+            JToken legs = routesChildren.ToArray()[0].SelectToken("legs");
+            JToken steps = legs.SelectToken("steps");
             double lat = 0;
             double lon = 0;
 
-            for (int i = 0; i < waypoints.Count(); i++)
+            for (int i = 0; i < steps.Count(); i++)
             {
-                JToken location = waypoints[i].SelectToken("location");
-                string c = location.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
-                Console.WriteLine(c);
-                c = c.Substring(3, c.Length - 4);
-                Console.WriteLine(c);
-                List<string> coord = c.Split(',').ToList();
-
-                for (int x = 0; x < coord.Count - 1; x = x + 2)
+                JToken intersections = steps[i].SelectToken("intersections");
+                for (int x = 0; x < intersections.Count(); x++)
                 {
-                    //if(lat != Convert.ToDouble(points[x + 1]) && lon != Convert.ToDouble(points[x]))
-                    //{
-                    lat = Convert.ToDouble(coord[x + 1], CultureInfo.InvariantCulture);
-                    lon = Convert.ToDouble(coord[x], CultureInfo.InvariantCulture);
+                    JToken location = intersections[x].SelectToken("location");
+                    string c = location.ToString().Replace("\n", string.Empty).Replace("\r", string.Empty);
+                    Console.WriteLine(c);
+                    c = c.Substring(3, c.Length - 4);
+                    Console.WriteLine(c);
+                    List<string> coord = c.Split(',').ToList();
 
-                    Point.Add(new GpxPoint()
+                    for (int y  = 0; y < coord.Count - 1; y = y + 2)
                     {
-                        Longitude = lon,
-                        Latitude = lat
-                    });
-                    //}
+                        //if(lat != Convert.ToDouble(points[x + 1]) && lon != Convert.ToDouble(points[x]))
+                        //{
+                        lat = Convert.ToDouble(coord[x + 1], CultureInfo.InvariantCulture);
+                        lon = Convert.ToDouble(coord[x], CultureInfo.InvariantCulture);
+
+                        Point.Add(new GpxPoint()
+                        {
+                            Longitude = lon,
+                            Latitude = lat
+                        });
+                        //}
+                    }
                 }
+                
 
                 /**OLD**/
                 //JToken geometry = features[i].SelectToken("geometry");
