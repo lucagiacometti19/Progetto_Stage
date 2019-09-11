@@ -20,8 +20,8 @@ namespace Progetto
             set { points = value; RaisePropertyChanged(); }
         }
 
-        private ObservableCollection<GpxPoint> puntiStazionamento;
-        public ObservableCollection<GpxPoint> PuntiStazionamento
+        private ObservableCollection<string> puntiStazionamento;
+        public ObservableCollection<string> PuntiStazionamento
         {
             get { return puntiStazionamento; }
             set { puntiStazionamento = value; RaisePropertiesChanged(); }
@@ -82,6 +82,37 @@ namespace Progetto
             
             pdf.DoSomething();
 
+        }
+
+        private DelegateCommand windowLoad;
+        public DelegateCommand WindowLoad
+        {
+            get { return windowLoad ?? (windowLoad = new DelegateCommand(OnLoad)); }
+        }
+
+        public void OnLoad()
+        {
+            //ricerca punti stazionari
+            //NB: La lista di punti parte dall'ultimo punto di ordine cronologico
+            PuntiStazionamento = new ObservableCollection<string>();
+            int index = 0;
+            for (int i = 0; i < Points.Count; i++)
+            {
+                if (index - i > 0) { continue; }
+                if (Points[i].Speed == 0)
+                {
+                    index = i + 1;
+                    while (index < Points.Count && Points[index].Speed == 0)
+                    {
+                        index++;
+                    }
+                    TimeSpan span = Points[i].Start - Points[index - 1].Start;
+                    if (span > new TimeSpan(0, 0, 10))
+                        PuntiStazionamento.Add($"Punto stazionario: {Points[index - 1].Start}; stazionamento di {span}");
+                    else
+                        PuntiStazionamento.Add($"Punto stazionario: {Points[index - 1].Start}");
+                }
+            }
         }
     }
 }

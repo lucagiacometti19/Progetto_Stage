@@ -14,6 +14,9 @@
         xmlns:dxc1="http://schemas.devexpress.com/winfx/2008/xaml/core"
         xmlns:dxn="http://schemas.devexpress.com/winfx/2008/xaml/navbar"
         Title="Report" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:EventToCommand Event="Loaded" PassEventArgsToCommand="{x:Null}"  Command="{Binding WindowLoad}"/>
+    </dxmvvm:Interaction.Behaviors>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
