@@ -233,14 +233,14 @@ namespace Progetto
                     {
                         if (CalcoloDistanza(GpxTracePoints[i], GpxTracePoints[i + 1]) < 100)
                         {
-                            reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start });
-                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i].Start.AddSeconds(-1) });
-                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i + 1].Start.AddSeconds(1) });
+                            reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start, Longitude = GpxTracePoints[i].Longitude, Latitude = GpxTracePoints[i].Latitude });
+                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i].Start.AddSeconds(-1), Longitude = GpxTracePoints[i].Longitude, Latitude = GpxTracePoints[i].Latitude });
+                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i + 1].Start.AddSeconds(1), Longitude = GpxTracePoints[i].Longitude, Latitude = GpxTracePoints[i].Latitude });
                         }
                     }
                     else
                     {
-                        reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start });
+                        reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start, Longitude = GpxTracePoints[i].Longitude, Latitude = GpxTracePoints[i].Latitude });
                     }
                 }
             }
@@ -248,5 +248,18 @@ namespace Progetto
             r.Owner = Application.Current.MainWindow;
             r.ShowDialog();
         }
+
+        //private DelegateCommand nominatimm;
+        //public DelegateCommand Nominatimm
+        //{
+        //    get { return nominatimm ?? (nominatimm = new DelegateCommand(Nominatimmm)); }
+        //}
+
+        //public async void Nominatimmm()
+        //{
+        //    var result = await Gpx.Nominatim.GetAddress(42, 12);
+        //    string address = result.DisplayName;
+        //    MessageBox.Show(address);
+        //}
     }
 }

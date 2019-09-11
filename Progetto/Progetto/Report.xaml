@@ -13,6 +13,8 @@
         xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
         xmlns:dxc1="http://schemas.devexpress.com/winfx/2008/xaml/core"
         xmlns:dxn="http://schemas.devexpress.com/winfx/2008/xaml/navbar"
+        xmlns:dxnav="http://schemas.devexpress.com/winfx/2008/xaml/navigation" 
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
         Title="Report" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <dxmvvm:Interaction.Behaviors>
         <dxmvvm:EventToCommand Event="Loaded" PassEventArgsToCommand="{x:Null}"  Command="{Binding WindowLoad}"/>
@@ -33,31 +35,12 @@
             </dxr:RibbonDefaultPageCategory>
         </dxr:RibbonControl>
 
-
-        <!--<dxc:ChartControl Name="chartControl1">
-            <dxc:ChartControl.Diagram>
-                <dxc:XYDiagram2D SeriesDataMember ="{Binding Pa}">
-                    <dxc:XYDiagram2D.Series>
-                        <dxc:LineSeries2D DisplayName="Velocità" MarkerVisible="False" DataSource="{Binding Path=Points}" ArgumentDataMember="Start" ValueDataMember="Speed">
-                            <dxc:LineSeries2D.LineStyle>
-                                <dxc:LineStyle Thickness="1" />
-                            </dxc:LineSeries2D.LineStyle>
-                        </dxc:LineSeries2D>
-                    </dxc:XYDiagram2D.Series>
-                </dxc:XYDiagram2D>
-            </dxc:ChartControl.Diagram>
-            <dxc:ChartControl.Legend>
-                <dxc:Legend />
-            </dxc:ChartControl.Legend>
-        </dxc:ChartControl>-->
-
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            
             <dxn:NavBarControl>
                 <dxn:NavBarControl.View>
                     <dxn:ExplorerBarView>
@@ -67,51 +50,32 @@
                         <dxn:ExplorerBarView.ItemLayoutSettings>
                             <dxn:LayoutSettings TextHorizontalAlignment="Center"/>
                         </dxn:ExplorerBarView.ItemLayoutSettings>
-                    </dxn:ExplorerBarView> 
+                    </dxn:ExplorerBarView>
                 </dxn:NavBarControl.View>
                 <dxn:NavBarGroup>
-                    <dxb:BarButtonItem Content="Tracciato 1" />
-                    <dxb:BarButtonItem Content="Tracciato 2"/>
-                    <dxb:BarButtonItem Content="Tracciato 3"/>
+                    <dxn:NavBarItem Content="Route 1" Command="{Binding }"/>
+                    <dxn:NavBarItem Content="Route 2" Command="{Binding }"/>
+                    <dxn:NavBarItem Content="Route 3" Command="{Binding }"/>
                 </dxn:NavBarGroup>
             </dxn:NavBarControl>
 
-
-
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="2*"/>
-                </Grid.RowDefinitions>
-
-
-                <dxc:ChartControl Grid.Row="0" Name="chartControl1" DataSource="{Binding Path=Points}">
-                    <dxc:ChartControl.Diagram>
-                        <dxc:XYDiagram2D>
-                            <dxc:XYDiagram2D.Series>
-                                <dxc:AreaSeries2D DisplayName="Velocita" Transparency="0.5"  ArgumentDataMember="Start" ValueDataMember="Speed">
-                                </dxc:AreaSeries2D>
-                            </dxc:XYDiagram2D.Series>
-                            <dxc:XYDiagram2D.AxisX>
-                                <dxc:AxisX2D Range="SideMarginsEnabled=False">
-                                    <dxc:AxisX2D.DateTimeScaleOptions>
-                                        <dxc:ManualDateTimeScaleOptions AggregateFunction="Minimum" MeasureUnit="Minute" />
-                                    </dxc:AxisX2D.DateTimeScaleOptions>
-                                </dxc:AxisX2D>
-                            </dxc:XYDiagram2D.AxisX>
-                        </dxc:XYDiagram2D>
-                    </dxc:ChartControl.Diagram>
-                </dxc:ChartControl>
-                
-                
-                
-            </Grid>
-
-
-
+            <dxc:ChartControl Grid.Column="1" Grid.Row="0" Name="chartControl1" DataSource="{Binding Path=Points}">
+                <dxc:ChartControl.Diagram>
+                    <dxc:XYDiagram2D>
+                        <dxc:XYDiagram2D.Series>
+                            <dxc:AreaSeries2D DisplayName="Velocita" Transparency="0.5"  ArgumentDataMember="Start" ValueDataMember="Speed">
+                            </dxc:AreaSeries2D>
+                        </dxc:XYDiagram2D.Series>
+                        <dxc:XYDiagram2D.AxisX>
+                            <dxc:AxisX2D Range="SideMarginsEnabled=False">
+                                <dxc:AxisX2D.DateTimeScaleOptions>
+                                    <dxc:ManualDateTimeScaleOptions AggregateFunction="Minimum" MeasureUnit="Minute" />
+                                </dxc:AxisX2D.DateTimeScaleOptions>
+                            </dxc:AxisX2D>
+                        </dxc:XYDiagram2D.AxisX>
+                    </dxc:XYDiagram2D>
+                </dxc:ChartControl.Diagram>
+            </dxc:ChartControl>
         </Grid>
-
-
-
     </Grid>
 </Window>

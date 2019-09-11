@@ -36,6 +36,7 @@
                     <dxr:RibbonPageGroup>
                         <dxb:BarButtonItem Content="Reset" Glyph="{dxc:DXImage Images/XAF/Action_Delete_32x32.png}" Command="{Binding ResetAll}"/>
                         <dxb:BarButtonItem Content="Report" Glyph="{dxc:DXImage Images/Analysis/DropLines_32x32.png}" LargeGlyph="{dxc:DXImage Images/Analysis/DropLines_32x32.png}" Command="{Binding Report}"/>
+                        <!--<dxb:BarButtonItem Content="Nominatim" Command="{Binding Nominatimm}"/>-->
                     </dxr:RibbonPageGroup>
                 </dxr:RibbonPage>
             </dxr:RibbonDefaultPageCategory>

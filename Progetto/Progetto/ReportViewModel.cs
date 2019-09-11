@@ -90,7 +90,7 @@ namespace Progetto
             get { return windowLoad ?? (windowLoad = new DelegateCommand(OnLoad)); }
         }
 
-        public void OnLoad()
+        public async void OnLoad()
         {
             //ricerca punti stazionari
             //NB: La lista di punti parte dall'ultimo punto di ordine cronologico
@@ -106,11 +106,13 @@ namespace Progetto
                     {
                         index++;
                     }
+                    var geocoderResult = await Gpx.Nominatim.GetAddress(Points[index - 1].Latitude, Points[index - 1].Longitude);
+                    string address = geocoderResult.DisplayName;
                     TimeSpan span = Points[i].Start - Points[index - 1].Start;
                     if (span > new TimeSpan(0, 0, 10))
-                        PuntiStazionamento.Add($"Punto stazionario: {Points[index - 1].Start}; stazionamento di {span}");
+                        PuntiStazionamento.Add($"Stazionamento alle: {Points[index - 1].Start}| di durata: {span}| a {address}");
                     else
-                        PuntiStazionamento.Add($"Punto stazionario: {Points[index - 1].Start}");
+                        PuntiStazionamento.Add($"Stazionamento alle: {Points[index - 1].Start}| a {address}");
                 }
             }
         }
