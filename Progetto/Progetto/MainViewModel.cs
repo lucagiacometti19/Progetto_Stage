@@ -223,22 +223,24 @@ namespace Progetto
             {
                 for (int i = 0; i < GpxTracePoints.Count - 1; i++)
                 {
-                    if (GpxTracePoints[i].Speed < 150)
+                    if (GpxTracePoints[i].Speed > 150)
                     {
-                        var timeSpan = (GpxTracePoints[i].Start - GpxTracePoints[i + 1].Start);
-                        if (timeSpan > new TimeSpan(1, 0, 0))
-                        {
-                            if (CalcoloDistanza(GpxTracePoints[i], GpxTracePoints[i + 1]) < 5)
-                            {
-                                reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start });
-                                reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i].Start.AddSeconds(1) });
-                                reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i + 1].Start.AddSeconds(-1) });
-                            }
-                        }
-                        else
+                        GpxTracePoints[i].Speed = 150;
+                    }
+
+                    var timeSpan = (GpxTracePoints[i].Start - GpxTracePoints[i + 1].Start);
+                    if (timeSpan > new TimeSpan(0, 5, 0))
+                    {
+                        if (CalcoloDistanza(GpxTracePoints[i], GpxTracePoints[i + 1]) < 100)
                         {
                             reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start });
+                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i].Start.AddSeconds(-1) });
+                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i + 1].Start.AddSeconds(1) });
                         }
+                    }
+                    else
+                    {
+                        reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start });
                     }
                 }
             }
