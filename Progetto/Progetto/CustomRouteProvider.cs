@@ -61,6 +61,7 @@ namespace Progetto
             MapPolyline polyline = new MapPolyline()
             {
                 IsGeodesic = true,
+                //Stroke rosso se route ottenuta da osrm, route blu se ottenuta da fogli di dati importati
                 Stroke = value ? new SolidColorBrush() { Color = Colors.Red } : new SolidColorBrush() { Color = Colors.Blue },
                 StrokeStyle = new StrokeStyle() { Thickness = 2 }
             };

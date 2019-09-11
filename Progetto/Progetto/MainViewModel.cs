@@ -150,20 +150,28 @@ namespace Progetto
 
         private async void Import()
         {
-            OpenFileDialog open = new OpenFileDialog
+            try
             {
-                Filter = "Xml files (*.xml)|*.xml",
-                Title = "Importa file"
-            };
-            if ((bool)open.ShowDialog())
-            {
-                GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
-                GpxTracePoints = GpxPointsCollection;
 
-                timerTot.Start();
-                CreateRoute(GpxPointsCollection, false);
-                timerTot.Stop();
-                Console.WriteLine($"Tempo tot: { timerTot.ElapsedMilliseconds }");
+                OpenFileDialog open = new OpenFileDialog
+                {
+                    Filter = "Xml files (*.xml)|*.xml",
+                    Title = "Importa file"
+                };
+                if ((bool)open.ShowDialog())
+                {
+                    GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
+                    GpxTracePoints = GpxPointsCollection;
+
+                    timerTot.Start();
+                    CreateRoute(GpxPointsCollection, false);
+                    timerTot.Stop();
+                    Console.WriteLine($"Tempo tot: { timerTot.ElapsedMilliseconds }");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
             }
         }
 
@@ -219,7 +227,7 @@ namespace Progetto
             Report r = new Report();
             var reportViewModel = new ReportViewModel();
             reportViewModel.Points = new ObservableCollection<GpxPoint>();
-            if (GpxPointsCollection.Count() != 0)
+            if (GpxTracePoints != null && GpxTracePoints.Count() != 0)
             {
                 for (int i = 0; i < GpxTracePoints.Count - 1; i++)
                 {
