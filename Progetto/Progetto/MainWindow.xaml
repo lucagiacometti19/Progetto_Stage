@@ -11,7 +11,7 @@
         xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core" 
         xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
         mc:Ignorable="d"
-        Title="MainWindow"  Height="{Binding SystemParameters.PrimaryScreenHeight}" Width="{Binding SystemParameters.PrimaryScreenWidth}">
+        Title="MainWindow"  Height="{Binding SystemParameters.PrimaryScreenHeight}" Width="{Binding SystemParameters.PrimaryScreenWidth}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -34,8 +34,6 @@
                         <dxb:BarButtonItem Content="Apri" Command="{Binding ImportCommand}" Glyph="{dxc:DXImage Images/Actions/Open2_32x32.png}" RibbonStyle="Large" LargeGlyph="{dxc:DXImage Images/Actions/Open2_32x32.png}"/>
                     </dxr:RibbonPageGroup>
                     <dxr:RibbonPageGroup>
-                        <dxb:BarButtonItem Content="Avanti" Glyph="{dxc:DXImage Images/Actions/Refresh2_16x16.png}"/>
-                        <dxb:BarButtonItem Content="Indietro" Glyph="{dxc:DXImage Images/Actions/Reset2_16x16.png}"/>
                         <dxb:BarButtonItem Content="Reset" Glyph="{dxc:DXImage Images/XAF/Action_Delete_32x32.png}" Command="{Binding ResetAll}"/>
                         <dxb:BarButtonItem Content="Report" Glyph="{dxc:DXImage Images/Analysis/DropLines_32x32.png}" LargeGlyph="{dxc:DXImage Images/Analysis/DropLines_32x32.png}" Command="{Binding Report}"/>
                     </dxr:RibbonPageGroup>

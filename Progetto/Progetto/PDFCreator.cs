@@ -10,10 +10,6 @@ namespace Progetto
 {
     public class PDFCreator
     {
-        //Velocitamedia
-        //Lunghezza
-        //ora inizio- fine
-        //massima- minima
         string Nome = "Report";
         int VelocitaMedia, Massima, Minima, LunghezzaPercorso = 1000;
         DateTime Inizio, Fine;
