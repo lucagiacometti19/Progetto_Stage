@@ -1,0 +1,81 @@
+﻿<Window x:Class="Progetto.Report"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Progetto"
+        xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/charts" 
+        mc:Ignorable="d"
+        xmlns:dxm="http://schemas.devexpress.com/winfx/2008/xaml/map"
+        xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" 
+        xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"  
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
+        xmlns:dxc1="http://schemas.devexpress.com/winfx/2008/xaml/core"
+        xmlns:dxn="http://schemas.devexpress.com/winfx/2008/xaml/navbar"
+        xmlns:dxnav="http://schemas.devexpress.com/winfx/2008/xaml/navigation" 
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+        Title="Report" Height="450" Width="800" WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    <dxmvvm:Interaction.Behaviors>
+        <dxmvvm:EventToCommand Event="Loaded" PassEventArgsToCommand="{x:Null}"  Command="{Binding WindowLoad}"/>
+    </dxmvvm:Interaction.Behaviors>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <dxr:RibbonControl Grid.Column="1" RibbonStyle="OfficeSlim" ToolbarHideSeparators="True" ShowApplicationButton="False" ToolbarShowMode="Hide">
+            <dxr:RibbonDefaultPageCategory>
+                <dxr:RibbonPage Caption="Strumenti">
+                    <dxr:RibbonPageGroup>
+                        <dxb:BarButtonItem Content="Export PDF" Command="{Binding PdfReport}" Glyph="{dxc1:DXImage Images/Export/ExportToPDF_32x32.png}" RibbonStyle="Large" LargeGlyph="{dxc1:DXImage Images/Export/ExportToPDF_32x32.png}"/>
+                    </dxr:RibbonPageGroup>
+                </dxr:RibbonPage>
+            </dxr:RibbonDefaultPageCategory>
+        </dxr:RibbonControl>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <dxn:NavBarControl>
+                <dxn:NavBarControl.View>
+                    <dxn:ExplorerBarView>
+                        <dxn:ExplorerBarView.ItemsPanelOrientation>Vertical</dxn:ExplorerBarView.ItemsPanelOrientation>
+                        <dxn:ExplorerBarView.Orientation>Horizontal</dxn:ExplorerBarView.Orientation>
+                        <dxn:ExplorerBarView.GroupDisplayMode>Text</dxn:ExplorerBarView.GroupDisplayMode>
+                        <dxn:ExplorerBarView.ItemLayoutSettings>
+                            <dxn:LayoutSettings TextHorizontalAlignment="Center"/>
+                        </dxn:ExplorerBarView.ItemLayoutSettings>
+                    </dxn:ExplorerBarView>
+                </dxn:NavBarControl.View>
+                <dxn:NavBarGroup>
+                    <dxn:NavBarItem Content="Route 1" Command="{Binding }"/>
+                    <dxn:NavBarItem Content="Route 2" Command="{Binding }"/>
+                    <dxn:NavBarItem Content="Route 3" Command="{Binding }"/>
+                </dxn:NavBarGroup>
+            </dxn:NavBarControl>
+
+            <dxc:ChartControl Grid.Column="1" Grid.Row="0" Name="chartControl1" DataSource="{Binding Path=Points}">
+                <dxc:ChartControl.Diagram>
+                    <dxc:XYDiagram2D>
+                        <dxc:XYDiagram2D.Series>
+                            <dxc:AreaSeries2D DisplayName="Velocita" Transparency="0.5"  ArgumentDataMember="Start" ValueDataMember="Speed">
+                            </dxc:AreaSeries2D>
+                        </dxc:XYDiagram2D.Series>
+                        <dxc:XYDiagram2D.AxisX>
+                            <dxc:AxisX2D Range="SideMarginsEnabled=False">
+                                <dxc:AxisX2D.DateTimeScaleOptions>
+                                    <dxc:ManualDateTimeScaleOptions AggregateFunction="Minimum" MeasureUnit="Minute" />
+                                </dxc:AxisX2D.DateTimeScaleOptions>
+                            </dxc:AxisX2D>
+                        </dxc:XYDiagram2D.AxisX>
+                    </dxc:XYDiagram2D>
+                </dxc:ChartControl.Diagram>
+            </dxc:ChartControl>
+        </Grid>
+    </Grid>
+</Window>

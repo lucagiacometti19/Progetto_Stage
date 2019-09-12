@@ -6,46 +6,67 @@
         xmlns:local="clr-namespace:Progetto"
         xmlns:dxm="http://schemas.devexpress.com/winfx/2008/xaml/map"
         xmlns:dxmvvm="http://schemas.devexpress.com/winfx/2008/xaml/mvvm" 
+        xmlns:dxr="http://schemas.devexpress.com/winfx/2008/xaml/ribbon"
+        xmlns:dxb="http://schemas.devexpress.com/winfx/2008/xaml/bars"  
+        xmlns:dxc="http://schemas.devexpress.com/winfx/2008/xaml/core" 
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow"  Height="{Binding SystemParameters.PrimaryScreenHeight}" Width="{Binding SystemParameters.PrimaryScreenWidth}" WindowStartupLocation="CenterScreen" WindowState="Maximized">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
-        <Button  Content="Importa" Command="{Binding ImportCommand}" Grid.ColumnSpan="2"/>
+        <!--<Button  Content="Importa" Command="{Binding ImportCommand}"/>-->
 
-        <dxm:MapControl Grid.Row="1" ZoomLevel="4" Grid.ColumnSpan="2">
+        <!--<dxm:MapControl Grid.Row="1" ZoomLevel="4">
+            <dxm:ImageLayer>
+                <dxm:BingMapDataProvider BingKey="mWuksRMdb006DVTVeRoy~VBby6uhRsgm_fGc4n7RuVA~AmHfaZlNw0sc5TxdXkuC6wuf13uenZlF184AN_kdfZZuyj_VCS4BKOqfXF0KUsqi"/>
+            </dxm:ImageLayer>-->
+        <!--<dxm:InformationLayer DataProvider="{Binding RouteDataProvider}" EnableHighlighting="False"/>-->
+        <!--</dxm:MapControl>-->
+
+        <dxr:RibbonControl RibbonStyle="OfficeSlim" ToolbarHideSeparators="True" ShowApplicationButton="False" ToolbarShowMode="Hide">
+            <dxr:RibbonDefaultPageCategory>
+                <dxr:RibbonPage Caption="Home">
+                    <dxr:RibbonPageGroup>
+                        <dxb:BarButtonItem Content="Apri" Command="{Binding ImportCommand}" Glyph="{dxc:DXImage Images/Actions/Open2_32x32.png}" RibbonStyle="Large" LargeGlyph="{dxc:DXImage Images/Actions/Open2_32x32.png}"/>
+                    </dxr:RibbonPageGroup>
+                    <dxr:RibbonPageGroup>
+                        <dxb:BarButtonItem Content="Reset" Glyph="{dxc:DXImage Images/XAF/Action_Delete_32x32.png}" Command="{Binding ResetAll}"/>
+                        <dxb:BarButtonItem Content="Report" Glyph="{dxc:DXImage Images/Analysis/DropLines_32x32.png}" LargeGlyph="{dxc:DXImage Images/Analysis/DropLines_32x32.png}" Command="{Binding Report}"/>
+                        <!--<dxb:BarButtonItem Content="Nominatim" Command="{Binding Nominatimm}"/>-->
+                    </dxr:RibbonPageGroup>
+                </dxr:RibbonPage>
+            </dxr:RibbonDefaultPageCategory>
+
+            <dxr:RibbonControl.ToolbarItems>
+                <dxb:BarButtonItem Content="BarButtonItem" Glyph="{dxc:DXImage Images/Actions/Trash_16x16.png}"/>
+            </dxr:RibbonControl.ToolbarItems>
+        </dxr:RibbonControl>
+
+        <dxm:MapControl Grid.Row="1" ZoomLevel="4" MouseDoubleClick="MapControl_MouseDoubleClick">
             <dxm:ImageLayer>
                 <dxm:OpenStreetMapDataProvider/>
             </dxm:ImageLayer>
-
-            <!--<dxm:VectorLayer ShapeFill="Red" ShapeStroke="Red">
+            <dxm:VectorLayer x:Name="vector">
                 <dxm:VectorLayer.Data>
-                    <dxm:ListSourceDataAdapter DataSource="{Binding GpxPointsCollection}">
-                        <dxm:ListSourceDataAdapter.Mappings>
-                            <dxm:MapItemMappingInfo Latitude="Latitude" Longitude="Longitude"/>
-                        </dxm:ListSourceDataAdapter.Mappings>
-                        <dxm:ListSourceDataAdapter.ItemSettings>
-                            <dxm:MapDotSettings Size="5"/>
-                        </dxm:ListSourceDataAdapter.ItemSettings>
-                    </dxm:ListSourceDataAdapter>
-                </dxm:VectorLayer.Data>-->
-
-            <dxm:VectorLayer>
-                <dxm:VectorLayer.Data>
-                    <dxm:ListSourceDataAdapter DataSource="{Binding PolylineCollection}">
-                        <dxm:ListSourceDataAdapter.Mappings>
-                            <dxm:MapItemMappingInfo Latitude="Latitude" Longitude="Longitude"/>
-                        </dxm:ListSourceDataAdapter.Mappings>
-                        <dxm:ListSourceDataAdapter.ItemSettings>
-                            <dxm:MapPolylineSettings />
-                        </dxm:ListSourceDataAdapter.ItemSettings>
+                    <dxm:ListSourceDataAdapter DataSource="{Binding MapItems}">
                     </dxm:ListSourceDataAdapter>
                 </dxm:VectorLayer.Data>
             </dxm:VectorLayer>
-            <!--<dxm:InformationLayer DataProvider="{Binding BingRouteData}" EnableHighlighting="False"/>-->
+
+            <dxm:VectorLayer x:Name="vector2">
+                <dxm:VectorLayer.Data>
+                    <dxm:ListSourceDataAdapter DataSource="{Binding Routes}">
+                    </dxm:ListSourceDataAdapter>
+                </dxm:VectorLayer.Data>
+            </dxm:VectorLayer>
         </dxm:MapControl>
+
+        <!--<dxmvvm:Interaction.Behaviors>
+            <dxmvvm:EventToCommand EventName="MouseDown" Command="{Binding Mouse_DoubleClick}" PassEventArgsToCommand="True" ModifierKeys="Ctrl"/>
+        </dxmvvm:Interaction.Behaviors>-->
     </Grid>
 </Window>

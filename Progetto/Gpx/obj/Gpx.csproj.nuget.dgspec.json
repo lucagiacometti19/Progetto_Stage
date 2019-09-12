@@ -1,0 +1,66 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Pavilion\\Desktop\\Stage\\Progetti\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Pavilion\\Desktop\\Stage\\Progetti\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Pavilion\\Desktop\\Stage\\Progetti\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj",
+        "projectName": "Gpx",
+        "projectPath": "C:\\Users\\Pavilion\\Desktop\\Stage\\Progetti\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj",
+        "packagesPath": "C:\\Users\\Pavilion\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Pavilion\\Desktop\\Stage\\Progetti\\Progetto_Stage\\Progetto\\Gpx\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Pavilion\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 19.1.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "netstandard2.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\DevExpress 19.1\\Components\\System\\Components\\Packages": {},
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "netstandard2.0": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "netstandard2.0": {
+          "dependencies": {
+            "NETStandard.Library": {
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[2.0.3, )",
+              "autoReferenced": true
+            },
+            "Nominatim.API": {
+              "target": "Package",
+              "version": "[1.5.2, )"
+            }
+          },
+          "imports": [
+            "net461"
+          ],
+          "assetTargetFallback": true,
+          "warn": true
+        }
+      }
+    }
+  }
+}
