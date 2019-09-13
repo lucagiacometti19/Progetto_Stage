@@ -861,7 +861,6 @@ C:\Users\Pavilion\Desktop\Stage\Progetti\Progetto_Stage\Progetto\Progetto\bin\De
 C:\Users\Pavilion\Desktop\Stage\Progetti\Progetto_Stage\Progetto\Progetto\bin\Debug\es\DevExpress.XtraNavBar.v19.1.resources.dll
 C:\Users\Pavilion\Desktop\Stage\Progetti\Progetto_Stage\Progetto\Progetto\bin\Debug\ja\DevExpress.XtraNavBar.v19.1.resources.dll
 C:\Users\Pavilion\Desktop\Stage\Progetti\Progetto_Stage\Progetto\Progetto\bin\Debug\ru\DevExpress.XtraNavBar.v19.1.resources.dll
-C:\Users\Pavilion\Desktop\Stage\Progetti\Progetto_Stage\Progetto\Progetto\bin\Debug\it\StreamJsonRpc.resources.dll
 C:\Users\Pavilion\Desktop\Stage\Progetti\Progetto_Stage\Progetto\Progetto\bin\Debug\de\DevExpress.Spreadsheet.v19.1.Core.resources.dll
 C:\Users\Pavilion\Desktop\Stage\Progetti\Progetto_Stage\Progetto\Progetto\bin\Debug\es\DevExpress.Spreadsheet.v19.1.Core.resources.dll
 C:\Users\Pavilion\Desktop\Stage\Progetti\Progetto_Stage\Progetto\Progetto\bin\Debug\ja\DevExpress.Spreadsheet.v19.1.Core.resources.dll

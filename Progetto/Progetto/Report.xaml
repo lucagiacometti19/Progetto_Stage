@@ -41,12 +41,15 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <dxn:NavBarControl ItemsSource="{Binding ListaDiViewModel}" SelectedItem="{Binding SelectedViewModel }">
+            <dxn:NavBarControl ItemsSource="{Binding RouteViewModels}" SelectedItem="{Binding CurrentViewModel }">
                 <dxn:NavBarControl.View>
-                    <dxn:ExplorerBarView>
-                        <dxn:ExplorerBarView.ItemsPanelOrientation>Vertical</dxn:ExplorerBarView.ItemsPanelOrientation>
-                        <dxn:ExplorerBarView.Orientation>Horizontal</dxn:ExplorerBarView.Orientation>
-                        <dxn:ExplorerBarView.GroupDisplayMode>Text</dxn:ExplorerBarView.GroupDisplayMode>
+                    <dxn:ExplorerBarView Orientation="Vertical">
+                        <dxn:ExplorerBarView.ItemsPanelOrientation>
+                            <Orientation>Vertical</Orientation>
+                        </dxn:ExplorerBarView.ItemsPanelOrientation>
+                        <dxn:ExplorerBarView.GroupDisplayMode>
+                            <dxn:DisplayMode>Text</dxn:DisplayMode>
+                        </dxn:ExplorerBarView.GroupDisplayMode>
                         <dxn:ExplorerBarView.ItemLayoutSettings>
                             <dxn:LayoutSettings TextHorizontalAlignment="Center"/>
                         </dxn:ExplorerBarView.ItemLayoutSettings>
@@ -54,10 +57,10 @@
                 </dxn:NavBarControl.View>
                 <dxn:NavBarControl.ItemTemplate>
                     <DataTemplate>
-                        <dxn:NavBarGroup Header="{Binding nomedelrouteviewmodel}" ItemsSource="{Binding listadisottoroute}">
+                        <dxn:NavBarGroup Header="{Binding Nome}" ItemsSource="{Binding SegmentsCollection}">
                             <dxn:NavBarGroup.ItemTemplate>
                                 <DataTemplate>
-                                    <dxn:NavBarItem Content="{Binding nomeSottoRoute}"/>
+                                    <dxn:NavBarItem Content="{Binding Nome}"/>
                                 </DataTemplate>
                             </dxn:NavBarGroup.ItemTemplate>
                         </dxn:NavBarGroup>
@@ -70,7 +73,7 @@
                 </dxn:NavBarGroup>-->
             </dxn:NavBarControl>
 
-            <dxc:ChartControl Grid.Column="1" Grid.Row="0" Name="chartControl1" DataSource="{Binding Path=Points}">
+            <dxc:ChartControl Grid.Column="1" Grid.Row="0" Name="chartControl1" DataContext="{Binding CurrentViewModel}" DataSource="{Binding MainRoute}">
                 <dxc:ChartControl.Diagram>
                     <dxc:XYDiagram2D>
                         <dxc:XYDiagram2D.Series>
