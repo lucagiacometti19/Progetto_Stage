@@ -41,7 +41,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <dxn:NavBarControl>
+            <dxn:NavBarControl ItemsSource="{Binding ListaDiViewModel}" SelectedItem="{Binding SelectedViewModel }">
                 <dxn:NavBarControl.View>
                     <dxn:ExplorerBarView>
                         <dxn:ExplorerBarView.ItemsPanelOrientation>Vertical</dxn:ExplorerBarView.ItemsPanelOrientation>
@@ -52,11 +52,22 @@
                         </dxn:ExplorerBarView.ItemLayoutSettings>
                     </dxn:ExplorerBarView>
                 </dxn:NavBarControl.View>
-                <dxn:NavBarGroup>
-                    <dxn:NavBarItem Content="Route 1" Command="{Binding }"/>
-                    <dxn:NavBarItem Content="Route 2" Command="{Binding }"/>
-                    <dxn:NavBarItem Content="Route 3" Command="{Binding }"/>
-                </dxn:NavBarGroup>
+                <dxn:NavBarControl.ItemTemplate>
+                    <DataTemplate>
+                        <dxn:NavBarGroup Header="{Binding nomedelrouteviewmodel}" ItemsSource="{Binding listadisottoroute}">
+                            <dxn:NavBarGroup.ItemTemplate>
+                                <DataTemplate>
+                                    <dxn:NavBarItem Content="{Binding nomeSottoRoute}"/>
+                                </DataTemplate>
+                            </dxn:NavBarGroup.ItemTemplate>
+                        </dxn:NavBarGroup>
+                    </DataTemplate>
+                </dxn:NavBarControl.ItemTemplate>
+                <!--<dxn:NavBarGroup>
+                    <dxn:NavBarItem Content="Route 1"/>
+                    <dxn:NavBarItem Content="Route 2"/>
+                    <dxn:NavBarItem Content="Route 3"/>
+                </dxn:NavBarGroup>-->
             </dxn:NavBarControl>
 
             <dxc:ChartControl Grid.Column="1" Grid.Row="0" Name="chartControl1" DataSource="{Binding Path=Points}">

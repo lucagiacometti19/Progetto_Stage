@@ -106,6 +106,11 @@ namespace Progetto
             MapItems.Add(mapPushpin);
         }
 
+        /// <summary>
+        /// Si appoggia a CustomRouteProvider per visualizzare la route su osm
+        /// </summary>
+        /// <param name="gpxPoints">lista di gpx point della route</param>
+        /// <param name="value">true per richiedere la polilinea al server, false per mostrare la polilinea che unisce i punti senza richiesta al server</param>
         public async void CreateRoute(ObservableCollection<GpxPoint> gpxPoints, bool value)
         {
             CustomRouteProvider RouteProvider = new CustomRouteProvider();
@@ -164,7 +169,7 @@ namespace Progetto
                     GpxTracePoints = GpxPointsCollection;
 
                     timerTot.Start();
-                    CreateRoute(GpxPointsCollection, false);
+                    CreateRoute(gpxPointsCollection, true);
                     timerTot.Stop();
                     Console.WriteLine($"Tempo tot: { timerTot.ElapsedMilliseconds }");
                 }
@@ -191,29 +196,6 @@ namespace Progetto
         }
 
 
-        private static double CalcoloDistanza(GpxPoint p1, GpxPoint p2)
-        {
-            /* Definisce le costanti e le variabili */
-            const double R = 6371;
-            double lat_alfa, lat_beta;
-            double lon_alfa, lon_beta;
-            double fi;
-            double p, d;
-            /* Converte i gradi in radianti */
-            lat_alfa = Math.PI * p1.Latitude / 180;
-            lat_beta = Math.PI * p2.Latitude / 180;
-            lon_alfa = Math.PI * p1.Longitude / 180;
-            lon_beta = Math.PI * p2.Longitude / 180;
-            /* Calcola l'angolo compreso fi */
-            fi = Math.Abs(lon_alfa - lon_beta);
-            /* Calcola il terzo lato del triangolo sferico */
-            p = Math.Acos(Math.Sin(lat_beta) * Math.Sin(lat_alfa) +
-              Math.Cos(lat_beta) * Math.Cos(lat_alfa) * Math.Cos(fi));
-            /* Calcola la distanza sulla superficie 
-            terrestre R = ~6371 km */
-            d = p * R;
-            return (d);
-        }
 
 
         private DelegateCommand report;
@@ -239,7 +221,7 @@ namespace Progetto
                     var timeSpan = (GpxTracePoints[i].Start - GpxTracePoints[i + 1].Start);
                     if (timeSpan > new TimeSpan(0, 5, 0))
                     {
-                        if (CalcoloDistanza(GpxTracePoints[i], GpxTracePoints[i + 1]) < 100)
+                        if (GpxReader.CalcoloDistanza(GpxTracePoints[i], GpxTracePoints[i + 1]) < 100)
                         {
                             reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start, Longitude = GpxTracePoints[i].Longitude, Latitude = GpxTracePoints[i].Latitude });
                             reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i].Start.AddSeconds(-1), Longitude = GpxTracePoints[i].Longitude, Latitude = GpxTracePoints[i].Latitude });

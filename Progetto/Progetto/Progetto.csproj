@@ -115,6 +115,7 @@
     </Compile>
     <Compile Include="ReportViewModel.cs" />
     <Compile Include="RouteProvider.cs" />
+    <Compile Include="RouteViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

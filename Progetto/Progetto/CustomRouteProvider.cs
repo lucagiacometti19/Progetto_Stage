@@ -90,6 +90,7 @@ namespace Progetto
             if (value)
             {
                 await HttpMessage.HttpRouteRequest(list);
+                HttpMessage.ThinPointCollection();
                 foreach (GpxPoint p in HttpMessage.Point)
                 {
                     route.Add(new GeoPoint() { Latitude = p.Latitude, Longitude = p.Longitude });
