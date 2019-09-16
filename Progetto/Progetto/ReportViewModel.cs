@@ -11,21 +11,21 @@ namespace Progetto
     {
         public ReportViewModel()
         {
-            routeViewModels = new ObservableCollection<Route>();
-            currentViewModel = new Route();
+            routeViewModels = new ObservableCollection<RouteViewModel>();
+            currentViewModel = new RouteViewModel();
         }
 
-        private ObservableCollection<Route> routeViewModels;
+        private ObservableCollection<RouteViewModel> routeViewModels;
 
-        public ObservableCollection<Route> RouteViewModels
+        public ObservableCollection<RouteViewModel> RouteViewModels
         {
             get { return routeViewModels; }
             set { routeViewModels = value; RaisePropertyChanged(); }
         }
 
-        private Route currentViewModel;
+        private RouteViewModel currentViewModel;
 
-        public Route CurrentViewModel
+        public RouteViewModel CurrentViewModel
         {
             get { return currentViewModel; }
             set { currentViewModel = value; RaisePropertyChanged(); }
@@ -85,53 +85,17 @@ namespace Progetto
                     subRoute.Add(point);
                     alreadyAdded = false;
                 }
-                else if(!alreadyAdded)
+                else if (!alreadyAdded)
                 {
                     if (subRoute.Count > 2)
                     {
-                        CurrentViewModel.SegmentsCollection.Add(new Route() { MainRoute = subRoute, Nome = "Sotto-route" });
+                        CurrentViewModel.SegmentsCollection.Add(new RouteViewModel() { MainRoute = subRoute, Nome = "Sotto-route" });
                         subRoute = new ObservableCollection<GpxPoint>();
                         alreadyAdded = true;
                     }
                 }
             }
         }
-
-        //public async Task CalcolaDati()
-        //{
-        //    CalculateMaxSpeed();
-        //    CalculateMinSpeed();
-        //    CalculateMediumSpeed();
-        //    CalculateRouteLenght();
-        //    CalculateStart();
-        //    CalculateEnd();
-        //    await CalcolaPuntiStazionamento();
-        //}
-
-        //public async Task CalcolaPuntiStazionamento()
-        //{
-        //    CurrentViewModel.PuntiStazionamento = new ObservableCollection<string>();
-        //    int index = 0;
-        //    for (int i = 0; i < CurrentViewModel.MainRoute.Count; i++)
-        //    {
-        //        if (index - i > 0) { continue; }
-        //        if (CurrentViewModel.MainRoute[i].Speed == 0)
-        //        {
-        //            index = i + 1;
-        //            while (index < CurrentViewModel.MainRoute.Count && CurrentViewModel.MainRoute[index].Speed == 0)
-        //            {
-        //                index++;
-        //            }
-        //            var geocoderResult = await Gpx.Nominatim.GetAddress(CurrentViewModel.MainRoute[index - 1].Latitude, CurrentViewModel.MainRoute[index - 1].Longitude);
-        //            string address = geocoderResult.DisplayName;
-        //            TimeSpan span = CurrentViewModel.MainRoute[i].Start - CurrentViewModel.MainRoute[index - 1].Start;
-        //            if (span > new TimeSpan(0, 0, 10))
-        //                CurrentViewModel.PuntiStazionamento.Add($"Stazionamento alle: {CurrentViewModel.MainRoute[index - 1].Start}| di durata: {span}| a {address}");
-        //            else
-        //                CurrentViewModel.PuntiStazionamento.Add($"Stazionamento alle: {CurrentViewModel.MainRoute[index - 1].Start}| a {address}");
-        //        }
-        //    }
-        //}
 
         public void CalculateMaxSpeed()
         {

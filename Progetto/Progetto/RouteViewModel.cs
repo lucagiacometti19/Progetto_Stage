@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace Progetto
 {
-    public class Route : ViewModelBase
+    public class RouteViewModel : ViewModelBase
     {
-        public Route()
+        public RouteViewModel()
         {
-            segmentsCollection = new ObservableCollection<Route>();
+            segmentsCollection = new ObservableCollection<RouteViewModel>();
             mainRoute = new ObservableCollection<GpxPoint>();
             puntiStazionamento = new ObservableCollection<string>();
             velocitaMedia = 0;
@@ -24,9 +24,9 @@ namespace Progetto
             oraInizio = "";
         }
 
-        private ObservableCollection<Route> segmentsCollection;
+        private ObservableCollection<RouteViewModel> segmentsCollection;
 
-        public ObservableCollection<Route> SegmentsCollection
+        public ObservableCollection<RouteViewModel> SegmentsCollection
         {
             get { return segmentsCollection; }
             set { segmentsCollection = value; RaisePropertyChanged(); }

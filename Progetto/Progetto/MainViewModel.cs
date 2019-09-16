@@ -26,13 +26,11 @@ namespace Progetto
         public MainViewModel()
         {
             gpxPointsCollection = new ObservableCollection<GpxPoint>();
-            reportViewModel = new ReportViewModel();
             mapItems = new ObservableCollection<MapItem>();
             routes = new ObservableCollection<MapItem>();
+            currentViewModel = new RouteViewModel();
+            routeViewModels = new ObservableCollection<RouteViewModel>();
         }
-
-        //campo
-        private ReportViewModel reportViewModel;
 
         private ObservableCollection<GpxPoint> gpxPointsCollection;
         public ObservableCollection<GpxPoint> GpxPointsCollection
@@ -48,20 +46,6 @@ namespace Progetto
             get { return gpxTracePoints; }
             set { gpxTracePoints = value; RaisePropertyChanged(); }
         }
-        //private ObservableCollection<GeoPoint> geoPointsCollection;
-        //public ObservableCollection<GeoPoint> GeoPointsCollection
-        //{
-        //    get { return geoPointsCollection; }
-        //    set { geoPointsCollection = value; RaisePropertyChanged(); }
-        //}
-
-        //private ObservableCollection<MapPolyline> polylineCollection;
-        //public ObservableCollection<MapPolyline> PolylineCollection
-        //{
-        //    get { return polylineCollection; }
-        //    set { polylineCollection = value; RaisePropertyChanged(); }
-        //}
-
 
         private ObservableCollection<MapItem> mapItems;
         public ObservableCollection<MapItem> MapItems
@@ -76,6 +60,23 @@ namespace Progetto
         {
             get { return routes; }
             set { routes = value; RaisePropertyChanged(); }
+        }
+
+        //Report properties
+        private ObservableCollection<RouteViewModel> routeViewModels;
+
+        public ObservableCollection<RouteViewModel> RouteViewModels
+        {
+            get { return routeViewModels; }
+            set { routeViewModels = value; RaisePropertyChanged(); }
+        }
+
+        private RouteViewModel currentViewModel;
+
+        public RouteViewModel CurrentViewModel
+        {
+            get { return currentViewModel; }
+            set { currentViewModel = value; RaisePropertyChanged(); }
         }
 
         public async Task CreateMapPushpinAsync(GeoPoint point)
@@ -170,7 +171,7 @@ namespace Progetto
                     //Aggiungo!
                     string name = Path.GetFileNameWithoutExtension(open.FileName);
                     bool newRouteVM = true;
-                    foreach (var routeViewModel in reportViewModel.RouteViewModels ?? Enumerable.Empty<Route>())
+                    foreach (var routeViewModel in RouteViewModels ?? Enumerable.Empty<RouteViewModel>())
                     {
                         if (name == routeViewModel.Nome)
                         {
@@ -180,13 +181,23 @@ namespace Progetto
                     }
                     if (newRouteVM)
                     {
-                        var newRoute = new Route() { Nome = name, MainRoute = GpxTracePoints };
-                        reportViewModel.RouteViewModels.Add(newRoute);
-                        reportViewModel.CurrentViewModel = newRoute;
+                        var newRoute = new RouteViewModel() { Nome = name, MainRoute = GpxTracePoints };
+                        RouteViewModels.Add(newRoute);
+                        CurrentViewModel = newRoute;
                     }
-
+                    //creo la route da mostrate su osm
                     CreateRoute(gpxPointsCollection, false);
 
+                    //calcolo le proprietà della route
+                    CalculateStationaryPoints();
+                    GetSubroutes();
+                    await GetStationaryPoints();
+                    CalculateMaxSpeed();
+                    CalculateMediumSpeed();
+                    CalculateMinSpeed();
+                    CalculateRouteLenght();
+                    CalculateStart();
+                    CalculateEnd();
                 }
             }
             catch (Exception e)
@@ -207,12 +218,155 @@ namespace Progetto
             GpxTracePoints = new ObservableCollection<GpxPoint>();
             Routes = new ObservableCollection<MapItem>();
             MapItems = new ObservableCollection<MapItem>();
-            reportViewModel = new ReportViewModel();
             HttpMessage.Reset();
         }
 
+        #region Metodi per il report
+        private void CalculateStationaryPoints()
+        {
+            var mainRoute = CurrentViewModel.MainRoute;
+            var iteractions = mainRoute.Count;
+            for (int i = 0; i < iteractions - 1; i++)
+            {
+                if (mainRoute[i].Speed > 150)
+                {
+                    mainRoute[i].Speed = 150;
+                }
 
+                var timeSpan = (mainRoute[i].Start - mainRoute[i + 1].Start);
 
+                double speed = mainRoute[i].Speed;
+                DateTime start1 = mainRoute[i].Start;
+                double lon = mainRoute[i].Longitude;
+                double lat = mainRoute[i].Latitude;
+
+                if (timeSpan > new TimeSpan(0, 5, 0))
+                {
+
+                    DateTime start2 = mainRoute[i + 1].Start;
+
+                    if (GpxReader.CalcoloDistanza(mainRoute[i], mainRoute[i + 1]) > 0.0005)
+                    {
+                        //"Finish" viene modificata per iterare la lista in cerca di subroutes più velocemente in seguito
+                        mainRoute[i] = new GpxPoint() { Speed = 0, Start = start1.AddSeconds(-1), Longitude = lon, Latitude = lat, Finish = new DateTime(1) };
+                        mainRoute[i + 1] = new GpxPoint() { Speed = 0, Start = start2.AddSeconds(1), Longitude = lon, Latitude = lat, Finish = new DateTime(1) };
+                    }
+                }
+            }
+        }
+
+        private async Task GetStationaryPoints()
+        {
+            try
+            {
+                CurrentViewModel.PuntiStazionamento = new ObservableCollection<string>();
+                int index = 0;
+                for (int i = 0; i < CurrentViewModel.MainRoute.Count; i++)
+                {
+                    if (index - i > 0) { continue; }
+                    if (CurrentViewModel.MainRoute[i].Speed == 0)
+                    {
+                        index = i + 1;
+                        while (index < CurrentViewModel.MainRoute.Count && CurrentViewModel.MainRoute[index].Speed == 0)
+                        {
+                            index++;
+                        }
+                        var geocoderResult = await Gpx.Nominatim.GetAddress(CurrentViewModel.MainRoute[index - 1].Latitude, CurrentViewModel.MainRoute[index - 1].Longitude);
+                        string address = geocoderResult.DisplayName;
+                        TimeSpan span = CurrentViewModel.MainRoute[i].Start - CurrentViewModel.MainRoute[index - 1].Start;
+                        if (span > new TimeSpan(0, 0, 10))
+                            CurrentViewModel.PuntiStazionamento.Add($"Stazionamento alle: {CurrentViewModel.MainRoute[index - 1].Start}| di durata: {span}| a {address}");
+                        else
+                            CurrentViewModel.PuntiStazionamento.Add($"Stazionamento alle: {CurrentViewModel.MainRoute[index - 1].Start}| a {address}");
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        public void CalculateMaxSpeed()
+        {
+            CurrentViewModel.VelocitaMassima = 0;
+            foreach (var p in CurrentViewModel.MainRoute)
+            {
+                if (CurrentViewModel.VelocitaMassima < p.Speed)
+                {
+                    CurrentViewModel.VelocitaMassima = p.Speed;
+                }
+            }
+        }
+
+        public void CalculateMinSpeed()
+        {
+            CurrentViewModel.VelocitaMinima = 0;
+            foreach (var p in CurrentViewModel.MainRoute)
+            {
+                if (CurrentViewModel.VelocitaMinima > p.Speed && p.Speed != 0)
+                {
+                    CurrentViewModel.VelocitaMinima = p.Speed;
+                }
+            }
+        }
+
+        public void CalculateMediumSpeed()
+        {
+            CurrentViewModel.VelocitaMedia = 0;
+            double somma = 0;
+            foreach (var p in CurrentViewModel.MainRoute)
+            {
+                somma += p.Speed;
+            }
+            CurrentViewModel.VelocitaMedia = somma / CurrentViewModel.MainRoute.Count;
+        }
+
+        public void CalculateRouteLenght()
+        {
+            CurrentViewModel.LunghezzaPercorso = 0;
+            for (int i = 0; i < CurrentViewModel.MainRoute.Count - 1; i++)
+            {
+                double distanza = GpxReader.CalcoloDistanza(CurrentViewModel.MainRoute[i], CurrentViewModel.MainRoute[i + 1]);
+                if(distanza != Double.NaN && !double.IsNaN(distanza))
+                    CurrentViewModel.LunghezzaPercorso += distanza;
+            }
+        }
+
+        public void CalculateStart()
+        {
+            CurrentViewModel.OraInizio = CurrentViewModel.MainRoute[0].Start.ToString();
+        }
+
+        public void CalculateEnd()
+        {
+            CurrentViewModel.OraFine = CurrentViewModel.MainRoute[CurrentViewModel.MainRoute.Count - 1].Start.ToString();
+        }
+
+        //Eseguire sempre prima "CalculateStationaryPoints" poi "GetSubroutes"
+        public void GetSubroutes()
+        {
+            ObservableCollection<GpxPoint> subRoute = new ObservableCollection<GpxPoint>();
+            bool alreadyAdded = true;
+            foreach (var point in CurrentViewModel.MainRoute ?? Enumerable.Empty<GpxPoint>())
+            {
+                if (point.Finish != new DateTime(1))
+                {
+                    subRoute.Add(point);
+                    alreadyAdded = false;
+                }
+                else if (!alreadyAdded)
+                {
+                    if (subRoute.Count > 2)
+                    {
+                        CurrentViewModel.SegmentsCollection.Add(new RouteViewModel() { MainRoute = subRoute, Nome = "Sotto-route" });
+                        subRoute = new ObservableCollection<GpxPoint>();
+                        alreadyAdded = true;
+                    }
+                }
+            }
+        }
+        #endregion
 
         private DelegateCommand report;
         public DelegateCommand Report
@@ -223,7 +377,7 @@ namespace Progetto
         public void ShowReport()
         {
             Report r = new Report();
-            r.DataContext = reportViewModel;
+            r.DataContext = this;
             //OLD-----------------------------------------------------------------------------------------
             //var reportViewModel = new ReportViewModel();
             //reportViewModel.Points = new ObservableCollection<GpxPoint>();
@@ -255,59 +409,49 @@ namespace Progetto
             //r.DataContext = reportViewModel;
             //OLD-----------------------------------------------------------------------------------------
 
+
+            //NEW [SBAGLIATO]-----------------------------------------------------------------------------
             //Limito velocità massima a 150 km/h
-            try
-            {
-                if (reportViewModel.CurrentViewModel != null)
-                {
-                    var mainRoute = reportViewModel.CurrentViewModel.MainRoute;
-                    var iteractions = mainRoute.Count;
-                    for (int i = 0; i < iteractions - 1; i++)
-                    {
-                        if (mainRoute[i].Speed > 150)
-                        {
-                            mainRoute[i].Speed = 150;
-                        }
+            //try
+            //{
+            //    if (reportViewModel.CurrentViewModel != null)
+            //    {
+            //        var mainRoute = reportViewModel.CurrentViewModel.MainRoute;
+            //        var iteractions = mainRoute.Count;
+            //        for (int i = 0; i < iteractions - 1; i++)
+            //        {
+            //            if (mainRoute[i].Speed > 150)
+            //            {
+            //                mainRoute[i].Speed = 150;
+            //            }
 
-                        var timeSpan = (mainRoute[i].Start - mainRoute[i + 1].Start);
+            //            var timeSpan = (mainRoute[i].Start - mainRoute[i + 1].Start);
 
-                        double speed = mainRoute[i].Speed;
-                        DateTime start1 = mainRoute[i].Start;
-                        double lon = mainRoute[i].Longitude;
-                        double lat = mainRoute[i].Latitude;
+            //            double speed = mainRoute[i].Speed;
+            //            DateTime start1 = mainRoute[i].Start;
+            //            double lon = mainRoute[i].Longitude;
+            //            double lat = mainRoute[i].Latitude;
 
-                        if (timeSpan > new TimeSpan(0, 5, 0))
-                        {
+            //            if (timeSpan > new TimeSpan(0, 5, 0))
+            //            {
 
-                            DateTime start2 = mainRoute[i + 1].Start;
+            //                DateTime start2 = mainRoute[i + 1].Start;
 
-                            if (GpxReader.CalcoloDistanza(mainRoute[i], mainRoute[i + 1]) < 100)
-                            {
-                                //"Finish" viene modificata per iterare la lista in cerca di subroutes più velocemente in seguito
-                                mainRoute[i] = new GpxPoint() {  Speed = 0, Start = start1.AddSeconds(-1), Longitude = lon, Latitude = lat, Finish = new DateTime(1) };
-                                mainRoute[i + 1] = new GpxPoint() { Speed = 0, Start = start2.AddSeconds(1), Longitude = lon, Latitude = lat, Finish = new DateTime(1) };
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception e) { Console.WriteLine(e.Message); }
-            reportViewModel.GetSubroutes();
-            r.Owner = Application.Current.MainWindow;
+            //                if (GpxReader.CalcoloDistanza(mainRoute[i], mainRoute[i + 1]) < 100)
+            //                {
+            //                    //"Finish" viene modificata per iterare la lista in cerca di subroutes più velocemente in seguito
+            //                    mainRoute[i] = new GpxPoint() {  Speed = 0, Start = start1.AddSeconds(-1), Longitude = lon, Latitude = lat, Finish = new DateTime(1) };
+            //                    mainRoute[i + 1] = new GpxPoint() { Speed = 0, Start = start2.AddSeconds(1), Longitude = lon, Latitude = lat, Finish = new DateTime(1) };
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
+            //catch (Exception e) { Console.WriteLine(e.Message); }
+            //reportViewModel.GetSubroutes();
+            //NEW [SBAGLIATO]-----------------------------------------------------------------------------
+
             r.ShowDialog();
         }
-
-        //private DelegateCommand nominatimm;
-        //public DelegateCommand Nominatimm
-        //{
-        //    get { return nominatimm ?? (nominatimm = new DelegateCommand(Nominatimmm)); }
-        //}
-
-        //public async void Nominatimmm()
-        //{
-        //    var result = await Gpx.Nominatim.GetAddress(42, 12);
-        //    string address = result.DisplayName;
-        //    MessageBox.Show(address);
-        //}
     }
 }
