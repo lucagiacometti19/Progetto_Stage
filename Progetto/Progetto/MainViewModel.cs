@@ -363,6 +363,10 @@ namespace Progetto
                         subRoute = new ObservableCollection<GpxPoint>();
                         alreadyAdded = true;
                     }
+                    else
+                    {
+                        subRoute = new ObservableCollection<GpxPoint>();
+                    }
                 }
             }
         }
