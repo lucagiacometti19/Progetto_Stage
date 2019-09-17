@@ -38,7 +38,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <dxn:NavBarControl ItemsSource="{Binding RouteViewModels}" SelectedItem="{Binding CurrentViewModel }">
+            <dxn:NavBarControl ItemsSource="{Binding RouteViewModels}" SelectedGroup="{Binding CurrentViewModel}">
                 <dxn:NavBarControl.View>
                     <dxn:ExplorerBarView Orientation="Vertical">
                         <dxn:ExplorerBarView.ItemsPanelOrientation>
@@ -54,7 +54,7 @@
                 </dxn:NavBarControl.View>
                 <dxn:NavBarControl.ItemTemplate>
                     <DataTemplate>
-                        <dxn:NavBarGroup Header="{Binding Nome}" ItemsSource="{Binding SegmentsCollection}">
+                        <dxn:NavBarGroup Header="{Binding Nome}" ItemsSource="{Binding SegmentsCollection}" SelectedItem="{Binding SelectedSegment}">
                             <dxn:NavBarGroup.ItemTemplate>
                                 <DataTemplate>
                                     <dxn:NavBarItem Content="{Binding Nome}"/>
@@ -70,7 +70,7 @@
                 </dxn:NavBarGroup>-->
             </dxn:NavBarControl>
 
-            <dxc:ChartControl Grid.Column="1" Grid.Row="0" Name="chartControl1" DataContext="{Binding CurrentViewModel}" DataSource="{Binding MainRoute}">
+            <dxc:ChartControl Grid.Column="1" Grid.Row="0" Name="chartControl1" DataContext="{Binding CurrentViewModel}" DataSource="{Binding SelectedSegment}">
                 <dxc:ChartControl.Diagram>
                     <dxc:XYDiagram2D>
                         <dxc:XYDiagram2D.Series>

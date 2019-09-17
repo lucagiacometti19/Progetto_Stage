@@ -113,7 +113,6 @@
     <Compile Include="Report.xaml.cs">
       <DependentUpon>Report.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RouteProvider.cs" />
     <Compile Include="RouteViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

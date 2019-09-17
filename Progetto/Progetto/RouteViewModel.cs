@@ -40,6 +40,14 @@ namespace Progetto
             set { mainRoute = value; RaisePropertyChanged(); }
         }
 
+        private ObservableCollection<GpxPoint> selectedSegment;
+        public ObservableCollection<GpxPoint> SelectedSegment
+        {
+            get { return selectedSegment; }
+            set { selectedSegment = value; RaisePropertyChanged(); }
+        }
+
+
         private ObservableCollection<string> puntiStazionamento;
         public ObservableCollection<string> PuntiStazionamento
         {
