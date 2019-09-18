@@ -26,7 +26,7 @@
             <dxr:RibbonDefaultPageCategory>
                 <dxr:RibbonPage Caption="Strumenti">
                     <dxr:RibbonPageGroup>
-                        <dxb:BarButtonItem Content="Export PDF" Command="{Binding PdfReport}" Glyph="{dxc1:DXImage Images/Export/ExportToPDF_32x32.png}" RibbonStyle="Large" LargeGlyph="{dxc1:DXImage Images/Export/ExportToPDF_32x32.png}"/>
+                        <dxb:BarButtonItem Content="Export PDF" CommandParameter="{Binding ElementName=chartControl1}" DataContext="{Binding CurrentViewModel}" Command="{Binding PdfReport}" Glyph="{dxc1:DXImage Images/Export/ExportToPDF_32x32.png}" RibbonStyle="Large" LargeGlyph="{dxc1:DXImage Images/Export/ExportToPDF_32x32.png}"/>
                     </dxr:RibbonPageGroup>
                 </dxr:RibbonPage>
             </dxr:RibbonDefaultPageCategory>
@@ -38,7 +38,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <dxn:NavBarControl ItemsSource="{Binding RouteViewModels}" SelectedGroup="{Binding CurrentViewModel}">
+            <dxn:NavBarControl ItemsSource="{Binding RouteViewModels}"  SelectedItem="{Binding CurrentViewModel}">
                 <dxn:NavBarControl.View>
                     <dxn:ExplorerBarView Orientation="Vertical">
                         <dxn:ExplorerBarView.ItemsPanelOrientation>
@@ -54,7 +54,8 @@
                 </dxn:NavBarControl.View>
                 <dxn:NavBarControl.ItemTemplate>
                     <DataTemplate>
-                        <dxn:NavBarGroup Header="{Binding Nome}" ItemsSource="{Binding SegmentsCollection}" SelectedItem="{Binding SelectedSegment}">
+                        <dxn:NavBarGroup Header="{Binding Nome}" ItemsSource="{Binding SegmentsCollection}" >
+                            <!--SelectedItem="{Binding SelectedItem, Mode=TwoWay}"-->
                             <dxn:NavBarGroup.ItemTemplate>
                                 <DataTemplate>
                                     <dxn:NavBarItem Content="{Binding Nome}"/>
@@ -63,19 +64,13 @@
                         </dxn:NavBarGroup>
                     </DataTemplate>
                 </dxn:NavBarControl.ItemTemplate>
-                <!--<dxn:NavBarGroup>
-                    <dxn:NavBarItem Content="Route 1"/>
-                    <dxn:NavBarItem Content="Route 2"/>
-                    <dxn:NavBarItem Content="Route 3"/>
-                </dxn:NavBarGroup>-->
             </dxn:NavBarControl>
 
-            <dxc:ChartControl Grid.Column="1" Grid.Row="0" Name="chartControl1" DataContext="{Binding CurrentViewModel}" DataSource="{Binding SelectedSegment}">
+            <dxc:ChartControl Name="chartControl1" Grid.Column="1" Grid.Row="0"  DataSource="{Binding CurrentViewModel.MainRoute}">
                 <dxc:ChartControl.Diagram>
                     <dxc:XYDiagram2D>
                         <dxc:XYDiagram2D.Series>
-                            <dxc:AreaSeries2D DisplayName="Velocita" Transparency="0.5"  ArgumentDataMember="Start" ValueDataMember="Speed">
-                            </dxc:AreaSeries2D>
+                            <dxc:AreaSeries2D DisplayName="Velocita" Transparency="0.5"  ArgumentDataMember="Start" ValueDataMember="Speed"/>
                         </dxc:XYDiagram2D.Series>
                         <dxc:XYDiagram2D.AxisX>
                             <dxc:AxisX2D Range="SideMarginsEnabled=False">
