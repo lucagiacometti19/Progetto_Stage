@@ -132,11 +132,22 @@ namespace Progetto
         {
             get { return pdfReport ?? (pdfReport = new DelegateCommand<ChartControl>(Pdf)); }
         }
-
-        public void Pdf(ChartControl chart)
+        
+        public async void Pdf(ChartControl chart)
         {
-            PDFCreator pdf = new PDFCreator(Nome, VelocitaMedia, VelocitaMassima, VelocitaMinima, LunghezzaPercorso, OraInizio, OraFine, OraTot);
-            pdf.CreaPDF(chart);
+            if (MainRoute != Enumerable.Empty<GpxPoint>() && MainRoute.Count != 0)
+            {
+                CalculateMaxSpeed();
+                CalculateMediumSpeed();
+                CalculateMinSpeed();
+                CalculateRouteLenght();
+                CalculateStart();
+                CalculateEnd();
+                CalculateTotalTime();
+                await GetStationaryPoints();
+                PDFCreator pdf = new PDFCreator(Nome, VelocitaMedia, VelocitaMassima, VelocitaMinima, LunghezzaPercorso, OraInizio, OraFine, OraTot, PuntiStazionamento);
+                pdf.CreaPDF(chart);
+            }
         }
 
 
@@ -174,29 +185,47 @@ namespace Progetto
             }
         }
 
-        public async Task GetStationaryPoints(RouteViewModel currentViewModel)
+        public async Task GetStationaryPoints()
         {
             try
             {
-                currentViewModel.PuntiStazionamento = new ObservableCollection<string>();
+                PuntiStazionamento = new ObservableCollection<string>();
                 int index = 0;
-                for (int i = 0; i < currentViewModel.MainRoute.Count; i++)
+                for (int i = 0; i < MainRoute.Count; i++)
                 {
                     if (index - i > 0) { continue; }
-                    if (currentViewModel.MainRoute[i].Speed == 0)
+                    if (MainRoute[i].Speed == 0)
                     {
                         index = i + 1;
-                        while (index < currentViewModel.MainRoute.Count && currentViewModel.MainRoute[index].Speed == 0)
+                        while (index < MainRoute.Count && MainRoute[index].Speed == 0)
                         {
                             index++;
                         }
-                        var geocoderResult = await Gpx.Nominatim.GetAddress(currentViewModel.MainRoute[index - 1].Latitude, currentViewModel.MainRoute[index - 1].Longitude);
-                        string address = geocoderResult.DisplayName;
-                        TimeSpan span = currentViewModel.MainRoute[i].Start - currentViewModel.MainRoute[index - 1].Start;
-                        if (span > new TimeSpan(0, 0, 10))
-                            currentViewModel.PuntiStazionamento.Add($"Stazionamento alle: {currentViewModel.MainRoute[index - 1].Start}| di durata: {span}| a {address}");
+                        var geocoderResult = await Gpx.Nominatim.GetAddress(MainRoute[index - 1].Latitude, MainRoute[index - 1].Longitude);
+
+                        string val = "";
+                        if(geocoderResult.Address.Village != null)
+                        {
+                            val = geocoderResult.Address.Village;
+                        }
+                        else if(geocoderResult.Address.Town != null)
+                        {
+                            val = geocoderResult.Address.Town;
+                        }
                         else
-                            currentViewModel.PuntiStazionamento.Add($"Stazionamento alle: {currentViewModel.MainRoute[index - 1].Start}| a {address}");
+                        {
+                            val = geocoderResult.Address.City;
+                        }
+
+                        string address = $"{(geocoderResult.Address.Road != null ? $"{geocoderResult.Address.Road}, " : "")}" +
+                            $"{val}, " +
+                            $"{(geocoderResult.Address.County != null ? $"{geocoderResult.Address.Country}, ": "")}" +
+                            $"{(geocoderResult.Address.State != null ? $"{geocoderResult.Address.State}": "")}";
+                        TimeSpan span = MainRoute[i].Start - MainRoute[index - 1].Start;
+                        if (span > new TimeSpan(0, 0, 10))
+                            PuntiStazionamento.Add($"Stazionamento alle: {MainRoute[index - 1].Start} di durata: {span}| {address}");
+                        else
+                            PuntiStazionamento.Add($"Stazionamento alle: {MainRoute[index - 1].Start}| {address}");
                     }
                 }
             }
@@ -206,67 +235,67 @@ namespace Progetto
             }
         }
 
-        public void CalculateMaxSpeed(RouteViewModel currentViewModel)
+        public void CalculateMaxSpeed()
         {
-            currentViewModel.VelocitaMassima = 0;
-            foreach (var p in currentViewModel.MainRoute)
+            VelocitaMassima = 0;
+            foreach (var p in MainRoute)
             {
-                if (currentViewModel.VelocitaMassima < p.Speed)
+                if (VelocitaMassima < p.Speed)
                 {
-                    currentViewModel.VelocitaMassima = p.Speed;
+                    VelocitaMassima = p.Speed;
                 }
             }
         }
 
-        public void CalculateMinSpeed(RouteViewModel currentViewModel)
+        public void CalculateMinSpeed()
         {
-            currentViewModel.VelocitaMinima = 0;
-            foreach (var p in currentViewModel.MainRoute)
+            VelocitaMinima = 150;
+            foreach (var p in MainRoute)
             {
-                if (currentViewModel.VelocitaMinima > p.Speed && p.Speed != 0)
+                if (VelocitaMinima > p.Speed && p.Speed != 0)
                 {
-                    currentViewModel.VelocitaMinima = p.Speed;
+                    VelocitaMinima = p.Speed;
                 }
             }
         }
 
-        public void CalculateMediumSpeed(RouteViewModel currentViewModel)
+        public void CalculateMediumSpeed()
         {
-            currentViewModel.VelocitaMedia = 0;
+            VelocitaMedia = 0;
             double somma = 0;
-            foreach (var p in currentViewModel.MainRoute)
+            foreach (var p in MainRoute)
             {
                 somma += p.Speed;
             }
-            currentViewModel.VelocitaMedia = somma / currentViewModel.MainRoute.Count;
+            VelocitaMedia = somma / MainRoute.Count;
         }
 
-        public void CalculateRouteLenght(RouteViewModel currentViewModel)
+        public void CalculateRouteLenght()
         {
-            currentViewModel.LunghezzaPercorso = 0;
-            for (int i = 0; i < currentViewModel.MainRoute.Count - 1; i++)
+            LunghezzaPercorso = 0;
+            for (int i = 0; i < MainRoute.Count - 1; i++)
             {
-                double distanza = GpxReader.CalcoloDistanza(currentViewModel.MainRoute[i], currentViewModel.MainRoute[i + 1]);
-                if (distanza != Double.NaN && !double.IsNaN(distanza))
-                    currentViewModel.LunghezzaPercorso += distanza;
+                double distanza = GpxReader.CalcoloDistanza(MainRoute[i], MainRoute[i + 1]);
+                if (distanza != double.NaN && !double.IsNaN(distanza))
+                    LunghezzaPercorso += distanza;
             }
         }
 
-        public void CalculateTotalTime(RouteViewModel currentViewModel)
+        public void CalculateTotalTime()
         {
-            TimeSpan tot = currentViewModel.MainRoute[0].Start - currentViewModel.MainRoute[currentViewModel.MainRoute.Count - 1].Start;
+            TimeSpan tot = MainRoute[0].Start - MainRoute[MainRoute.Count - 1].Start;
             int d = tot.Days;
             string time = $"{tot.Hours.ToString()}:{tot.Minutes.ToString()}:{tot.Seconds.ToString()}";
-            currentViewModel.OraTot = $"{ d.ToString()} {(d == 1 ? "giorno" : "giorni")} e {time}";
+            OraTot = $"{ d.ToString()} {(d == 1 ? "giorno" : "giorni")} e {time}";
         }
-        public void CalculateStart(RouteViewModel currentViewModel)
+        public void CalculateStart()
         {
-            currentViewModel.OraInizio = currentViewModel.MainRoute[currentViewModel.MainRoute.Count - 1].Start.ToString();
+            OraInizio = MainRoute[MainRoute.Count - 1].Start.ToString();
         }
 
-        public void CalculateEnd(RouteViewModel currentViewModel)
+        public void CalculateEnd()
         {
-            currentViewModel.OraFine = currentViewModel.MainRoute[0].Start.ToString();
+            OraFine = MainRoute[0].Start.ToString();
         }
 
         //Eseguire sempre prima "CalculateStationaryPoints" poi "GetSubroutes"

@@ -12,94 +12,112 @@ using DevExpress.Xpf.Charts;
 using DevExpress.XtraReports.UI;
 using DevExpress.XtraPrinting;
 using System.IO;
+using System.Collections.ObjectModel;
 
 namespace Progetto
 {
     public class PDFCreator
     {
-        string Nome = "";
-        double VelocitaMedia, Massima, Minima, LunghezzaPercorso = 1000;
-        string Inizio, Fine, TotalTime;
+        private string _nome;
+        private double _velocitaMedia, _massima, _minima, _lunghezzaPercorso;
+        private string _inizio, _fine, _totalTime;
+        ObservableCollection<string> _puntiStazionamento;
 
-        public PDFCreator(string nome, double Media, double max, double min, double Lunghezza, string start, string finish, string totalTime)
+        public PDFCreator(string nome, double Media, double max, double min, double Lunghezza, string start, string finish, string totalTime, ObservableCollection<string> stationaryPoints)
         {
-            Nome = nome;
-            VelocitaMedia = Media;
-            Massima = max;
-            Minima = min;
-            LunghezzaPercorso = Lunghezza;
-            Inizio = start;
-            Fine = finish;
-            TotalTime = totalTime;
-
+            _nome = nome;
+            _velocitaMedia = Media;
+            _massima = max;
+            _minima = min;
+            _lunghezzaPercorso = Lunghezza;
+            _inizio = start;
+            _fine = finish;
+            _totalTime = totalTime;
+            _puntiStazionamento = stationaryPoints;
         }
 
         public void CreaPDF(ChartControl Chart)
         {
-            string pathPDF = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{(Nome == "" || Nome == null ? "Route" : Nome)}.pdf";
-            string pathIMG = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\##%%R3P0rT%%##.png";
-            using (PdfDocumentProcessor processor = new PdfDocumentProcessor())
+            try
+
             {
-
-                ImageExportOptions options = new ImageExportOptions();
-                options.Resolution = 400;
-
-                Chart.ExportToImage(pathIMG, options, PrintSizeMode.ProportionalZoom);
-                // Create an empty document. 
-
-
-                using (Image img = Image.FromFile(pathIMG))
+                string pathPDF = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{(_nome == "" || _nome == null ? "Route" : _nome)}.pdf";
+                string pathIMG = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\##%%R3P0rT%%##.png";
+                using (PdfDocumentProcessor processor = new PdfDocumentProcessor())
                 {
-                    processor.CreateEmptyDocument(pathPDF);
 
-                    PdfRectangle pageBounds = PdfPaperSize.A4;
-                    // Create and draw PDF graphics. 
-                    using (PdfGraphics graph = processor.CreateGraphics())
+                    ImageExportOptions options = new ImageExportOptions();
+                    options.Resolution = 400;
+
+                    Chart.ExportToImage(pathIMG, options, PrintSizeMode.ProportionalZoom);
+                    // Create an empty document. 
+
+
+                    using (Image img = Image.FromFile(pathIMG))
                     {
-                        DrawGraphics(graph, pageBounds, img);
+                        processor.CreateEmptyDocument(pathPDF);
 
-                        // Render a page with graphics. 
-                        processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
-                        Console.WriteLine("PDF Generato");
+                        PdfRectangle pageBounds = PdfPaperSize.A4;
+                        // Create and draw PDF graphics. 
+                        using (PdfGraphics graph = processor.CreateGraphics())
+                        {
+                            DrawGraphics(graph, pageBounds, img);
+
+                            // Render a page with graphics. 
+                            processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
+                            Console.WriteLine("PDF Generato");
+                        }
+                    }
+                }
+
+                File.Delete(pathIMG);
+
+                void DrawGraphics(PdfGraphics graph, PdfRectangle pageBounds, Image img)
+                {
+                    //2480 x 3508
+                    //595 x 842
+                    //int Orr = 200;
+                    double margine = 50;
+                    double x = pageBounds.Width - (2 * margine);
+                    double y = pageBounds.Height - (2 * margine);
+                    double ydiv = (y / 2) / 6;
+                    double xdiv = x / 3;
+
+                    graph.TranslateTransform(0, 0);
+                    // Draw text lines on the page. 
+                    SolidBrush black = (SolidBrush)Brushes.Black;
+                    SolidBrush red = (SolidBrush)Brushes.Red;
+
+                    using (Font font1 = new Font("Arial", 20, FontStyle.Bold))
+                    {
+                        graph.DrawString((_nome == "" || _nome == null ? "Route" : _nome), font1, red, (float)((x / 2) + ((margine / 2) - 5)), (float)margine - 10);
+                    }
+
+                    using (Font font2 = new Font("Arial", 11))
+                    {
+                        graph.DrawImage(img, new RectangleF((float)(margine), (float)(margine * 1.5), (float)(PdfPaperSize.A4.Width - 2 * margine), (float)((y / 2) - 2 * margine)));
+                        graph.DrawString($"Velocità media: {Math.Round(_velocitaMedia, 2)} Km/h", font2, black, (float)(margine), (float)(y / 2));
+                        graph.DrawString($"Velocità massima: {Math.Round(_massima, 1)} Km/h", font2, black, (float)(xdiv + margine), (float)((y / 2)));
+                        graph.DrawString($"Velocità minima: {Math.Round(_minima, 1)} Km/h", font2, black, (float)((2 * xdiv) + margine), (float)(y / 2));
+                        graph.DrawString($"Partenza: {_inizio}", font2, black, (float)(margine), (float)((y / 2) + ydiv));
+                        graph.DrawString($"Arrivo: {_fine}", font2, black, (float)(xdiv + margine), (float)((y / 2) + ydiv));
+                        graph.DrawString($"Durata del viaggio: {_totalTime}", font2, black, (float)((2 * xdiv) + margine), (float)((y / 2) + ydiv));
+                        graph.DrawString($"Lunghezza del percorso: {Math.Round(_lunghezzaPercorso, 2)} Km", font2, black, (float)margine, (float)((y / 2) + ydiv * 2));
+                        graph.DrawString($"Punti di stazionamento: ", font2, black, (float)margine, (float)((y / 2) + ydiv * 3));
+                    }
+
+                    using (Font font3 = new Font("Arial", 8))
+                    {
+                        for (int i = 0; i < _puntiStazionamento.Count - 1; i++)
+                        {
+                            graph.DrawString(_puntiStazionamento[i], font3, black, (float)margine, (float)((y / 2) + ydiv * (3.3 + (0.3 * i))));
+                        }
                     }
                 }
             }
-
-            File.Delete(pathIMG);
-
-            void DrawGraphics(PdfGraphics graph, PdfRectangle pageBounds, Image img)
+            catch (Exception e)
             {
-                //2480 x 3508
-                //595 x 842
-                //int Orr = 200;
-                double margine = 50;
-                double x = pageBounds.Width - (2 * margine);
-                double y = pageBounds.Height - (2 * margine);
-                double ydiv = (y / 2) / 6;
-                double xdiv = x / 3;
-
-                graph.TranslateTransform(0, 0);
-                // Draw text lines on the page. 
-                SolidBrush black = (SolidBrush)Brushes.Black;
-                SolidBrush red = (SolidBrush)Brushes.Red;
-
-                using (Font font1 = new Font("Arial", 20, FontStyle.Bold))
-                {
-                    graph.DrawString((Nome == "" || Nome == null ? "Route" : Nome), font1, red, (float)((x / 2) + ((margine / 2) - 5)), (float)margine - 10);
-                }
-
-                using (Font font2 = new Font("Arial", 11))
-                {
-                    graph.DrawImage(img, new RectangleF((float)(margine), (float)(margine * 1.5), (float)(PdfPaperSize.A4.Width - 2 * margine), (float)((y / 2) - 2 * margine)));
-                    graph.DrawString($"Velocità media: {Math.Round(VelocitaMedia, 2)} Km/h", font2, black, (float)(margine), (float)(y / 2));
-                    graph.DrawString($"Velocità massima: {Math.Round(Massima, 1)} Km/h", font2, black, (float)(xdiv + margine), (float)((y / 2)));
-                    graph.DrawString($"Velocità minima: {Math.Round(Minima, 1)} Km/h", font2, black, (float)((2 * xdiv) + margine), (float)(y / 2));
-                    graph.DrawString($"Partenza: {Inizio}", font2, black, (float)(margine), (float)((y / 2) + ydiv));
-                    graph.DrawString($"Arrivo: {Fine}", font2, black, (float)(xdiv + margine), (float)((y / 2) + ydiv));
-                    graph.DrawString($"Durata del viaggio: {TotalTime}", font2, black, (float)((2 * xdiv) + margine), (float)((y / 2) + ydiv));
-                    graph.DrawString($"Lunghezza del percorso: {Math.Round(LunghezzaPercorso, 2)} Km", font2, black, (float)margine, (float)((y / 2) + ydiv * 2));
-                    graph.DrawString($"Punti di stazionamento: ", font2, black, (float)margine, (float)((y / 2) + ydiv * 3));
-                }
+                Console.WriteLine(e.Message);
             }
         }
     }

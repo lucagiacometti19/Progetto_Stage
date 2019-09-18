@@ -179,14 +179,14 @@ namespace Progetto
                         //calcolo le proprietà della route
                         newRoute.CalculateStationaryPoints(CurrentViewModel);
                         newRoute.GetSubroutes(CurrentViewModel);
-                        newRoute.CalculateMaxSpeed(CurrentViewModel);
-                        newRoute.CalculateMediumSpeed(CurrentViewModel);
-                        newRoute.CalculateMinSpeed(CurrentViewModel);
-                        newRoute.CalculateRouteLenght(CurrentViewModel);
-                        newRoute.CalculateStart(CurrentViewModel);
-                        newRoute.CalculateEnd(CurrentViewModel);
-                        newRoute.CalculateTotalTime(CurrentViewModel);
-                        await newRoute.GetStationaryPoints(CurrentViewModel);
+                        //newRoute.CalculateMaxSpeed(CurrentViewModel);
+                        //newRoute.CalculateMediumSpeed(CurrentViewModel);
+                        //newRoute.CalculateMinSpeed(CurrentViewModel);
+                        //newRoute.CalculateRouteLenght(CurrentViewModel);
+                        //newRoute.CalculateStart(CurrentViewModel);
+                        //newRoute.CalculateEnd(CurrentViewModel);
+                        //newRoute.CalculateTotalTime(CurrentViewModel);
+                        //await newRoute.GetStationaryPoints(CurrentViewModel);
                     }
                 }
             }
