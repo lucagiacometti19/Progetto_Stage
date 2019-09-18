@@ -165,64 +165,6 @@ namespace Progetto
             }
         }
 
-        //public static void ConvertFromJson(string input)
-        //{
-        //    Console.WriteLine("Lettura Json");
-        //    JToken contourManifest = JObject.Parse(input);
-        //    JToken routes = contourManifest.SelectToken("routes");
-        //    var legs = routes.ToArray()[0].SelectTokens("legs");
-        //    for (int z = 0; z < legs.Children().Count(); z++)
-        //    {
-        //        var steps = legs.Children().ToArray()[z].SelectTokens("steps");
-        //        var stepsChildren = steps.Children();
-        //        double lat = 0;
-        //        double lon = 0;
-
-
-        //        for (int i = 0; i < stepsChildren.Count(); i++)
-        //        {
-        //            var geometry = stepsChildren.ToArray()[i].SelectToken("geometry");
-        //            var coordinates = geometry.SelectToken("coordinates");
-
-        //            Console.WriteLine(coordinates.ToArray()[0].Count());
-        //            for (int x = 0; x < coordinates.ToArray().Count(); x++)
-        //            {
-        //                var intersectionsChildren = coordinates.ToArray()[x];
-        //                lat = Convert.ToDouble(intersectionsChildren.ToArray()[1]);
-        //                lon = Convert.ToDouble(intersectionsChildren.ToArray()[0]);
-
-        //                Point.Add(new GpxPoint()
-        //                {
-        //                    Longitude = lon,
-        //                    Latitude = lat
-        //                });
-        //            }
-        //        }
-        //    }
-
-        //    for (int i = 0; i < stepsChildren.Count(); i++)
-        //    {
-        //        var intersections = stepsChildren.ToArray()[i].SelectTokens("intersections");
-
-        //        for (int x = 0; x < intersections.Count(); x++)
-        //        {
-        //            var intersectionsChildren = intersections.ToArray()[x].Children();
-        //            JToken location = intersectionsChildren.ToArray()[0].SelectToken("location");
-        //            var coordinates = location.Children();
-        //            lat = Convert.ToDouble(coordinates.ToArray()[1]);
-        //            lon = Convert.ToDouble(coordinates.ToArray()[0]);
-
-        //            Point.Add(new GpxPoint()
-        //            {
-        //                Longitude = lon,
-        //                Latitude = lat
-        //            });
-        //        }
-        //    }
-        //    Console.WriteLine("Fine lettura");
-        //}
-
-
         public static async Task HttpRouteRequest(ObservableCollection<GpxPoint> points)
         {
             int n = 0;
@@ -262,15 +204,6 @@ namespace Progetto
                 }
                 catch { break; }
             }
-
-
-            //int c3 = 0;
-            //foreach (string s in Results)
-            //{
-            //    ConvertFromJson(s);
-            //    Console.WriteLine($"Json {c3} ok");
-            //    c3++;
-            //}
         }
 
         public static void ThinPointCollection()

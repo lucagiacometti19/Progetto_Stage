@@ -55,7 +55,6 @@
                 <dxn:NavBarControl.ItemTemplate>
                     <DataTemplate>
                         <dxn:NavBarGroup Header="{Binding Nome}" ItemsSource="{Binding SegmentsCollection}" >
-                            <!--SelectedItem="{Binding SelectedItem, Mode=TwoWay}"-->
                             <dxn:NavBarGroup.ItemTemplate>
                                 <DataTemplate>
                                     <dxn:NavBarItem Content="{Binding Nome}"/>

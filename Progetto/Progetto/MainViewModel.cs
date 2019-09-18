@@ -121,22 +121,6 @@ namespace Progetto
             }
         }
 
-        //private void CreatePolylines(ObservableCollection<GeoPoint> points)
-        //{
-        //    Console.WriteLine("Creando la polilinea..");
-
-        //    MapPolyline pl = new MapPolyline();
-        //    pl.Stroke = new SolidColorBrush(Color.FromRgb(0, 17, 255));
-        //    foreach (GeoPoint px in points)
-        //    {
-        //        pl.Points.Add(px);
-        //    }
-        //    PolylineCollection.Add(pl);
-        //    Console.WriteLine("Polilinea creata con successo");
-
-        //}
-
-
         private DelegateCommand importCommand;
         public DelegateCommand ImportCommand
         {
@@ -179,14 +163,6 @@ namespace Progetto
                         //calcolo le proprietà della route
                         newRoute.CalculateStationaryPoints(CurrentViewModel);
                         newRoute.GetSubroutes(CurrentViewModel);
-                        //newRoute.CalculateMaxSpeed(CurrentViewModel);
-                        //newRoute.CalculateMediumSpeed(CurrentViewModel);
-                        //newRoute.CalculateMinSpeed(CurrentViewModel);
-                        //newRoute.CalculateRouteLenght(CurrentViewModel);
-                        //newRoute.CalculateStart(CurrentViewModel);
-                        //newRoute.CalculateEnd(CurrentViewModel);
-                        //newRoute.CalculateTotalTime(CurrentViewModel);
-                        //await newRoute.GetStationaryPoints(CurrentViewModel);
                     }
                 }
             }
