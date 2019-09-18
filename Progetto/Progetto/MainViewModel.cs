@@ -1,23 +1,12 @@
-﻿using DevExpress.Map;
-using DevExpress.Mvvm;
+﻿using DevExpress.Mvvm;
 using DevExpress.Xpf.Map;
 using Gpx;
 using Microsoft.Win32;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Xml;
 
 namespace Progetto
 {
@@ -25,10 +14,12 @@ namespace Progetto
     {
         public MainViewModel()
         {
-            GpxPointsCollection = new ObservableCollection<GpxPoint>();
-            //PolylineCollection = new ObservableCollection<MapPolyline>();
-            MapItems = new ObservableCollection<MapItem>();
-            Routes = new ObservableCollection<MapItem>();
+            gpxPointsCollection = new ObservableCollection<GpxPoint>();
+            gpxTracePoints = new ObservableCollection<GpxPoint>();
+            mapItems = new ObservableCollection<MapItem>();
+            routes = new ObservableCollection<MapItem>();
+            routeViewModels = new ObservableCollection<RouteViewModel>();
+            currentViewModel = new RouteViewModel(new ObservableCollection<GpxPoint>());
         }
 
         private ObservableCollection<GpxPoint> gpxPointsCollection;
@@ -45,20 +36,6 @@ namespace Progetto
             get { return gpxTracePoints; }
             set { gpxTracePoints = value; RaisePropertyChanged(); }
         }
-        //private ObservableCollection<GeoPoint> geoPointsCollection;
-        //public ObservableCollection<GeoPoint> GeoPointsCollection
-        //{
-        //    get { return geoPointsCollection; }
-        //    set { geoPointsCollection = value; RaisePropertyChanged(); }
-        //}
-
-        //private ObservableCollection<MapPolyline> polylineCollection;
-        //public ObservableCollection<MapPolyline> PolylineCollection
-        //{
-        //    get { return polylineCollection; }
-        //    set { polylineCollection = value; RaisePropertyChanged(); }
-        //}
-
 
         private ObservableCollection<MapItem> mapItems;
         public ObservableCollection<MapItem> MapItems
@@ -67,16 +44,29 @@ namespace Progetto
             set { mapItems = value; RaisePropertyChanged(); }
 
         }
-        Stopwatch timerRequest = new Stopwatch();
-        Stopwatch timerTot = new Stopwatch();
 
         private ObservableCollection<MapItem> routes;
         public ObservableCollection<MapItem> Routes
         {
             get { return routes; }
-            set { routes = value; }
+            set { routes = value; RaisePropertyChanged(); }
         }
 
+        private ObservableCollection<RouteViewModel> routeViewModels;
+
+        public ObservableCollection<RouteViewModel> RouteViewModels
+        {
+            get { return routeViewModels; }
+            set { routeViewModels = value; RaisePropertyChanged(); }
+        }
+
+        private RouteViewModel currentViewModel;
+
+        public RouteViewModel CurrentViewModel
+        {
+            get { return currentViewModel; }
+            set { currentViewModel = value; RaisePropertyChanged(); }
+        }
 
         public async Task CreateMapPushpinAsync(GeoPoint point)
         {
@@ -106,6 +96,11 @@ namespace Progetto
             MapItems.Add(mapPushpin);
         }
 
+        /// <summary>
+        /// Si appoggia a CustomRouteProvider per visualizzare la route su osm
+        /// </summary>
+        /// <param name="gpxPoints">lista di gpx point della route</param>
+        /// <param name="value">true per richiedere la polilinea al server, false per mostrare la polilinea che unisce i punti senza richiesta al server</param>
         public async void CreateRoute(ObservableCollection<GpxPoint> gpxPoints, bool value)
         {
             CustomRouteProvider RouteProvider = new CustomRouteProvider();
@@ -162,16 +157,46 @@ namespace Progetto
                 {
                     GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
                     GpxTracePoints = GpxPointsCollection;
+                    //Aggiungo!
+                    string name = Path.GetFileNameWithoutExtension(open.FileName);
+                    bool newRouteVM = true;
+                    foreach (var routeViewModel in RouteViewModels ?? Enumerable.Empty<RouteViewModel>())
+                    {
+                        if (name == routeViewModel.Nome)
+                        {
+                            newRouteVM = false;
+                            break;
+                        }
+                    }
+                    if (newRouteVM)
+                    {
+                        //creo la route da mostrate su osm
+                        CreateRoute(gpxPointsCollection, false);
 
-                    timerTot.Start();
-                    CreateRoute(GpxPointsCollection, false);
-                    timerTot.Stop();
-                    Console.WriteLine($"Tempo tot: { timerTot.ElapsedMilliseconds }");
+                        var newRoute = new RouteViewModel(GpxTracePoints) { Nome = name };
+                        RouteViewModels.Add(newRoute);
+                        CurrentViewModel = newRoute;
+                        //calcolo le proprietà della route
+                        newRoute.CalculateStationaryPoints(CurrentViewModel);
+                        newRoute.GetSubroutes(CurrentViewModel);
+                        newRoute.CalculateMaxSpeed(CurrentViewModel);
+                        newRoute.CalculateMediumSpeed(CurrentViewModel);
+                        newRoute.CalculateMinSpeed(CurrentViewModel);
+                        newRoute.CalculateRouteLenght(CurrentViewModel);
+                        newRoute.CalculateStart(CurrentViewModel);
+                        newRoute.CalculateEnd(CurrentViewModel);
+                        newRoute.CalculateTotalTime(CurrentViewModel);
+                        await newRoute.GetStationaryPoints(CurrentViewModel);
+                    }
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                GpxPointsCollection = new ObservableCollection<GpxPoint>();
             }
         }
 
@@ -187,34 +212,10 @@ namespace Progetto
             GpxTracePoints = new ObservableCollection<GpxPoint>();
             Routes = new ObservableCollection<MapItem>();
             MapItems = new ObservableCollection<MapItem>();
+            RouteViewModels = new ObservableCollection<RouteViewModel>();
+            CurrentViewModel = new RouteViewModel(new ObservableCollection<GpxPoint>());
             HttpMessage.Reset();
         }
-
-
-        private static double CalcoloDistanza(GpxPoint p1, GpxPoint p2)
-        {
-            /* Definisce le costanti e le variabili */
-            const double R = 6371;
-            double lat_alfa, lat_beta;
-            double lon_alfa, lon_beta;
-            double fi;
-            double p, d;
-            /* Converte i gradi in radianti */
-            lat_alfa = Math.PI * p1.Latitude / 180;
-            lat_beta = Math.PI * p2.Latitude / 180;
-            lon_alfa = Math.PI * p1.Longitude / 180;
-            lon_beta = Math.PI * p2.Longitude / 180;
-            /* Calcola l'angolo compreso fi */
-            fi = Math.Abs(lon_alfa - lon_beta);
-            /* Calcola il terzo lato del triangolo sferico */
-            p = Math.Acos(Math.Sin(lat_beta) * Math.Sin(lat_alfa) +
-              Math.Cos(lat_beta) * Math.Cos(lat_alfa) * Math.Cos(fi));
-            /* Calcola la distanza sulla superficie 
-            terrestre R = ~6371 km */
-            d = p * R;
-            return (d);
-        }
-
 
         private DelegateCommand report;
         public DelegateCommand Report
@@ -225,49 +226,8 @@ namespace Progetto
         public void ShowReport()
         {
             Report r = new Report();
-            var reportViewModel = new ReportViewModel();
-            reportViewModel.Points = new ObservableCollection<GpxPoint>();
-            if (GpxTracePoints != null && GpxTracePoints.Count() != 0)
-            {
-                for (int i = 0; i < GpxTracePoints.Count - 1; i++)
-                {
-                    if (GpxTracePoints[i].Speed > 150)
-                    {
-                        GpxTracePoints[i].Speed = 150;
-                    }
-
-                    var timeSpan = (GpxTracePoints[i].Start - GpxTracePoints[i + 1].Start);
-                    if (timeSpan > new TimeSpan(0, 5, 0))
-                    {
-                        if (CalcoloDistanza(GpxTracePoints[i], GpxTracePoints[i + 1]) < 100)
-                        {
-                            reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start, Longitude = GpxTracePoints[i].Longitude, Latitude = GpxTracePoints[i].Latitude });
-                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i].Start.AddSeconds(-1), Longitude = GpxTracePoints[i].Longitude, Latitude = GpxTracePoints[i].Latitude });
-                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i + 1].Start.AddSeconds(1), Longitude = GpxTracePoints[i].Longitude, Latitude = GpxTracePoints[i].Latitude });
-                        }
-                    }
-                    else
-                    {
-                        reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start, Longitude = GpxTracePoints[i].Longitude, Latitude = GpxTracePoints[i].Latitude });
-                    }
-                }
-            }
-            r.DataContext = reportViewModel;
-            r.Owner = Application.Current.MainWindow;
+            r.DataContext = this;
             r.ShowDialog();
         }
-
-        //private DelegateCommand nominatimm;
-        //public DelegateCommand Nominatimm
-        //{
-        //    get { return nominatimm ?? (nominatimm = new DelegateCommand(Nominatimmm)); }
-        //}
-
-        //public async void Nominatimmm()
-        //{
-        //    var result = await Gpx.Nominatim.GetAddress(42, 12);
-        //    string address = result.DisplayName;
-        //    MessageBox.Show(address);
-        //}
     }
 }
