@@ -55,7 +55,7 @@ namespace Progetto
                         // Create and draw PDF graphics. 
                         using (PdfGraphics graph = processor.CreateGraphics())
                         {
-                            DrawGraphics(graph, pageBounds, img);
+                            DrawGraphics(graph, pageBounds, img, processor);
 
                             // Render a page with graphics. 
                             processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
@@ -66,7 +66,7 @@ namespace Progetto
 
                 File.Delete(pathIMG);
 
-                void DrawGraphics(PdfGraphics graph, PdfRectangle pageBounds, Image img)
+                void DrawGraphics(PdfGraphics graph, PdfRectangle pageBounds, Image img, PdfDocumentProcessor processor)
                 {
                     //2480 x 3508
                     //595 x 842
@@ -76,6 +76,7 @@ namespace Progetto
                     double y = pageBounds.Height - (2 * margine);
                     double ydiv = (y / 2) / 6;
                     double xdiv = x / 3;
+                    int nPage = 1;
 
                     graph.TranslateTransform(0, 0);
                     // Draw text lines on the page. 
@@ -102,11 +103,50 @@ namespace Progetto
 
                     using (Font font3 = new Font("Arial", 8))
                     {
+                        //for (int i = 0; i < _puntiStazionamento.Count - 1; i++)
+                        //{
+                        //    graph.DrawString(_puntiStazionamento[i], font3, black, (float)margine, (float)((y / 2) + ydiv * (3.3 + (0.3 * i))));
+                        //}
+                        
+                        int z = 0;
+                        float position = 0;
                         for (int i = 0; i < _puntiStazionamento.Count - 1; i++)
                         {
-                            graph.DrawString(_puntiStazionamento[i], font3, black, (float)margine, (float)((y / 2) + ydiv * (3.3 + (0.3 * i))));
+                            if (i == 12)
+                            { }
+                            if (i == 53)
+                            { }
+                            bool pageStart = true;
+                            if (position < (pageBounds.Height - margine) && nPage == 1)
+                            {
+                                z = i;
+                                position = (float)((y / 2) + ydiv * (3.3 + (0.3 * z)));
+                            }
+                            else if (position < (pageBounds.Height - margine) && nPage != 1)
+                            {
+                                z++;
+                                pageStart = true;
+                                position = (float)(margine + ydiv * (0.3 * z));
+                                Console.WriteLine("scrivo nella nuova pagina");
+
+                            }
+                            else if (pageStart)
+                            {
+                                //processor.InsertNewPage(nPage, pageBounds);
+
+                                processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
+                                graph = processor.CreateGraphics();
+                                nPage++;
+                                z = 0;
+                                pageStart = false;
+                                position = (float)(margine + ydiv * (0.3 * z));
+                                Console.WriteLine("nuova pagina");
+                            }
+                            graph.DrawString(_puntiStazionamento[i], font3, black, (float)margine, position);
                         }
+                        processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
                     }
+                    processor.DeletePage(nPage + 1);
                 }
             }
             catch (Exception e)
