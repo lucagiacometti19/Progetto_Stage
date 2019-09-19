@@ -26,6 +26,16 @@ namespace Progetto
             _selectedSegment = MainRoute;
         }
 
+        private bool _isWaitIndicatorVisible;
+
+        public bool IsWaitIndicatorVisible
+        {
+            get { return _isWaitIndicatorVisible; }
+            set { _isWaitIndicatorVisible = value; RaisePropertyChanged(); }
+        }
+
+
+
         private ObservableCollection<RouteViewModel> _segmentsCollection;
 
         public ObservableCollection<RouteViewModel> SegmentsCollection
@@ -127,16 +137,17 @@ namespace Progetto
         }
 
 
-        private DelegateCommand<ChartControl> pdfReport;
+        private DelegateCommand<ChartControl> _pdfReport;
         public DelegateCommand<ChartControl> PdfReport
         {
-            get { return pdfReport ?? (pdfReport = new DelegateCommand<ChartControl>(Pdf)); }
+            get { return _pdfReport ?? (_pdfReport = new DelegateCommand<ChartControl>(Pdf)); }
         }
-        
+
         public async void Pdf(ChartControl chart)
         {
             if (MainRoute != Enumerable.Empty<GpxPoint>() && MainRoute.Count != 0)
             {
+                IsWaitIndicatorVisible = true;
                 CalculateMaxSpeed();
                 CalculateMediumSpeed();
                 CalculateMinSpeed();
@@ -147,6 +158,7 @@ namespace Progetto
                 await GetStationaryPoints();
                 PDFCreator pdf = new PDFCreator(Nome, VelocitaMedia, VelocitaMassima, VelocitaMinima, LunghezzaPercorso, OraInizio, OraFine, OraTot, PuntiStazionamento);
                 pdf.CreaPDF(chart);
+                IsWaitIndicatorVisible = false;
             }
         }
 
@@ -204,11 +216,11 @@ namespace Progetto
                         var geocoderResult = await Gpx.Nominatim.GetAddress(MainRoute[index - 1].Latitude, MainRoute[index - 1].Longitude);
 
                         string val = "";
-                        if(geocoderResult.Address.Village != null)
+                        if (geocoderResult.Address.Village != null)
                         {
                             val = geocoderResult.Address.Village;
                         }
-                        else if(geocoderResult.Address.Town != null)
+                        else if (geocoderResult.Address.Town != null)
                         {
                             val = geocoderResult.Address.Town;
                         }
@@ -219,8 +231,8 @@ namespace Progetto
 
                         string address = $"{(geocoderResult.Address.Road != null ? $"{geocoderResult.Address.Road}, " : "")}" +
                             $"{val}, " +
-                            $"{(geocoderResult.Address.County != null ? $"{geocoderResult.Address.Country}, ": "")}" +
-                            $"{(geocoderResult.Address.State != null ? $"{geocoderResult.Address.State}": "")}";
+                            $"{(geocoderResult.Address.County != null ? $"{geocoderResult.Address.Country}, " : "")}" +
+                            $"{(geocoderResult.Address.State != null ? $"{geocoderResult.Address.State}" : "")}";
                         TimeSpan span = MainRoute[i].Start - MainRoute[index - 1].Start;
                         if (span > new TimeSpan(0, 0, 10))
                             PuntiStazionamento.Add($"Stazionamento alle: {MainRoute[index - 1].Start} di durata: {span}| {address}");

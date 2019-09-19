@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Nominatim.API.Geocoders;
+﻿using Nominatim.API.Geocoders;
 using Nominatim.API.Models;
 using System.Threading.Tasks;
 
@@ -19,7 +16,6 @@ namespace Gpx
                 ZoomLevel = 18
             };
             return await geoCoder.ReverseGeocode(request);
-          
         }
     }
 }

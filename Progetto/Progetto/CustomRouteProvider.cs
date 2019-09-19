@@ -1,15 +1,12 @@
-﻿using DevExpress.Map.Native;
-using DevExpress.Xpf.Map;
+﻿using DevExpress.Xpf.Map;
 using Gpx;
+using Nominatim.API.Geocoders;
+using Nominatim.API.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using Nominatim.API.Geocoders;
-using Nominatim.API.Models;
 
 
 namespace Progetto
@@ -86,7 +83,7 @@ namespace Progetto
 
         async Task CalculateRouteCore(ObservableCollection<GpxPoint> list, bool value)
         {
-            this.route.Clear();
+            route.Clear();
             if (value)
             {
                 await HttpMessage.HttpRouteRequest(list);

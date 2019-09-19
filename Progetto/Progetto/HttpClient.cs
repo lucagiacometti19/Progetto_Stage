@@ -1,20 +1,13 @@
 ﻿using DevExpress.Xpf.Map;
 using Gpx;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web.Script.Serialization;
 
 
 namespace Progetto
@@ -23,34 +16,11 @@ namespace Progetto
     {
         public static HttpClient client;
 
-        private static ObservableCollection<GpxPoint> point = new ObservableCollection<GpxPoint>();
-        public static ObservableCollection<GpxPoint> Point
-        {
-            get { return point; }
-            set { point = value; }
-        }
+        public static List<GpxPoint> Point { get; set; } = new List<GpxPoint>();
+        public static List<string> Requests { get; set; } = new List<string>();
+        public static List<string> Results { get; set; } = new List<string>();
 
-        private static ObservableCollection<string> requests = new ObservableCollection<string>();
-        public static ObservableCollection<string> Requests
-        {
-            get { return requests; }
-            set { requests = value; }
-        }
-
-        private static ObservableCollection<string> results = new ObservableCollection<string>();
-        public static ObservableCollection<string> Results
-        {
-            get { return results; }
-            set { results = value; }
-        }
-
-        private static List<string> hints;
-
-        public static List<string> Hints
-        {
-            get { return hints; }
-            set { hints = value; }
-        }
+        public static List<string> Hints { get; set; }
 
 
         public static void RequestAssembler(List<GeoPoint> g)
@@ -124,24 +94,24 @@ namespace Progetto
             JToken contourManifest = JObject.Parse(input);
             //ottiene le coordinate dei punti
             JToken routes = contourManifest.SelectToken("routes");
-            var legs = routes.ToArray()[0].SelectTokens("legs");
+            IEnumerable<JToken> legs = routes.ToArray()[0].SelectTokens("legs");
             for (int z = 0; z < legs.Children().Count(); z++)
             {
-                var steps = legs.Children().ToArray()[z].SelectTokens("steps");
-                var stepsChildren = steps.Children();
+                IEnumerable<JToken> steps = legs.Children().ToArray()[z].SelectTokens("steps");
+                IJEnumerable<JToken> stepsChildren = steps.Children();
                 double lat = 0;
                 double lon = 0;
 
 
                 for (int i = 0; i < stepsChildren.Count(); i++)
                 {
-                    var geometry = stepsChildren.ToArray()[i].SelectToken("geometry");
-                    var coordinates = geometry.SelectToken("coordinates");
+                    JToken geometry = stepsChildren.ToArray()[i].SelectToken("geometry");
+                    JToken coordinates = geometry.SelectToken("coordinates");
 
                     Console.WriteLine(coordinates.ToArray()[0].Count());
                     for (int x = 0; x < coordinates.ToArray().Count(); x++)
                     {
-                        var intersectionsChildren = coordinates.ToArray()[x];
+                        JToken intersectionsChildren = coordinates.ToArray()[x];
                         lat = Convert.ToDouble(intersectionsChildren.ToArray()[1]);
                         lon = Convert.ToDouble(intersectionsChildren.ToArray()[0]);
 
@@ -157,10 +127,10 @@ namespace Progetto
             //ottiene gli hints
             Hints = new List<string>();
             JToken waypoints = contourManifest.SelectToken("waypoints");
-            var waypointsChildren = waypoints.Children();
+            JEnumerable<JToken> waypointsChildren = waypoints.Children();
             for (int i = 0; i < waypointsChildren.Count(); i++)
             {
-                var hint = waypointsChildren.ToArray()[i].SelectToken("hint");
+                JToken hint = waypointsChildren.ToArray()[i].SelectToken("hint");
                 Hints.Add(hint.ToString());
             }
         }
@@ -209,7 +179,7 @@ namespace Progetto
         public static void ThinPointCollection()
         {
             Console.WriteLine(Point.Count);
-            ObservableCollection<GpxPoint> thinnedList = new ObservableCollection<GpxPoint>();
+            List<GpxPoint> thinnedList = new List<GpxPoint>();
             int index = 1;
             int thinnedIndex = 0;
             thinnedList.Add(Point[0]);
@@ -247,9 +217,10 @@ namespace Progetto
 
         public static void Reset()
         {
-            Point = new ObservableCollection<GpxPoint>();
-            Requests = new ObservableCollection<string>();
-            Results = new ObservableCollection<string>();
+            Point = new List<GpxPoint>();
+            Requests = new List<string>();
+            Results = new List<string>();
+            Hints = new List<string>();
         }
     }
 }

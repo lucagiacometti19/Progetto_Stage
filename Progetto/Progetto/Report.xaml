@@ -65,6 +65,7 @@
                 </dxn:NavBarControl.ItemTemplate>
             </dxn:NavBarControl>
 
+
             <dxc:ChartControl Name="chartControl1" Grid.Column="1" Grid.Row="0"  DataSource="{Binding CurrentViewModel.MainRoute}">
                 <dxc:ChartControl.Diagram>
                     <dxc:XYDiagram2D>
@@ -81,6 +82,17 @@
                     </dxc:XYDiagram2D>
                 </dxc:ChartControl.Diagram>
             </dxc:ChartControl>
+
+            <dx:WaitIndicator Content="Creating PDF..." DataContext="{Binding CurrentViewModel}" DeferedVisibility="{Binding IsWaitIndicatorVisible}" Grid.Column="1" Margin="170,0,172,0">
+                <dx:WaitIndicator.ContentTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock Text="Please Wait" FontSize="20"/>
+                            <TextBlock Text="{Binding}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </dx:WaitIndicator.ContentTemplate>
+            </dx:WaitIndicator>
         </Grid>
     </Grid>
 </Window>

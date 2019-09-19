@@ -1,27 +1,25 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\utente\\Desktop\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj": {}
+    "C:\\Users\\Pavilion\\Desktop\\Stage\\Progetti\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj": {}
   },
   "projects": {
-    "C:\\Users\\utente\\Desktop\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj": {
+    "C:\\Users\\Pavilion\\Desktop\\Stage\\Progetti\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\utente\\Desktop\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj",
+        "projectUniqueName": "C:\\Users\\Pavilion\\Desktop\\Stage\\Progetti\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj",
         "projectName": "Gpx",
-        "projectPath": "C:\\Users\\utente\\Desktop\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj",
-        "packagesPath": "C:\\Users\\utente\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\utente\\Desktop\\Progetto_Stage\\Progetto\\Gpx\\obj\\",
+        "projectPath": "C:\\Users\\Pavilion\\Desktop\\Stage\\Progetti\\Progetto_Stage\\Progetto\\Gpx\\Gpx.csproj",
+        "packagesPath": "C:\\Users\\Pavilion\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Pavilion\\Desktop\\Stage\\Progetti\\Progetto_Stage\\Progetto\\Gpx\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Microsoft\\Xamarin\\NuGet\\",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\utente\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Pavilion\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\DevExpress 19.1.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Xamarin.Offline.config"
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "netstandard2.0"

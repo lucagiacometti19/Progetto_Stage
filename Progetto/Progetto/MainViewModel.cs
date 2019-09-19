@@ -14,58 +14,58 @@ namespace Progetto
     {
         public MainViewModel()
         {
-            gpxPointsCollection = new ObservableCollection<GpxPoint>();
-            gpxTracePoints = new ObservableCollection<GpxPoint>();
-            mapItems = new ObservableCollection<MapItem>();
-            routes = new ObservableCollection<MapItem>();
-            routeViewModels = new ObservableCollection<RouteViewModel>();
-            currentViewModel = new RouteViewModel(new ObservableCollection<GpxPoint>());
+            _gpxPointsCollection = new ObservableCollection<GpxPoint>();
+            _gpxTracePoints = new ObservableCollection<GpxPoint>();
+            _mapItems = new ObservableCollection<MapItem>();
+            _routes = new ObservableCollection<MapItem>();
+            _routeViewModels = new ObservableCollection<RouteViewModel>();
+            _currentViewModel = new RouteViewModel(new ObservableCollection<GpxPoint>());
         }
 
-        private ObservableCollection<GpxPoint> gpxPointsCollection;
+        private ObservableCollection<GpxPoint> _gpxPointsCollection;
         public ObservableCollection<GpxPoint> GpxPointsCollection
         {
-            get { return gpxPointsCollection; }
-            set { gpxPointsCollection = value; RaisePropertyChanged(); }
+            get { return _gpxPointsCollection; }
+            set { _gpxPointsCollection = value; RaisePropertyChanged(); }
         }
 
 
-        private ObservableCollection<GpxPoint> gpxTracePoints;
+        private ObservableCollection<GpxPoint> _gpxTracePoints;
         public ObservableCollection<GpxPoint> GpxTracePoints
         {
-            get { return gpxTracePoints; }
-            set { gpxTracePoints = value; RaisePropertyChanged(); }
+            get { return _gpxTracePoints; }
+            set { _gpxTracePoints = value; RaisePropertyChanged(); }
         }
 
-        private ObservableCollection<MapItem> mapItems;
+        private ObservableCollection<MapItem> _mapItems;
         public ObservableCollection<MapItem> MapItems
         {
-            get { return mapItems; }
-            set { mapItems = value; RaisePropertyChanged(); }
+            get { return _mapItems; }
+            set { _mapItems = value; RaisePropertyChanged(); }
 
         }
 
-        private ObservableCollection<MapItem> routes;
+        private ObservableCollection<MapItem> _routes;
         public ObservableCollection<MapItem> Routes
         {
-            get { return routes; }
-            set { routes = value; RaisePropertyChanged(); }
+            get { return _routes; }
+            set { _routes = value; RaisePropertyChanged(); }
         }
 
-        private ObservableCollection<RouteViewModel> routeViewModels;
+        private ObservableCollection<RouteViewModel> _routeViewModels;
 
         public ObservableCollection<RouteViewModel> RouteViewModels
         {
-            get { return routeViewModels; }
-            set { routeViewModels = value; RaisePropertyChanged(); }
+            get { return _routeViewModels; }
+            set { _routeViewModels = value; RaisePropertyChanged(); }
         }
 
-        private RouteViewModel currentViewModel;
+        private RouteViewModel _currentViewModel;
 
         public RouteViewModel CurrentViewModel
         {
-            get { return currentViewModel; }
-            set { currentViewModel = value; RaisePropertyChanged(); }
+            get { return _currentViewModel; }
+            set { _currentViewModel = value; RaisePropertyChanged(); }
         }
 
         public async Task CreateMapPushpinAsync(GeoPoint point)
@@ -121,10 +121,10 @@ namespace Progetto
             }
         }
 
-        private DelegateCommand importCommand;
+        private DelegateCommand _importCommand;
         public DelegateCommand ImportCommand
         {
-            get { return importCommand ?? (importCommand = new DelegateCommand(Import)); }
+            get { return _importCommand ?? (_importCommand = new DelegateCommand(Import)); }
         }
 
         private async void Import()
@@ -155,7 +155,7 @@ namespace Progetto
                     if (newRouteVM)
                     {
                         //creo la route da mostrate su osm
-                        CreateRoute(gpxPointsCollection, false);
+                        CreateRoute(_gpxPointsCollection, false);
 
                         var newRoute = new RouteViewModel(GpxTracePoints) { Nome = name };
                         RouteViewModels.Add(newRoute);
@@ -176,10 +176,10 @@ namespace Progetto
             }
         }
 
-        private DelegateCommand resetAll;
+        private DelegateCommand _resetAll;
         public DelegateCommand ResetAll
         {
-            get { return resetAll ?? (resetAll = new DelegateCommand(Reset)); }
+            get { return _resetAll ?? (_resetAll = new DelegateCommand(Reset)); }
         }
 
         public void Reset()
@@ -193,16 +193,18 @@ namespace Progetto
             HttpMessage.Reset();
         }
 
-        private DelegateCommand report;
+        private DelegateCommand _report;
         public DelegateCommand Report
         {
-            get { return report ?? (report = new DelegateCommand(ShowReport)); }
+            get { return _report ?? (_report = new DelegateCommand(ShowReport)); }
         }
 
         public void ShowReport()
         {
-            Report r = new Report();
-            r.DataContext = this;
+            Report r = new Report
+            {
+                DataContext = this
+            };
             r.ShowDialog();
         }
     }

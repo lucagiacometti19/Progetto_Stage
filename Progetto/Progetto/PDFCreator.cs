@@ -1,18 +1,10 @@
 ﻿using DevExpress.Pdf;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Drawing;
-using DevExpress.XtraSpreadsheet.Services;
-using DevExpress.XtraSpreadsheet.Services.Implementation;
-using DevExpress.Spreadsheet;
 using DevExpress.Xpf.Charts;
-using DevExpress.XtraReports.UI;
 using DevExpress.XtraPrinting;
-using System.IO;
+using System;
 using System.Collections.ObjectModel;
+using System.Drawing;
+using System.IO;
 
 namespace Progetto
 {
@@ -46,8 +38,10 @@ namespace Progetto
                 using (PdfDocumentProcessor processor = new PdfDocumentProcessor())
                 {
 
-                    ImageExportOptions options = new ImageExportOptions();
-                    options.Resolution = 400;
+                    ImageExportOptions options = new ImageExportOptions
+                    {
+                        Resolution = 400
+                    };
 
                     Chart.ExportToImage(pathIMG, options, PrintSizeMode.ProportionalZoom);
                     // Create an empty document. 
