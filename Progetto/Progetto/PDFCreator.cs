@@ -98,56 +98,59 @@ namespace Progetto
                         graph.DrawString($"Arrivo: {_fine}", font2, black, (float)(xdiv + margine), (float)((y / 2) + ydiv));
                         graph.DrawString($"Durata del viaggio: {_totalTime}", font2, black, (float)((2 * xdiv) + margine), (float)((y / 2) + ydiv));
                         graph.DrawString($"Lunghezza del percorso: {Math.Round(_lunghezzaPercorso, 2)} Km", font2, black, (float)margine, (float)((y / 2) + ydiv * 2));
-                        graph.DrawString($"Punti di stazionamento: ", font2, black, (float)margine, (float)((y / 2) + ydiv * 3));
-                    }
-
-                    using (Font font3 = new Font("Arial", 8))
-                    {
-                        //for (int i = 0; i < _puntiStazionamento.Count - 1; i++)
-                        //{
-                        //    graph.DrawString(_puntiStazionamento[i], font3, black, (float)margine, (float)((y / 2) + ydiv * (3.3 + (0.3 * i))));
-                        //}
-                        
-                        int z = 0;
-                        float position = 0;
-                        for (int i = 0; i < _puntiStazionamento.Count - 1; i++)
+                        if (_puntiStazionamento.Count != 0)
                         {
-                            if (i == 12)
-                            { }
-                            if (i == 53)
-                            { }
-                            bool pageStart = true;
-                            if (position < (pageBounds.Height - margine) && nPage == 1)
-                            {
-                                z = i;
-                                position = (float)((y / 2) + ydiv * (3.3 + (0.3 * z)));
-                            }
-                            else if (position < (pageBounds.Height - margine) && nPage != 1)
-                            {
-                                z++;
-                                pageStart = true;
-                                position = (float)(margine + ydiv * (0.3 * z));
-                                Console.WriteLine("scrivo nella nuova pagina");
-
-                            }
-                            else if (pageStart)
-                            {
-                                //processor.InsertNewPage(nPage, pageBounds);
-
-                                processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
-                                graph = processor.CreateGraphics();
-                                nPage++;
-                                z = 0;
-                                pageStart = false;
-                                position = (float)(margine + ydiv * (0.3 * z));
-                                Console.WriteLine("nuova pagina");
-                            }
-                            graph.DrawString(_puntiStazionamento[i], font3, black, (float)margine, position);
+                            graph.DrawString($"Punti di stazionamento: ", font2, black, (float)margine, (float)((y / 2) + ydiv * 3));
                         }
-                        processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
                     }
-                    processor.DeletePage(nPage + 1);
+
+                    if (_puntiStazionamento.Count != 0)
+                    {
+                        using (Font font3 = new Font("Arial", 8))
+                        {
+                            //for (int i = 0; i < _puntiStazionamento.Count - 1; i++)
+                            //{
+                            //    graph.DrawString(_puntiStazionamento[i], font3, black, (float)margine, (float)((y / 2) + ydiv * (3.3 + (0.3 * i))));
+                            //}
+
+                            int z = 0;
+                            float position = 0;
+                            for (int i = 0; i < _puntiStazionamento.Count; i++)
+                            {
+                                bool pageStart = true;
+                                if (position < (pageBounds.Height - margine) && nPage == 1)
+                                {
+                                    z = i;
+                                    position = (float)((y / 2) + ydiv * (3.3 + (0.3 * z)));
+                                }
+                                else if (position < (pageBounds.Height - margine) && nPage != 1)
+                                {
+                                    z++;
+                                    pageStart = true;
+                                    position = (float)(margine + ydiv * (0.3 * z));
+                                    Console.WriteLine("scrivo nella nuova pagina");
+
+                                }
+                                else if (pageStart)
+                                {
+                                    //processor.InsertNewPage(nPage, pageBounds);
+
+                                    processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
+                                    graph = processor.CreateGraphics();
+                                    nPage++;
+                                    z = 0;
+                                    pageStart = false;
+                                    position = (float)(margine + ydiv * (0.3 * z));
+                                    Console.WriteLine("nuova pagina");
+                                }
+                                graph.DrawString(_puntiStazionamento[i], font3, black, (float)margine, position);
+                            }
+                            processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
+                        }
+                        processor.DeletePage(nPage + 1);
+                    }
                 }
+
             }
             catch (Exception e)
             {
