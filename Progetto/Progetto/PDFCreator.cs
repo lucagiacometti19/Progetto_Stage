@@ -131,8 +131,8 @@ namespace Progetto
                                 else if (pageStart)
                                 {
                                     //processor.InsertNewPage(nPage + 1, pageBounds);
-                                    graph = processor.CreateGraphics();
                                     processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
+                                    graph = processor.CreateGraphics();
                                     nPage++;
                                     z = 0;
                                     pageStart = false;
@@ -140,7 +140,7 @@ namespace Progetto
                                 }
                                 graph.DrawString(_puntiStazionamento[i], font3, black, (float)margine, position);
                             }
-                            processor.RenderNewPage(PdfPaperSize.A4, processor.CreateGraphics(), 72, 72);
+                            processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
                         }
                     }
                 }
