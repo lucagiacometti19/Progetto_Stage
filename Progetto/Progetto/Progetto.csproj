@@ -116,7 +116,7 @@
     <Compile Include="Report.xaml.cs">
       <DependentUpon>Report.xaml</DependentUpon>
     </Compile>
-    <Compile Include="RouteViewModel.cs" />
+    <Compile Include="ReportViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

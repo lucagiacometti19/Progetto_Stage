@@ -31,7 +31,6 @@ namespace Progetto
         public void CreaPDF(ChartControl Chart)
         {
             try
-
             {
                 string pathPDF = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{(_nome == "" || _nome == null ? "Route" : _nome)}.pdf";
                 string pathIMG = $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\##%%R3P0rT%%##.png";
@@ -58,7 +57,7 @@ namespace Progetto
                             DrawGraphics(graph, pageBounds, img, processor);
 
                             // Render a page with graphics. 
-                            processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
+                            //processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
                             Console.WriteLine("PDF Generato");
                         }
                     }
@@ -128,29 +127,23 @@ namespace Progetto
                                     z++;
                                     pageStart = true;
                                     position = (float)(margine + ydiv * (0.3 * z));
-                                    Console.WriteLine("scrivo nella nuova pagina");
-
                                 }
                                 else if (pageStart)
                                 {
-                                    //processor.InsertNewPage(nPage, pageBounds);
-
-                                    processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
+                                    //processor.InsertNewPage(nPage + 1, pageBounds);
                                     graph = processor.CreateGraphics();
+                                    processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
                                     nPage++;
                                     z = 0;
                                     pageStart = false;
                                     position = (float)(margine + ydiv * (0.3 * z));
-                                    Console.WriteLine("nuova pagina");
                                 }
                                 graph.DrawString(_puntiStazionamento[i], font3, black, (float)margine, position);
                             }
-                            processor.RenderNewPage(PdfPaperSize.A4, graph, 72, 72);
+                            processor.RenderNewPage(PdfPaperSize.A4, processor.CreateGraphics(), 72, 72);
                         }
-                        processor.DeletePage(nPage + 1);
                     }
                 }
-
             }
             catch (Exception e)
             {

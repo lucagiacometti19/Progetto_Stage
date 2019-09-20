@@ -18,8 +18,8 @@ namespace Progetto
             _gpxTracePoints = new ObservableCollection<GpxPoint>();
             _mapItems = new ObservableCollection<MapItem>();
             _routes = new ObservableCollection<MapItem>();
-            _routeViewModels = new ObservableCollection<RouteViewModel>();
-            _currentViewModel = new RouteViewModel(new ObservableCollection<GpxPoint>());
+            _routeViewModels = new ObservableCollection<ReportViewModel>();
+            _currentViewModel = new ReportViewModel(new ObservableCollection<GpxPoint>());
         }
 
         private ObservableCollection<GpxPoint> _gpxPointsCollection;
@@ -52,17 +52,17 @@ namespace Progetto
             set { _routes = value; RaisePropertyChanged(); }
         }
 
-        private ObservableCollection<RouteViewModel> _routeViewModels;
+        private ObservableCollection<ReportViewModel> _routeViewModels;
 
-        public ObservableCollection<RouteViewModel> RouteViewModels
+        public ObservableCollection<ReportViewModel> RouteViewModels
         {
             get { return _routeViewModels; }
             set { _routeViewModels = value; RaisePropertyChanged(); }
         }
 
-        private RouteViewModel _currentViewModel;
+        private ReportViewModel _currentViewModel;
 
-        public RouteViewModel CurrentViewModel
+        public ReportViewModel CurrentViewModel
         {
             get { return _currentViewModel; }
             set { _currentViewModel = value; RaisePropertyChanged(); }
@@ -144,7 +144,7 @@ namespace Progetto
                     //Aggiungo!
                     string name = Path.GetFileNameWithoutExtension(open.FileName);
                     bool newRouteVM = true;
-                    foreach (var routeViewModel in RouteViewModels ?? Enumerable.Empty<RouteViewModel>())
+                    foreach (var routeViewModel in RouteViewModels ?? Enumerable.Empty<ReportViewModel>())
                     {
                         if (name == routeViewModel.Nome)
                         {
@@ -157,7 +157,7 @@ namespace Progetto
                         //creo la route da mostrate su osm
                         CreateRoute(_gpxPointsCollection, false);
 
-                        var newRoute = new RouteViewModel(GpxTracePoints) { Nome = name };
+                        var newRoute = new ReportViewModel(GpxTracePoints) { Nome = name };
                         RouteViewModels.Add(newRoute);
                         CurrentViewModel = newRoute;
                         //calcolo le proprietà della route
@@ -188,8 +188,8 @@ namespace Progetto
             GpxTracePoints = new ObservableCollection<GpxPoint>();
             Routes = new ObservableCollection<MapItem>();
             MapItems = new ObservableCollection<MapItem>();
-            RouteViewModels = new ObservableCollection<RouteViewModel>();
-            CurrentViewModel = new RouteViewModel(new ObservableCollection<GpxPoint>());
+            RouteViewModels = new ObservableCollection<ReportViewModel>();
+            CurrentViewModel = new ReportViewModel(new ObservableCollection<GpxPoint>());
             HttpMessage.Reset();
         }
 

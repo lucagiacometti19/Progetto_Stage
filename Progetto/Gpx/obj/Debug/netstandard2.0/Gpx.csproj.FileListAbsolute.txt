@@ -23,4 +23,3 @@ C:\Users\Pavilion\Desktop\Stage\Progetti\Progetto_Stage\Progetto\Gpx\obj\Debug\n
 C:\Users\Pavilion\Desktop\Stage\Progetti\Progetto_Stage\Progetto\Gpx\obj\Debug\netstandard2.0\Gpx.AssemblyInfo.cs
 C:\Users\Pavilion\Desktop\Stage\Progetti\Progetto_Stage\Progetto\Gpx\obj\Debug\netstandard2.0\Gpx.dll
 C:\Users\Pavilion\Desktop\Stage\Progetti\Progetto_Stage\Progetto\Gpx\obj\Debug\netstandard2.0\Gpx.pdb
-C:\Users\Pavilion\Desktop\Stage\Progetti\Progetto_Stage\Progetto\Gpx\obj\Debug\netstandard2.0\Gpx.csprojAssemblyReference.cache
