@@ -18,14 +18,6 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
-        <!--<Button  Content="Importa" Command="{Binding ImportCommand}"/>-->
-
-        <!--<dxm:MapControl Grid.Row="1" ZoomLevel="4">
-            <dxm:ImageLayer>
-                <dxm:BingMapDataProvider BingKey="mWuksRMdb006DVTVeRoy~VBby6uhRsgm_fGc4n7RuVA~AmHfaZlNw0sc5TxdXkuC6wuf13uenZlF184AN_kdfZZuyj_VCS4BKOqfXF0KUsqi"/>
-            </dxm:ImageLayer>-->
-        <!--<dxm:InformationLayer DataProvider="{Binding RouteDataProvider}" EnableHighlighting="False"/>-->
-        <!--</dxm:MapControl>-->
 
         <dxr:RibbonControl RibbonStyle="OfficeSlim" ToolbarHideSeparators="True" ShowApplicationButton="False" ToolbarShowMode="Hide">
             <dxr:RibbonDefaultPageCategory>
@@ -63,9 +55,5 @@
                 </dxm:VectorLayer.Data>
             </dxm:VectorLayer>
         </dxm:MapControl>
-
-        <!--<dxmvvm:Interaction.Behaviors>
-            <dxmvvm:EventToCommand EventName="MouseDown" Command="{Binding Mouse_DoubleClick}" PassEventArgsToCommand="True" ModifierKeys="Ctrl"/>
-        </dxmvvm:Interaction.Behaviors>-->
     </Grid>
 </Window>

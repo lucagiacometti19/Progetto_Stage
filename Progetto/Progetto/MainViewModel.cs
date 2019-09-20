@@ -1,23 +1,12 @@
-﻿using DevExpress.Map;
-using DevExpress.Mvvm;
+﻿using DevExpress.Mvvm;
 using DevExpress.Xpf.Map;
 using Gpx;
 using Microsoft.Win32;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Xml;
 
 namespace Progetto
 {
@@ -25,58 +14,59 @@ namespace Progetto
     {
         public MainViewModel()
         {
-            GpxPointsCollection = new ObservableCollection<GpxPoint>();
-            //PolylineCollection = new ObservableCollection<MapPolyline>();
-            MapItems = new ObservableCollection<MapItem>();
-            Routes = new ObservableCollection<MapItem>();
+            _gpxPointsCollection = new ObservableCollection<GpxPoint>();
+            _gpxTracePoints = new ObservableCollection<GpxPoint>();
+            _mapItems = new ObservableCollection<MapItem>();
+            _routes = new ObservableCollection<MapItem>();
+            _routeViewModels = new ObservableCollection<ReportViewModel>();
+            _currentViewModel = new ReportViewModel(new ObservableCollection<GpxPoint>());
         }
 
-        private ObservableCollection<GpxPoint> gpxPointsCollection;
+        private ObservableCollection<GpxPoint> _gpxPointsCollection;
         public ObservableCollection<GpxPoint> GpxPointsCollection
         {
-            get { return gpxPointsCollection; }
-            set { gpxPointsCollection = value; RaisePropertyChanged(); }
+            get { return _gpxPointsCollection; }
+            set { _gpxPointsCollection = value; RaisePropertyChanged(); }
         }
 
 
-        private ObservableCollection<GpxPoint> gpxTracePoints;
+        private ObservableCollection<GpxPoint> _gpxTracePoints;
         public ObservableCollection<GpxPoint> GpxTracePoints
         {
-            get { return gpxTracePoints; }
-            set { gpxTracePoints = value; RaisePropertyChanged(); }
+            get { return _gpxTracePoints; }
+            set { _gpxTracePoints = value; RaisePropertyChanged(); }
         }
-        //private ObservableCollection<GeoPoint> geoPointsCollection;
-        //public ObservableCollection<GeoPoint> GeoPointsCollection
-        //{
-        //    get { return geoPointsCollection; }
-        //    set { geoPointsCollection = value; RaisePropertyChanged(); }
-        //}
 
-        //private ObservableCollection<MapPolyline> polylineCollection;
-        //public ObservableCollection<MapPolyline> PolylineCollection
-        //{
-        //    get { return polylineCollection; }
-        //    set { polylineCollection = value; RaisePropertyChanged(); }
-        //}
-
-
-        private ObservableCollection<MapItem> mapItems;
+        private ObservableCollection<MapItem> _mapItems;
         public ObservableCollection<MapItem> MapItems
         {
-            get { return mapItems; }
-            set { mapItems = value; RaisePropertyChanged(); }
+            get { return _mapItems; }
+            set { _mapItems = value; RaisePropertyChanged(); }
 
         }
-        Stopwatch timerRequest = new Stopwatch();
-        Stopwatch timerTot = new Stopwatch();
 
-        private ObservableCollection<MapItem> routes;
+        private ObservableCollection<MapItem> _routes;
         public ObservableCollection<MapItem> Routes
         {
-            get { return routes; }
-            set { routes = value; }
+            get { return _routes; }
+            set { _routes = value; RaisePropertyChanged(); }
         }
 
+        private ObservableCollection<ReportViewModel> _routeViewModels;
+
+        public ObservableCollection<ReportViewModel> RouteViewModels
+        {
+            get { return _routeViewModels; }
+            set { _routeViewModels = value; RaisePropertyChanged(); }
+        }
+
+        private ReportViewModel _currentViewModel;
+
+        public ReportViewModel CurrentViewModel
+        {
+            get { return _currentViewModel; }
+            set { _currentViewModel = value; RaisePropertyChanged(); }
+        }
 
         public async Task CreateMapPushpinAsync(GeoPoint point)
         {
@@ -106,6 +96,11 @@ namespace Progetto
             MapItems.Add(mapPushpin);
         }
 
+        /// <summary>
+        /// Si appoggia a CustomRouteProvider per visualizzare la route su osm
+        /// </summary>
+        /// <param name="gpxPoints">lista di gpx point della route</param>
+        /// <param name="value">true per richiedere la polilinea al server, false per mostrare la polilinea che unisce i punti senza richiesta al server</param>
         public async void CreateRoute(ObservableCollection<GpxPoint> gpxPoints, bool value)
         {
             CustomRouteProvider RouteProvider = new CustomRouteProvider();
@@ -126,51 +121,65 @@ namespace Progetto
             }
         }
 
-        //private void CreatePolylines(ObservableCollection<GeoPoint> points)
-        //{
-        //    Console.WriteLine("Creando la polilinea..");
-
-        //    MapPolyline pl = new MapPolyline();
-        //    pl.Stroke = new SolidColorBrush(Color.FromRgb(0, 17, 255));
-        //    foreach (GeoPoint px in points)
-        //    {
-        //        pl.Points.Add(px);
-        //    }
-        //    PolylineCollection.Add(pl);
-        //    Console.WriteLine("Polilinea creata con successo");
-
-        //}
-
-
-        private DelegateCommand importCommand;
+        private DelegateCommand _importCommand;
         public DelegateCommand ImportCommand
         {
-            get { return importCommand ?? (importCommand = new DelegateCommand(Import)); }
+            get { return _importCommand ?? (_importCommand = new DelegateCommand(Import)); }
         }
 
         private async void Import()
         {
-            OpenFileDialog open = new OpenFileDialog
+            try
             {
-                Filter = "Xml files (*.xml)|*.xml",
-                Title = "Importa file"
-            };
-            if ((bool)open.ShowDialog())
-            {
-                GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
-                GpxTracePoints = GpxPointsCollection;
 
-                timerTot.Start();
-                CreateRoute(GpxPointsCollection, false);
-                timerTot.Stop();
-                Console.WriteLine($"Tempo tot: { timerTot.ElapsedMilliseconds }");
+                OpenFileDialog open = new OpenFileDialog
+                {
+                    Filter = "Xml files (*.xml)|*.xml",
+                    Title = "Importa file"
+                };
+                if ((bool)open.ShowDialog())
+                {
+                    GpxPointsCollection = await GpxReader.ReadFromXml(open.FileName);
+                    GpxTracePoints = GpxPointsCollection;
+                    //Aggiungo!
+                    string name = Path.GetFileNameWithoutExtension(open.FileName);
+                    bool newRouteVM = true;
+                    foreach (var routeViewModel in RouteViewModels ?? Enumerable.Empty<ReportViewModel>())
+                    {
+                        if (name == routeViewModel.Nome)
+                        {
+                            newRouteVM = false;
+                            break;
+                        }
+                    }
+                    if (newRouteVM)
+                    {
+                        //creo la route da mostrate su osm
+                        CreateRoute(_gpxPointsCollection, false);
+
+                        var newRoute = new ReportViewModel(GpxTracePoints) { Nome = name };
+                        RouteViewModels.Add(newRoute);
+                        CurrentViewModel = newRoute;
+                        //calcolo le proprietà della route
+                        newRoute.CalculateStationaryPoints(CurrentViewModel);
+                        newRoute.GetSubroutes(CurrentViewModel);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                GpxPointsCollection = new ObservableCollection<GpxPoint>();
             }
         }
 
-        private DelegateCommand resetAll;
+        private DelegateCommand _resetAll;
         public DelegateCommand ResetAll
         {
-            get { return resetAll ?? (resetAll = new DelegateCommand(Reset)); }
+            get { return _resetAll ?? (_resetAll = new DelegateCommand(Reset)); }
         }
 
         public void Reset()
@@ -179,73 +188,23 @@ namespace Progetto
             GpxTracePoints = new ObservableCollection<GpxPoint>();
             Routes = new ObservableCollection<MapItem>();
             MapItems = new ObservableCollection<MapItem>();
+            RouteViewModels = new ObservableCollection<ReportViewModel>();
+            CurrentViewModel = new ReportViewModel(new ObservableCollection<GpxPoint>());
             HttpMessage.Reset();
         }
 
-
-        private static double CalcoloDistanza(GpxPoint p1, GpxPoint p2)
-        {
-            /* Definisce le costanti e le variabili */
-            const double R = 6371;
-            double lat_alfa, lat_beta;
-            double lon_alfa, lon_beta;
-            double fi;
-            double p, d;
-            /* Converte i gradi in radianti */
-            lat_alfa = Math.PI * p1.Latitude / 180;
-            lat_beta = Math.PI * p2.Latitude / 180;
-            lon_alfa = Math.PI * p1.Longitude / 180;
-            lon_beta = Math.PI * p2.Longitude / 180;
-            /* Calcola l'angolo compreso fi */
-            fi = Math.Abs(lon_alfa - lon_beta);
-            /* Calcola il terzo lato del triangolo sferico */
-            p = Math.Acos(Math.Sin(lat_beta) * Math.Sin(lat_alfa) +
-              Math.Cos(lat_beta) * Math.Cos(lat_alfa) * Math.Cos(fi));
-            /* Calcola la distanza sulla superficie 
-            terrestre R = ~6371 km */
-            d = p * R;
-            return (d);
-        }
-
-
-        private DelegateCommand report;
+        private DelegateCommand _report;
         public DelegateCommand Report
         {
-            get { return report ?? (report = new DelegateCommand(ShowReport)); }
+            get { return _report ?? (_report = new DelegateCommand(ShowReport)); }
         }
 
         public void ShowReport()
         {
-            Report r = new Report();
-            var reportViewModel = new ReportViewModel();
-            reportViewModel.Points = new ObservableCollection<GpxPoint>();
-            if (GpxPointsCollection.Count() != 0)
+            Report r = new Report
             {
-                for (int i = 0; i < GpxTracePoints.Count - 1; i++)
-                {
-                    if (GpxTracePoints[i].Speed > 150)
-                    {
-                        GpxTracePoints[i].Speed = 150;
-                    }
-
-                    var timeSpan = (GpxTracePoints[i].Start - GpxTracePoints[i + 1].Start);
-                    if (timeSpan > new TimeSpan(0, 5, 0))
-                    {
-                        if (CalcoloDistanza(GpxTracePoints[i], GpxTracePoints[i + 1]) < 100)
-                        {
-                            reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start });
-                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i].Start.AddSeconds(-1) });
-                            reportViewModel.Points.Add(new GpxPoint() { Speed = 0, Start = GpxTracePoints[i + 1].Start.AddSeconds(1) });
-                        }
-                    }
-                    else
-                    {
-                        reportViewModel.Points.Add(new GpxPoint() { Speed = GpxTracePoints[i].Speed, Start = GpxTracePoints[i].Start });
-                    }
-                }
-            }
-            r.DataContext = reportViewModel;
-            r.Owner = Application.Current.MainWindow;
+                DataContext = this
+            };
             r.ShowDialog();
         }
     }

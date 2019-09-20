@@ -1,15 +1,12 @@
-﻿using DevExpress.Map.Native;
-using DevExpress.Xpf.Map;
+﻿using DevExpress.Xpf.Map;
 using Gpx;
+using Nominatim.API.Geocoders;
+using Nominatim.API.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using Nominatim.API.Geocoders;
-using Nominatim.API.Models;
 
 
 namespace Progetto
@@ -61,6 +58,7 @@ namespace Progetto
             MapPolyline polyline = new MapPolyline()
             {
                 IsGeodesic = true,
+                //Stroke rosso se route ottenuta da osrm, route blu se ottenuta da fogli di dati importati
                 Stroke = value ? new SolidColorBrush() { Color = Colors.Red } : new SolidColorBrush() { Color = Colors.Blue },
                 StrokeStyle = new StrokeStyle() { Thickness = 2 }
             };
@@ -85,10 +83,11 @@ namespace Progetto
 
         async Task CalculateRouteCore(ObservableCollection<GpxPoint> list, bool value)
         {
-            this.route.Clear();
+            route.Clear();
             if (value)
             {
                 await HttpMessage.HttpRouteRequest(list);
+                HttpMessage.ThinPointCollection();
                 foreach (GpxPoint p in HttpMessage.Point)
                 {
                     route.Add(new GeoPoint() { Latitude = p.Latitude, Longitude = p.Longitude });
