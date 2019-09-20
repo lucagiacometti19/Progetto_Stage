@@ -146,11 +146,12 @@ namespace Progetto
 
         public async void Pdf(ChartControl chart)
         {
-            //try
-            //{
+            var reportWindow = new Window();
+            try
+            {
                 if (MainRoute != Enumerable.Empty<GpxPoint>() && MainRoute.Count != 0)
                 {
-                    var reportWindow = Application.Current.Windows.OfType<Window>().FirstOrDefault(x => x.Title == "Report");
+                    reportWindow = Application.Current.Windows.OfType<Window>().FirstOrDefault(x => x.Title == "Report");
                     IsWaitIndicatorVisible = true;
                     reportWindow.IsEnabled = false;
                     CalculateMaxSpeed();
@@ -163,14 +164,18 @@ namespace Progetto
                     await GetStationaryPoints();
                     PDFCreator pdf = new PDFCreator(Nome, VelocitaMedia, VelocitaMassima, VelocitaMinima, LunghezzaPercorso, OraInizio, OraFine, OraTot, PuntiStazionamento);
                     pdf.CreaPDF(chart);
-                    IsWaitIndicatorVisible = false;
-                    reportWindow.IsEnabled = true;
+
                 }
-            //}
-            //catch (Exception e)
-            //{
-              //  Console.WriteLine(e.Message);
-            //}
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+            finally
+            {
+                IsWaitIndicatorVisible = false;
+                reportWindow.IsEnabled = true;
+            }
         }
 
 
